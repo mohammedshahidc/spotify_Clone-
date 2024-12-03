@@ -22,4 +22,36 @@ const userValidationSchema = Joi.object({
     
 });
 
-module.exports = {userValidationSchema};
+const userLoginValidationSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+});
+
+
+
+const songValidationSchema = Joi.object({
+    title: Joi.string()
+        .required(),
+    artist: Joi.string()
+        .required(),
+    album: Joi.string()
+        .required(),
+    duration: Joi.number()
+        .min(1)
+        .required(),
+    image: Joi.string()
+        .uri()
+        ,
+    fileUrl: Joi.string()
+        .uri()
+        ,
+    type: Joi.string()
+        .required(),
+});
+
+
+
+
+
+
+module.exports = {userValidationSchema,userLoginValidationSchema,songValidationSchema};

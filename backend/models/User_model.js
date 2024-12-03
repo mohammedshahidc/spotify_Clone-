@@ -22,11 +22,13 @@ const userSchema = new mongoose.Schema({
     },
     admin: {
         type: Boolean,
-        required: false
+        required: false,
+        default:false
     },
     block: {
         type: Boolean,
-        required: false
+        required: false,
+        default:false
     },
     otp: { 
         type: String, default: null 
@@ -34,6 +36,16 @@ const userSchema = new mongoose.Schema({
     isVerified: { 
         type: Boolean, default: false 
     },
+    playlists: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Playlist",
+        },
+    ],
+    likedSongs:[ {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "LikedSongs", 
+    }],
 })
 
 const User = mongoose.model("User", userSchema)

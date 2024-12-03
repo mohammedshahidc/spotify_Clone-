@@ -1,7 +1,8 @@
 class CustomError extends Error{
     constructor(message,statusCode){
-
+console.log("dfdsfs");
         super(message)
+        console.log("message:",message);
         this.statusCode=statusCode ||500
         this.status=statusCode >=400&&statusCode<=500?"faile":'error'
         this.isOperational=true
