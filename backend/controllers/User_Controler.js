@@ -1,13 +1,24 @@
-const { userValidationSchema,userLoginValidationSchema } = require('../models/validation')
+const { userValidationSchema, userLoginValidationSchema } = require('../models/validation')
 const User = require('../models/User_model')
 const CustomError = require('../utils/CustomError')
 const bcrypt = require('bcrypt')
 const sendEmail = require('../utils/emailService')
 const jwt = require('jsonwebtoken')
+const Song = require('../models/Song_model')
+const Playlist = require('../models/Playlist_model')
+const LikedSongs=require('../models/Likedsongs')
+
+
+
 
 
 
 //user registration
+// ---------------------------------------------------------------------------------------------------------
+
+
+
+
 const user_registration = async (req, res, next) => {
 
     const { value, error } = userValidationSchema.validate(req.body)
@@ -41,6 +52,10 @@ const user_registration = async (req, res, next) => {
 
 
 //email verification
+// ---------------------------------------------------------------------------------------------------------
+
+
+
 const verify_otp = async (req, res, next) => {
 
     const { otp } = req.body
@@ -70,53 +85,242 @@ const verify_otp = async (req, res, next) => {
 
 
 //user login
+// ---------------------------------------------------------------------------------------------------------
+
+
 
 const user_login = async (req, res, next) => {
     const { value, error } = userLoginValidationSchema.validate(req.body)
-    if(error){
+    if (error) {
         return next(new CustomError(error))
     }
-    const { email, password } =value
+    const { email, password } = value
     console.log('email', email);
-    
 
-    const user=await User.findOne({email})
-    if(!user){
-        return next(new CustomError("user not found",400))
+
+    const user = await User.findOne({ email })
+    if (!user) {
+        return next(new CustomError("user not found", 400))
     }
-        
-    const matching=await bcrypt.compare(password,user.password)
-    if(!matching){
+
+    const matching = await bcrypt.compare(password, user.password)
+    if (!matching) {
         return next(new CustomError("password is not matching"))
     }
-    if(matching && user.isVerified==true){
+    if (matching && user.isVerified == true) {
 
-        const token=jwt.sign({
-            id:user._id,
-            username:user.name,
-            email:user.email
+        const token = jwt.sign({
+            id: user._id,
+            username: user.name,
+            email: user.email
         },
-    process.env.JWT_KEY,
-    {expiresIn:"1d"}
-    )
-    const refreshmentToken=jwt.sign({
-        id:user._id,
-            username:user.name,
-            email:user.email
-    },
-    process.env.JWT_KEY,
-    {expiresIn:"7d"}
-)
+            process.env.JWT_KEY,
+            { expiresIn: "1d" }
+        )
+        const refreshmentToken = jwt.sign({
+            id: user._id,
+            username: user.name,
+            email: user.email
+        },
+            process.env.JWT_KEY,
+            { expiresIn: "7d" }
+        )
 
-res.status(200).json({errorCode:0,status:true,msg:'user login successfully',data:{token:token,username:user.name,refreshmentToken:refreshmentToken}})
+        res.status(200).json({ errorCode: 0, status: true, msg: 'user login successfully', data: { token: token, username: user.name, refreshmentToken: refreshmentToken } })
     }
 
 }
-    
+
+
+
+//get song
+// ---------------------------------------------------------------------------------------------------------
+
+const get_allsongs = async (req, res, next) => {
+    const songs = await Song.find()
+    if (!songs) {
+        return next(new CustomError("songs not found", 400))
+
+    }
+    res.status(200).json(songs)
+
+}
+
+
+//get songs by id
+// ---------------------------------------------------------------------------------------------------------
+
+const getSongs_byId = async (req, res, next) => {
+    const { id } = req.params
+    const song = await Song.findById(id)
+    if (!song) {
+        return next(new CustomError('this song not found', 400))
+    }
+
+    res.status(200).json(song)
+
+}
+
+
+//create play list
+// ---------------------------------------------------------------------------------------------------------
+
+const mongoose = require('mongoose');
+
+const create_playlist = async (req, res, next) => {
+
+    const { userId, playlistName, songsId } = req.body;
+
+
+    const findplaylist = await Playlist.findOne({ user: userId, name: playlistName });
+
+    if (findplaylist) {
+
+        const songInPlaylist = findplaylist.songs.find((song) => song.toString() === songsId);
+
+        if (songInPlaylist) {
+            return next(new CustomError('This song is already in the playlist', 400));
+        } else {
+
+            findplaylist.songs.push(songsId);
+            await findplaylist.save();
+
+            return res.status(200).json(findplaylist);
+        }
+    } else {
+
+        const playlist = new Playlist({
+            user: userId,
+            name: playlistName,
+            songs: [songsId]
+        });
+
+        await playlist.save();
+
+        return res.status(201).json(playlist);
+    }
+
+};
+
+
+//get playlist
+// ---------------------------------------------------------------------------------------------------------
+
+const get_playlist = async (req, res, next) => {
+
+    const { id } = req.params
+    const playlist = await Playlist.findOne({ user: id }).populate('songs')
+    if (!playlist) {
+        return next(new CustomError('playlist not found', 400))
+    }
+    res.status(200).json(playlist)
+
+
+}
+
+//delete playlist
+// ---------------------------------------------------------------------------------------------------------
+
+const deletesongfrom_playlist = async (req, res, next) => {
+
+
+    const { id } = req.params
+    const { songId } = req.body
+
+    const data = await Playlist.findOne({ user: id }).populate('songs')
+    if (!data) {
+        return next(new CustomError("playlist not found", 400))
+    }
+
+    const songIndex = data.songs.findIndex((song) => song == songId)
+    data.songs.splice(songIndex, 1)
+    await data.save()
+    res.status(200).json(data)
+}
+
+
+const delete_playlist = async (req, res) => {
+
+    const { id } = req.params
+    await Playlist.findByIdAndDelete(id)
+    res.status(200).json("playlist deleted successfully")
+
+}
+
+
+//add to liked song
+// ---------------------------------------------------------------------------------------------------------
+
+const addto_likedsong=async(req,res,next)=>{
+
+    const{id}=req.params
+    const {songId}=req.body
+
+    const likedsongs=await LikedSongs.findOne({user:id})
+    if(likedsongs){
+        const songinfavorite=likedsongs.songs.find((song)=>song==songId)
+        if(songinfavorite){
+            return next(new CustomError("this song allready added to favourite"))
+        }else{
+            likedsongs.songs.push(songId)
+            await likedsongs.save()
+            res.status(200).json(likedsongs)
+        }
+    }else{
+
+        const newlikedsong=new LikedSongs({
+            user:id,
+            songs:[songId]
+        })
+        await newlikedsong.save()
+        res.status(200).json(newlikedsong)
+
+    }
+
+
+}
+
+
+
+//get liked songs
+// ---------------------------------------------------------------------------------------------------------
+
+const get_favourite=async(req,res)=>{
+    const {id}=req.params
+    const favourite=await LikedSongs.findOne({user:id}).populate("songs")
+    res.status(200).json(favourite)
+}
+
+
+//delete song from favourite
+// ---------------------------------------------------------------------------------------------------------
+
+
+    const deletesongfrom_favourite=async(req,res)=>{
+        const {id}=req.params
+        const {songId}=req.body
+        const data=await LikedSongs.findOne({user:id}).populate('songs')
+        const songIndex=data.songs.findIndex((song)=>song==songId)
+        data.songs.splice(songIndex,1)
+        await data.save()
+        res.status(200).json("song deleted successfully")
+
+
+    }
+
 
 
 module.exports = {
     user_registration,
     verify_otp,
-    user_login
+    user_login,
+    get_allsongs,
+    getSongs_byId,
+    create_playlist,
+    get_playlist,
+    deletesongfrom_playlist,
+    delete_playlist,
+    addto_likedsong,
+    get_favourite,
+    deletesongfrom_favourite
 }
