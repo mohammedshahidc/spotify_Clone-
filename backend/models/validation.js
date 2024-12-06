@@ -18,8 +18,8 @@ const userValidationSchema = Joi.object({
         .required(),
 
     admin: Joi.boolean().optional(),
-    block: Joi.boolean().optional() ,
-    
+    block: Joi.boolean().optional(),
+
 });
 
 const userLoginValidationSchema = Joi.object({
@@ -39,12 +39,8 @@ const songValidationSchema = Joi.object({
     duration: Joi.number()
         .min(1)
         .required(),
-    image: Joi.string()
-        .uri()
-        ,
-    fileUrl: Joi.string()
-        .uri()
-        ,
+        imageFile: Joi.string().allow('', null).optional(),
+    audioFile: Joi.string().allow('', null).optional(),
     type: Joi.string()
         .required(),
 });
@@ -54,4 +50,4 @@ const songValidationSchema = Joi.object({
 
 
 
-module.exports = {userValidationSchema,userLoginValidationSchema,songValidationSchema};
+module.exports = { userValidationSchema, userLoginValidationSchema, songValidationSchema };

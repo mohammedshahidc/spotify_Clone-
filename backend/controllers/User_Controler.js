@@ -90,46 +90,80 @@ const verify_otp = async (req, res, next) => {
 
 
 const user_login = async (req, res, next) => {
-    const { value, error } = userLoginValidationSchema.validate(req.body)
+    // Validate request body
+    const { value, error } = userLoginValidationSchema.validate(req.body);
     if (error) {
-        return next(new CustomError(error))
+        return next(new CustomError(error.message));
     }
-    const { email, password } = value
-    console.log('email', email);
 
+    // Extract email and password from validated data
+    const { email, password } = value;
 
-    const user = await User.findOne({ email })
+    // Check if user exists
+    const user = await User.findOne({ email });
     if (!user) {
-        return next(new CustomError("user not found", 400))
+        return next(new CustomError("User not found", 400));
     }
 
-    const matching = await bcrypt.compare(password, user.password)
+    // Compare passwords
+    const matching = await bcrypt.compare(password, user.password);
     if (!matching) {
-        return next(new CustomError("password is not matching"))
-    }
-    if (matching && user.isVerified == true) {
-
-        const token = jwt.sign({
-            id: user._id,
-            username: user.name,
-            email: user.email
-        },
-            process.env.JWT_KEY,
-            { expiresIn: "1d" }
-        )
-        const refreshmentToken = jwt.sign({
-            id: user._id,
-            username: user.name,
-            email: user.email
-        },
-            process.env.JWT_KEY,
-            { expiresIn: "7d" }
-        )
-
-        res.status(200).json({ errorCode: 0, status: true, msg: 'user login successfully', data: { token: token, username: user.name, refreshmentToken: refreshmentToken } })
+        return next(new CustomError("Password is not matching"));
     }
 
-}
+    // Check if user is verified
+    if (user.isVerified !== true) {
+        return next(new CustomError("User is not verified", 400));
+    }
+
+    // Generate tokens
+    const token = jwt.sign(
+        {
+            id: user._id,
+            username: user.name,
+            email: user.email,
+        },
+        process.env.JWT_KEY,
+        { expiresIn: "1m" }
+    );
+
+    const refreshmentToken = jwt.sign(
+        {
+            id: user._id,
+            username: user.name,
+            email: user.email,
+        },
+        process.env.JWT_KEY,
+        { expiresIn: "7d" }
+    );
+
+    // Set cookies
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true, // Use true in production (requires HTTPS)
+        sameSite: 'none',
+        maxAge: 1 * 60 * 1000, // 1 day
+    });
+
+    res.cookie('refreshmentToken', refreshmentToken, {
+        httpOnly: true,
+        secure: true, // Use true in production (requires HTTPS)
+        sameSite: 'none',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    // Send response
+    return res.status(200).json({
+        errorCode: 0,
+        status: true,
+        msg: 'User login successfully',
+        data: {
+            username: user.name,
+            token:token,
+            refreshmentToken:refreshmentToken
+        },
+    });
+};
 
 
 

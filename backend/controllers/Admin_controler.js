@@ -49,6 +49,25 @@ const admin_Login=async(req,res,next)=>{
 
 
 
+const block_user=async(req,res,next)=>{
+    const{id}=req.params
+    const user=await User.findByIdAndUpdate(id)
+    if(!user){
+        return next(new CustomError("user not found",400))
+    }
+    if(user.block===false){
+        user.block=true
+        await user.save()
+        res.status(200).json(user)
+    }else{
+        user.block=false
+        await user.save()
+        res.status(200).json(user)
+    }
+}
+
+
     module.exports={
-        admin_Login
+        admin_Login,
+        block_user
     }

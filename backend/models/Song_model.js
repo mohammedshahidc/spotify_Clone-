@@ -26,12 +26,12 @@ const songSchema = new Schema(
         },
         image: {
             type: String,
-            required: true,
+           
 
         },
         fileUrl: {
             type: String,
-            required: true,
+            
 
         },
         type:{
