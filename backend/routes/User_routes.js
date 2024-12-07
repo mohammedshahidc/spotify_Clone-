@@ -11,11 +11,13 @@ Routes
 .get('/getsongs',user_auth,tryCatch(user_Controler.get_allsongs))
 .get('/getsongByid/:id',user_auth,tryCatch(user_Controler.getSongs_byId))
 .post("/createplaylist",user_auth,tryCatch(user_Controler.create_playlist))
-.get("/getplaylist/:id",user_auth,tryCatch(user_Controler.get_playlist))
-.delete("/deletefromplaylist/:id",user_auth,tryCatch(user_Controler.deletesongfrom_playlist))
+.get("/getplaylist",user_auth,tryCatch(user_Controler.get_playlist))
+.delete("/deletefromplaylist",user_auth,tryCatch(user_Controler.deletesongfrom_playlist))
 .delete("/deleteplaylist/:id",user_auth,tryCatch(user_Controler.delete_playlist))
-.post("/addtofavourite/:id",user_auth,tryCatch(user_Controler.addto_likedsong))
-.get('/getfavourite/:id',user_auth,tryCatch(user_Controler.get_favourite))
-.delete('/deletefromfavourite/:id',user_auth,tryCatch(user_Controler.deletesongfrom_favourite))
+.post("/addtofavourite",user_auth,tryCatch(user_Controler.addto_likedsong))
+.get('/getfavourite',user_auth,tryCatch(user_Controler.get_favourite))
+.delete('/deletefromfavourite',user_auth,tryCatch(user_Controler.deletesongfrom_favourite))
+.delete("/userlogut",user_auth,tryCatch(user_Controler.userlog_out))
+
 
 module.exports=Routes

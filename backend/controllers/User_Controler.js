@@ -6,7 +6,7 @@ const sendEmail = require('../utils/emailService')
 const jwt = require('jsonwebtoken')
 const Song = require('../models/Song_model')
 const Playlist = require('../models/Playlist_model')
-const LikedSongs=require('../models/Likedsongs')
+const LikedSongs = require('../models/Likedsongs')
 
 
 
@@ -40,10 +40,10 @@ const user_registration = async (req, res, next) => {
     await new_user.save()
 
     const emailTemplate = `
- <h1>Welcome, ${name}!</h1>
- <p>Your OTP for email verification is:</p>
- <h2>${otp}</h2>
- <p>Please use this OTP to verify your email.</p>`;
+     <h1>Welcome, ${name}!</h1>
+     <p>Your OTP for email verification is:</p>
+     <h2>${otp}</h2>
+     <p>Please use this OTP to verify your email.</p>`;
 
     await sendEmail(email, 'Verify Your Email with OTP', emailTemplate);
 
@@ -90,33 +90,33 @@ const verify_otp = async (req, res, next) => {
 
 
 const user_login = async (req, res, next) => {
-    // Validate request body
+   
     const { value, error } = userLoginValidationSchema.validate(req.body);
     if (error) {
         return next(new CustomError(error.message));
     }
 
-    // Extract email and password from validated data
+    
     const { email, password } = value;
 
-    // Check if user exists
+    
     const user = await User.findOne({ email });
     if (!user) {
         return next(new CustomError("User not found", 400));
     }
 
-    // Compare passwords
+   
     const matching = await bcrypt.compare(password, user.password);
     if (!matching) {
         return next(new CustomError("Password is not matching"));
     }
 
-    // Check if user is verified
+    
     if (user.isVerified !== true) {
         return next(new CustomError("User is not verified", 400));
     }
 
-    // Generate tokens
+   
     const token = jwt.sign(
         {
             id: user._id,
@@ -137,30 +137,30 @@ const user_login = async (req, res, next) => {
         { expiresIn: "7d" }
     );
 
-    // Set cookies
+   
     res.cookie('token', token, {
         httpOnly: true,
-        secure: true, // Use true in production (requires HTTPS)
+        secure: true, 
         sameSite: 'none',
-        maxAge: 1 * 60 * 1000, // 1 day
+        maxAge: 1 * 60 * 1000, 
     });
 
     res.cookie('refreshmentToken', refreshmentToken, {
         httpOnly: true,
-        secure: true, // Use true in production (requires HTTPS)
+        secure: true, 
         sameSite: 'none',
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        maxAge: 7 * 24 * 60 * 60 * 1000, 
     });
 
-    // Send response
+   
     return res.status(200).json({
         errorCode: 0,
         status: true,
         msg: 'User login successfully',
         data: {
             username: user.name,
-            token:token,
-            refreshmentToken:refreshmentToken
+            token: token,
+            refreshmentToken: refreshmentToken
         },
     });
 };
@@ -199,14 +199,15 @@ const getSongs_byId = async (req, res, next) => {
 //create play list
 // ---------------------------------------------------------------------------------------------------------
 
-const mongoose = require('mongoose');
+
 
 const create_playlist = async (req, res, next) => {
+console.log(req.user);
 
-    const { userId, playlistName, songsId } = req.body;
+    const {playlistName, songsId } = req.body;
 
 
-    const findplaylist = await Playlist.findOne({ user: userId, name: playlistName });
+    const findplaylist = await Playlist.findOne({ user: req.user.id, name: playlistName });
 
     if (findplaylist) {
 
@@ -224,7 +225,7 @@ const create_playlist = async (req, res, next) => {
     } else {
 
         const playlist = new Playlist({
-            user: userId,
+            user:req.user.id,
             name: playlistName,
             songs: [songsId]
         });
@@ -242,8 +243,8 @@ const create_playlist = async (req, res, next) => {
 
 const get_playlist = async (req, res, next) => {
 
-    const { id } = req.params
-    const playlist = await Playlist.findOne({ user: id }).populate('songs')
+    const id  = req.user.id
+    const playlist = await Playlist.find({ user: id }).populate('songs')
     if (!playlist) {
         return next(new CustomError('playlist not found', 400))
     }
@@ -258,10 +259,10 @@ const get_playlist = async (req, res, next) => {
 const deletesongfrom_playlist = async (req, res, next) => {
 
 
-    const { id } = req.params
-    const { songId } = req.body
+    const id = req.user.id
+    const {playlistid, songId } = req.body
 
-    const data = await Playlist.findOne({ user: id }).populate('songs')
+    const data = await Playlist.findOne({ user: id },{_id:playlistid}).populate('songs')
     if (!data) {
         return next(new CustomError("playlist not found", 400))
     }
@@ -285,26 +286,26 @@ const delete_playlist = async (req, res) => {
 //add to liked song
 // ---------------------------------------------------------------------------------------------------------
 
-const addto_likedsong=async(req,res,next)=>{
+const addto_likedsong = async (req, res, next) => {
 
-    const{id}=req.params
-    const {songId}=req.body
+    const id = req.user.id
+    const { songId } = req.body
 
-    const likedsongs=await LikedSongs.findOne({user:id})
-    if(likedsongs){
-        const songinfavorite=likedsongs.songs.find((song)=>song==songId)
-        if(songinfavorite){
+    const likedsongs = await LikedSongs.findOne({ user: id })
+    if (likedsongs) {
+        const songinfavorite = likedsongs.songs.find((song) => song == songId)
+        if (songinfavorite) {
             return next(new CustomError("this song allready added to favourite"))
-        }else{
+        } else {
             likedsongs.songs.push(songId)
             await likedsongs.save()
             res.status(200).json(likedsongs)
         }
-    }else{
+    } else {
 
-        const newlikedsong=new LikedSongs({
-            user:id,
-            songs:[songId]
+        const newlikedsong = new LikedSongs({
+            user: id,
+            songs: [songId]
         })
         await newlikedsong.save()
         res.status(200).json(newlikedsong)
@@ -319,9 +320,9 @@ const addto_likedsong=async(req,res,next)=>{
 //get liked songs
 // ---------------------------------------------------------------------------------------------------------
 
-const get_favourite=async(req,res)=>{
-    const {id}=req.params
-    const favourite=await LikedSongs.findOne({user:id}).populate("songs")
+const get_favourite = async (req, res) => {
+    const id = req.user.id
+    const favourite = await LikedSongs.findOne({ user: id }).populate("songs")
     res.status(200).json(favourite)
 }
 
@@ -330,17 +331,26 @@ const get_favourite=async(req,res)=>{
 // ---------------------------------------------------------------------------------------------------------
 
 
-    const deletesongfrom_favourite=async(req,res)=>{
-        const {id}=req.params
-        const {songId}=req.body
-        const data=await LikedSongs.findOne({user:id}).populate('songs')
-        const songIndex=data.songs.findIndex((song)=>song==songId)
-        data.songs.splice(songIndex,1)
-        await data.save()
-        res.status(200).json("song deleted successfully")
+const deletesongfrom_favourite = async (req, res) => {
+    const id= req.user.id
+    const { songId } = req.body
+    const data = await LikedSongs.findOne({ user: id }).populate('songs')
+    const songIndex = data.songs.findIndex((song) => song == songId)
+    data.songs.splice(songIndex, 1)
+    await data.save()
+    res.status(200).json("song deleted successfully")
 
 
-    }
+}
+
+
+const userlog_out = async (req, res,next) => {
+  
+    res.clearCookie("token")
+    res.clearCookie("refreshmentToken")
+   res.status(200).json("successfully logout")
+
+}
 
 
 
@@ -356,5 +366,6 @@ module.exports = {
     delete_playlist,
     addto_likedsong,
     get_favourite,
-    deletesongfrom_favourite
+    deletesongfrom_favourite,
+    userlog_out
 }

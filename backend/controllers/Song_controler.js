@@ -37,18 +37,13 @@ const addSongs=async(req,res,next)=>{
 const editSong = async (req, res, next) => {
     try {
        
-
-       
-        const { value, error } = songValidationSchema.validate(req.body);
+         const { value, error } = songValidationSchema.validate(req.body);
 
         if (error) {
             return next(new CustomError(error.details[0].message, 400));
         }
+            const updatedData = { ...value };
 
-      
-        const updatedData = { ...value };
-
-        
         if (req.files?.imageFile?.[0]?.path) {
             updatedData.imageFile = req.files.imageFile[0].path;
         } else if (!value.imageFile) {
@@ -61,7 +56,6 @@ const editSong = async (req, res, next) => {
             delete updatedData.audioFile; 
         }
 
-        
         const updatedSong = await Song.findByIdAndUpdate(req.params.id, updatedData, {
             new: true,
             runValidators: true,
@@ -71,7 +65,6 @@ const editSong = async (req, res, next) => {
             return next(new CustomError('Song not found', 404));
         }
 
-        
         res.status(200).json({
             message: 'Song updated successfully',
             song: updatedSong,
@@ -83,10 +76,11 @@ const editSong = async (req, res, next) => {
 
 const delete_song=async(req,res,next)=>{
     const{id}=req.params
-    const song=Song.findByIdAndDelete(id)
+    const song=await Song.findByIdAndDelete(id)
     if(!song){
         return next(new CustomError('song not found',400))
     }
+    res.status(200).json({song:song,message:"song deleted successfully"})
 }
 
 

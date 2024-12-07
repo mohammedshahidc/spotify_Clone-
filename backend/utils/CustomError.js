@@ -1,6 +1,6 @@
 class CustomError extends Error{
     constructor(message,statusCode){
-console.log("dfdsfs");
+
         super(message)
         console.log("message:",message);
         this.statusCode=statusCode ||500

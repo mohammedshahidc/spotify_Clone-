@@ -67,7 +67,17 @@ const block_user=async(req,res,next)=>{
 }
 
 
+const admin_logout = async (req, res,next) => {
+  
+    res.clearCookie("token")
+    res.clearCookie("refreshmentToken")
+   res.status(200).json("successfully logout")
+
+}
+
+
     module.exports={
         admin_Login,
-        block_user
+        block_user,
+        admin_logout
     }

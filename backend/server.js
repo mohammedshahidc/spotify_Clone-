@@ -30,7 +30,7 @@ mongoose.connect(process.env.CONNECTION_STRING)
 app.all("*",(req,res,next)=>{
     const err = new CustomError(`Cannot ${req.method} ${req.originalUrl}`, 404);
      next(err);
-     console.log("wdqqwdf:",err);
+     console.log("err:",err);
 })
 
 app.listen(process.env.PORT,()=>{console.log(`server run on ${process.env.PORT}`)})

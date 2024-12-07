@@ -53,7 +53,8 @@ const user_auth=(req,res,next)=>{
 const admin_auth=(req,res,next)=>{
 
     user_auth(req,res,()=>{
-        if(req.user && req.user.admin){
+      
+        if(req.user && req.user.isAdmin){
             next()
         }else{
             return next(new CustomError("You are not authorized as an admin",400))
