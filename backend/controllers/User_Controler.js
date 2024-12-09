@@ -26,7 +26,7 @@ const user_registration = async (req, res, next) => {
 
     if (error) {
         console.log('registration error:', error);
-        throw next(new CustomError('registration error', error))
+        return next(new CustomError('registration error', error))
     }
     if (password !== cpassword) {
         return next(new CustomError('invalid password', 404))
@@ -118,39 +118,31 @@ const user_login = async (req, res, next) => {
 
    
     const token = jwt.sign(
-        {
-            id: user._id,
-            username: user.name,
-            email: user.email,
-        },
+        { id: user._id, username: user.name,email:user.email },
         process.env.JWT_KEY,
         { expiresIn: "1m" }
     );
 
     const refreshmentToken = jwt.sign(
-        {
-            id: user._id,
-            username: user.name,
-            email: user.email,
-        },
+        { id: user._id,username:user.name,email:user.email },
         process.env.JWT_KEY,
         { expiresIn: "7d" }
     );
 
-   
     res.cookie('token', token, {
         httpOnly: true,
-        secure: true, 
-        sameSite: 'none',
-        maxAge: 1 * 60 * 1000, 
+        secure: true,
+        maxAge: 1 * 60 * 1000, // 1 minute
+        sameSite: 'none'
     });
 
-    res.cookie('refreshmentToken', refreshmentToken, {
+    res.cookie("refreshmentToken", refreshmentToken, {
         httpOnly: true,
-        secure: true, 
-        sameSite: 'none',
-        maxAge: 7 * 24 * 60 * 60 * 1000, 
+        secure: true,
+        sameSite: "none",
+        maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+
 
    
     return res.status(200).json({
@@ -251,6 +243,16 @@ const get_playlist = async (req, res, next) => {
     res.status(200).json(playlist)
 
 
+}
+
+//get playlist
+// ---------------------------------------------------------------------------------------------------------
+const getAll_playlist=async(req,res,next)=>{
+    const playlist=await Playlist.find().populate('songs')
+    if(!playlist){
+        return next(new CustomError('playlist not found',400))
+    }
+    res.status(200).json({playlist})
 }
 
 //delete playlist
@@ -367,5 +369,6 @@ module.exports = {
     addto_likedsong,
     get_favourite,
     deletesongfrom_favourite,
-    userlog_out
+    userlog_out,
+    getAll_playlist
 }

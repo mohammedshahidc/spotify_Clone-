@@ -1,69 +1,84 @@
-const jwt=require('jsonwebtoken')
-const CustomError=require('./Error_handler')
+const jwt = require("jsonwebtoken");
+const CustomError=require('../utils/CustomError')
 
 
+const user_auth = (req, res, next) => {
+   
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
 
-
-
-const user_auth=(req,res,next)=>{
-
-    try {
-       const authHeader=req.headers['authorization'] 
-       const token = authHeader && authHeader.split(' ')[1]
-       console.log("token:",token);
-
-       if(!token){
-        const refreshmentToken=req.cookies?.refreshmentToken
-        if(!refreshmentToken){
-            return next(new CustomError("refreshment token and accessstoken is not provided"))
+    if (!token) {
+       
+        const refreshmentToken = req.cookies?.refreshmentToken;
+        
+        if (!refreshmentToken) {
+            return next(new CustomError('No access or refreshment token provided',400))
         }
-        jwt.verify(refreshmentToken,process.env.JWT_KEY,(error,decoded)=>{
-            if(error){
-                return next(new CustomError('Refresh token invalid or expired',403))
+
+        const decoded = jwt.verify(refreshmentToken, process.env.JWT_KEY);
+        
+            const newToken = jwt.sign(
+            { id: decoded.id, username: decoded.username, email: decoded.email },
+            process.env.JWT_KEY,
+            { expiresIn: "1m" }
+        );
+
+         res.cookie('token', newToken, {
+            httpOnly: true,
+            secure: true, 
+            maxAge: 1 * 60 * 1000,
+            sameSite: 'none'
+        });
+
+        req.user = decoded;
+        return next();
+    } else {
+        
+        try {
+            const decoded = jwt.verify(token, process.env.JWT_KEY);
+           
+            req.user = decoded;
+            return next();
+        } catch (error) {
+            const refreshmentToken=req.cookies?.refreshmentToken
+            if (!refreshmentToken){
+                return next(new CustomError('No access or refreshment token provided',400))
             }
-            const newToken=jwt.sign({id:decoded.id,username:decoded.username,email:decoded.email},
-                process.env.JWT_KEY,{expiresIn:"1m"}
-            )
+            const decoded=jwt.verify(refreshmentToken,process.env.JWT_KEY)
+            const newToken = jwt.sign(
+                { id: decoded.id, username: decoded.username, email: decoded.email },
+                process.env.JWT_KEY,
+                { expiresIn: "1m" }
+            );
+    
+           
             res.cookie('token', newToken, {
                 httpOnly: true,
-                secure: true,
-                maxAge: 1 * 60 * 1000,
-                sameSite: 'none',
-            })
-            req.user=decoded
-            next()
-        })
-       }else{
-        jwt.verify(token,process.env.JWT_KEY,(err,decoded)=>{
-            if(err){
-                return next(new CustomError("Error in user_auth middleware:",err.message))
-            }
-            req.user=decoded
-            next()
-        })
-       }
-    } catch (error) {
-        res.status(500).json({ message: "Internal server error" })
+                secure: true, 
+                maxAge: 1 * 60 * 1000, 
+                sameSite: 'none'
+            });
+    
+            req.user = decoded;
+            return next();
+        }
+       
+
     }
 
 
-}
+};
 
+const admin_auth = (req, res, next) => {
+    console.log('Admin Auth Middleware');
 
-const admin_auth=(req,res,next)=>{
-
-    user_auth(req,res,()=>{
-      
-        if(req.user && req.user.isAdmin){
-            next()
-        }else{
-            return next(new CustomError("You are not authorized as an admin",400))
+    user_auth(req, res, () => {
+        if (req.user && req.user.id === 'admin') {
+            return next();
+        } else {
+            throw new Error("You are not authorized");
         }
-    })
-}
+    });
+};
 
-
-module.exports={
-    user_auth,
-    admin_auth
-}
+module.exports = { user_auth, admin_auth };

@@ -6,9 +6,11 @@ const ErrorManager=require('./middlewares/Error_handler')
 const CustomError=require('./utils/CustomError')
 const adminRouter=require('./routes/Admin_routes')
 const app=express()
+const cookieParser = require('cookie-parser');
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use('/user',userRouter)
 app.use('/admin',adminRouter)

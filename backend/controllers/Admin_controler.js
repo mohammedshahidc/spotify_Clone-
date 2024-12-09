@@ -20,7 +20,7 @@ const admin_Login=async(req,res,next)=>{
             isAdmin: true
         },
             process.env.JWT_KEY,
-            { expiresIn: "1d" }
+            { expiresIn: "1m" }
         )
         const refreshmentToken = jwt.sign({
             id: 'admin',
@@ -29,11 +29,11 @@ const admin_Login=async(req,res,next)=>{
             process.env.JWT_KEY,
             { expiresIn: "7d" }
         )
-        res.cookie("token", token, {
+        res.cookie('token', newToken, {
             httpOnly: true,
             secure: true,
-            sameSite: "none",
-            maxAge: 24*30 * 60 * 1000
+            maxAge: 1 * 60 * 1000, // 1 minute
+            sameSite: 'none'
         });
         res.cookie("refreshmentToken", refreshmentToken, {
             httpOnly: true,
