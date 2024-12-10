@@ -32,6 +32,7 @@ export default playlistSlice.reducer
 export const getplaylist=createAsyncThunk("playlist",async()=>{
     try {
         const response=await axiosInstance.get('/user/getallplaylist')
+        console.log('data:',typeof(response.data));
         return response.data
         
     } catch (error) {

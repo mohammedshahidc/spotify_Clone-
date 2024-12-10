@@ -7,8 +7,17 @@ const CustomError=require('./utils/CustomError')
 const adminRouter=require('./routes/Admin_routes')
 const app=express()
 const cookieParser = require('cookie-parser');
+const cors=require('cors')
 
 app.use(express.json())
+
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET","HEAD","PUT","PATCH","POST","DELETE"]
+  }));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
