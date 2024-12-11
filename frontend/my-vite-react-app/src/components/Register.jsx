@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { schema } from '../Schema';
 import { useFormik } from 'formik';
 import axiosInstance from '../../axiosinstance';
+import { useNavigate } from 'react-router-dom';
 
 const initialValues = {
   name: '',
@@ -13,7 +14,7 @@ const initialValues = {
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
-
+  const navigate = useNavigate()
   const { errors, values, handleBlur, handleChange, handleSubmit } = useFormik({
     initialValues,
     validationSchema: schema,
@@ -25,6 +26,7 @@ const Register = () => {
       try {
         const response = await axiosInstance.post('/user/register', values);
         alert('Registration successful!');
+        navigate("/otp")
         console.log(response.data);
       } catch (error) {
         setApiError(error.response?.data?.message || 'Something went wrong');
@@ -36,7 +38,7 @@ const Register = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-black text-white">
-      <div className="text-center">
+      <div className="text-center sm">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg"
           alt="Spotify Logo"
@@ -116,9 +118,8 @@ const Register = () => {
 
         <button
           type="submit"
-          className={`w-full py-2 rounded-md font-semibold text-white ${
-            isLoading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'
-          }`}
+          className={`w-full py-2 rounded-md font-semibold text-white ${isLoading ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'
+            }`}
           disabled={isLoading}
         >
           {isLoading ? 'Submitting...' : 'Next'}

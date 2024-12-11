@@ -1,14 +1,20 @@
 import React from 'react'
-import Navbar from './components/Navbar'
-import WithoutLogin from './components/WithoutLogin'
+import { Route, Routes } from 'react-router-dom'
+import Home from './components/Home'
 import Register from './components/Register'
+import Otp from './components/Otp'
+
 
 const App = () => {
   return (
     <div>
-      <Navbar/>
-      <WithoutLogin/>
-      <Register/>
+
+      <Routes>
+        <Route path='/' element={<Home />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/otp' element={<Otp/>} />
+      </Routes>
+
     </div>
   )
 }

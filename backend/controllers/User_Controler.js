@@ -354,7 +354,17 @@ const userlog_out = async (req, res,next) => {
 
 }
 
+const getalbums = async (req, res, next) => {
+    const songs = await Song.aggregate([
+        { $group: { _id: "$album", songs: { $push: "$$ROOT" } } }
+    ]);
 
+    if (!songs || songs.length === 0) {
+        return next(new CustomError("Albums not found", 400));
+    }
+
+    res.status(200).json(songs);
+};
 
 module.exports = {
     user_registration,
@@ -370,5 +380,7 @@ module.exports = {
     get_favourite,
     deletesongfrom_favourite,
     userlog_out,
-    getAll_playlist
+    getAll_playlist,
+    getalbums
+
 }

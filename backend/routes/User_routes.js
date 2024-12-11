@@ -10,6 +10,7 @@ Routes
 .post('/login',tryCatch(user_Controler.user_login))
 .get('/getsongs',tryCatch(user_Controler.get_allsongs))
 .get('/getsongByid/:id',user_auth,tryCatch(user_Controler.getSongs_byId))
+.get('/getalbums',tryCatch(user_Controler.getalbums))
 .post("/createplaylist",user_auth,tryCatch(user_Controler.create_playlist))
 .get("/getplaylist",user_auth,tryCatch(user_Controler.get_playlist))
 .get('/getallplaylist',tryCatch(user_Controler.getAll_playlist))

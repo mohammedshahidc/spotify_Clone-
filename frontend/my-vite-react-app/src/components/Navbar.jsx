@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaSpotify } from 'react-icons/fa'; // Ensure this import is correct
-
+import { Link } from 'react-router-dom';
 const Navbar = () => {
   return (
     <nav className="bg-gray-900 p-4 flex items-center justify-between">
@@ -22,7 +22,7 @@ const Navbar = () => {
 
       {/* Signup and Login Buttons */}
       <div className="flex space-x-2">
-        <button className="bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600 text-xs sm:text-sm">Sign up</button>
+       <Link to={"/register"}><button className="bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600 text-xs sm:text-sm">Sign up</button></Link> 
         <button className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-400 text-xs sm:text-sm">Log in</button>
       </div>
     </nav>

@@ -6,3 +6,5 @@ export const schema=Yup.object({
     password:Yup.string().min(8).required('password is required'),
     cpassword:Yup.string().oneOf([Yup.ref('password'),null],'password is not matching')
 })
+
+

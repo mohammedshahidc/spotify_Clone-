@@ -5,18 +5,20 @@ const CustomError = require('../utils/CustomError')
 
 
 
-const addSongs=async(req,res,next)=>{
-    const {value,error}=songValidationSchema.validate(req.body)
-    if(error){
-        return next(new CustomError(error))
+const addSongs = async (req, res, next) => {
+    const { value, error } = songValidationSchema.validate(req.body);
+
+    if (error) {
+        return next(new CustomError(error)); // Handle validation error
     }
-    const { title, artist, album, duration,type } =value;
 
-   
-    const audioFileUrl = req.files.audioFile[0].path; 
-    const imageFileUrl = req.files.imageFile[0].path; 
+    const { title, artist, album, duration, type } = value;
 
- 
+    // Extract Cloudinary URLs from req.files
+    const audioFileUrl = req.files.audioFile[0].path; // Cloudinary URL for the audio file
+    const imageFileUrl = req.files.imageFile[0].path; // Cloudinary URL for the image file
+
+    // Create a new song document
     const newSong = new Song({
         title,
         artist,
@@ -27,9 +29,12 @@ const addSongs=async(req,res,next)=>{
         image: imageFileUrl,
     });
 
+    // Save the song document to MongoDB
     await newSong.save();
+
+    // Send success response
     res.status(201).json(newSong);
-}
+};
 
 //edit song
 // ---------------------------------------------------------------------------------------------------------
