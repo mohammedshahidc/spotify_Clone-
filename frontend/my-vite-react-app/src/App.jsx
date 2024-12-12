@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import Home from './components/Home'
 import Register from './components/Register'
 import Otp from './components/Otp'
+import Login from './components/Login'
 
 
 const App = () => {
@@ -13,6 +14,7 @@ const App = () => {
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<Register />} />
         <Route path='/otp' element={<Otp/>} />
+        <Route path='/login' element={<Login/>}/>
       </Routes>
 
     </div>

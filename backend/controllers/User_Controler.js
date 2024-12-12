@@ -150,7 +150,7 @@ const user_login = async (req, res, next) => {
         status: true,
         msg: 'User login successfully',
         data: {
-            username: user.name,
+            user:{id:user._id,name:user.name,email:user.email},
             token: token,
             refreshmentToken: refreshmentToken
         },

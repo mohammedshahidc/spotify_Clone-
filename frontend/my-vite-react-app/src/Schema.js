@@ -8,3 +8,7 @@ export const schema=Yup.object({
 })
 
 
+export const loginschema=Yup.object({
+    email:Yup.string().email().required('email is required'),
+    password:Yup.string().min(8).required("password is required")
+})
