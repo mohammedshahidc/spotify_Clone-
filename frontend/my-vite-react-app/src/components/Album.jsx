@@ -20,15 +20,15 @@ const Album = () => {
     }
 
     return (
-        <div className="bg-black text-white p-4">
-            <h1 className="text-2xl font-bold">Albums</h1>
+        <div className="bg-gray-900 p-4 text-white rounded-lg shadow-lg">
+            <h1 className="text-2xl font-bold mb-4">Albums</h1>
             <CardCarousel>
                 {albums.map((album) => (
                     <Card
                         key={album._id}
-                        image={album.songs[1]?.image} // Use the first song's image
-                        title={album.songs[0]?.album} // Use the first song's title
-                        
+                        image={album.songs[0]?.image || "default-placeholder-image.jpg"} // Use the first song's image
+                        title={album.songs[0]?.album || "No Album Title"} // Use the first song's title
+                        artist={album.songs[0]?.artist || "Unknown Artist"} // Optionally include artist name
                     />
                 ))}
             </CardCarousel>

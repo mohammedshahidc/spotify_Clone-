@@ -44,22 +44,22 @@ const Artist = () => {
     ];
 
     return (
-        <div className="bg-black text-white">
-        <h1 className="text-2xl font-bold ">Popular artists</h1>
-        <CardCarousel>
-            {artistData.map(({ name, songs }) => {
-                const firstSong = songs[0];
-                return (
-                    <Card
-                        key={name}
-                        image={firstSong?.image || "default-placeholder-image.jpg"}
-                        title={name}
-                        artist={firstSong?.artist || "No Songs Available"}
-                    />
-                );
-            })}
-        </CardCarousel>
-    </div>
+        <div className="bg-gray-900 p-4 text-white rounded-lg shadow-lg">
+            <h1 className="text-2xl font-bold mb-4">Popular Artists</h1>
+            <CardCarousel>
+                {artistData.map(({ name, songs }) => {
+                    const firstSong = songs[0];
+                    return (
+                        <Card
+                            key={name}
+                            image={firstSong?.image || "default-placeholder-image.jpg"}
+                            title={name}
+                            artist={firstSong?.artist || "No Songs Available"}
+                        />
+                    );
+                })}
+            </CardCarousel>
+        </div>
     );
 };
 

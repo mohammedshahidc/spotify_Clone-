@@ -2,12 +2,14 @@ import {configureStore} from'@reduxjs/toolkit'
 import playlistSlice from './slices/playlistSlice'
 import songSlice from './slices/songSlice'
 import albumSlice from './slices/albumSlice'
+import loginSlice from './slices/loginSlice'
 
  const store=configureStore({
     reducer:{
         playlist:playlistSlice,
         song:songSlice,
-        albums:albumSlice
+        albums:albumSlice,
+        user:loginSlice
     }
 })
 

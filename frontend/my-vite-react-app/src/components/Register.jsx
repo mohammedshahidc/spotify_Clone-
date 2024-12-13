@@ -15,7 +15,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState(null);
   const navigate = useNavigate()
-  const { errors, values, handleBlur, handleChange, handleSubmit } = useFormik({
+  const { errors, values, handleBlur, handleChange, handleSubmit,resetForm } = useFormik({
     initialValues,
     validationSchema: schema,
     validateOnChange: false,
@@ -26,6 +26,7 @@ const Register = () => {
       try {
         const response = await axiosInstance.post('/user/register', values);
         alert('Registration successful!');
+        resetForm()
         navigate("/otp")
         console.log(response.data);
       } catch (error) {

@@ -6,7 +6,7 @@ import axiosInstance from '../../../axiosinstance'
 export const getplaylist=createAsyncThunk("playlist",async()=>{
     try {
         const response=await axiosInstance.get('/user/getallplaylist')
-        console.log('data:',typeof(response.data));
+        console.log('data:',response.data);
         return response.data
         
     } catch (error) {

@@ -4,17 +4,21 @@ import Home from './components/Home'
 import Register from './components/Register'
 import Otp from './components/Otp'
 import Login from './components/Login'
+import ProtectedRouter from './Protectedrouter/ProtectedRouter'
+import PlaylistComponent from './components/PlaylistComponent'
 
 
 const App = () => {
+  
   return (
     <div>
 
       <Routes>
         <Route path='/' element={<Home />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/otp' element={<Otp/>} />
-        <Route path='/login' element={<Login/>}/>
+        <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />
+        <Route path='/otp' element={<ProtectedRouter><Otp/></ProtectedRouter>} />
+        <Route path='/login' element={<ProtectedRouter><Login/></ProtectedRouter>}/>
+        <Route path='/playlcomponent/:id' element={<PlaylistComponent/>}/>
       </Routes>
 
     </div>
