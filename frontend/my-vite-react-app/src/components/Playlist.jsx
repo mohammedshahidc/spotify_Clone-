@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getplaylist } from '../redux/slices/playlistSlice';
 import Card from "./Card";
 import CardCarousel from "./CardCarousel";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Playlist = () => {
     const dispatch = useDispatch();
@@ -26,6 +26,7 @@ const navigate=useNavigate()
             <CardCarousel>
                 {playlist.map((item) =>
                     item.playlist.map((play) => (
+                        <Link key={item._id} to={`/playlist/playlcomponent/${play._id}`}>
                         <Card
                             key={play._id}
                             image={play.songs[0]?.image}
@@ -33,6 +34,7 @@ const navigate=useNavigate()
                             artist={play.songs[0]?.artist}
                             id={play._id}
                         />
+                        </Link>
                     ))
                 )}
             </CardCarousel>

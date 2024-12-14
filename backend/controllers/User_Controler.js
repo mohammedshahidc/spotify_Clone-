@@ -366,6 +366,33 @@ const getalbums = async (req, res, next) => {
     res.status(200).json(songs);
 };
 
+
+const artist = async (req, res, next) => {
+    const songs = await Song.aggregate([
+        { 
+            $group: { 
+                _id: "$artist", 
+                songs: { $push: "$$ROOT" } 
+            } 
+        }
+    ]);
+
+ 
+    if (!songs || songs.length === 0) {
+        return next(new CustomError("artist not found", 400));
+    }
+
+   
+    const formattedOutput = songs.map(item => ({
+        artist: item._id,
+        songs: item.songs
+    }));
+
+    console.log(formattedOutput); 
+    res.status(200).json(formattedOutput);
+};
+
+
 module.exports = {
     user_registration,
     verify_otp,
@@ -381,6 +408,7 @@ module.exports = {
     deletesongfrom_favourite,
     userlog_out,
     getAll_playlist,
-    getalbums
+    getalbums,
+    artist
 
 }
