@@ -6,13 +6,14 @@ import Otp from './components/Otp'
 import Login from './components/Login'
 import ProtectedRouter from './Protectedrouter/ProtectedRouter'
 import PlaylistComponent from './components/PlaylistComponent'
+import Favourite from './components/Favourite'
 
 
 const App = () => {
   
   return (
     <div>
-
+<Favourite/>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />
@@ -20,6 +21,7 @@ const App = () => {
         <Route path='/login' element={<ProtectedRouter><Login/></ProtectedRouter>}/>
         <Route path='/playlist/playlcomponent/:id' element={<PlaylistComponent/>}/>
         <Route path='/artist/playlcomponent/:artist' element={<PlaylistComponent/>}/>
+        <Route path='/albums/playlcomponent/:albumid' element={<PlaylistComponent/>}/>
         
       </Routes>
 

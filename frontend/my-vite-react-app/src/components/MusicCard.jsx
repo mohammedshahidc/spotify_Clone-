@@ -1,15 +1,13 @@
 import React, { useState, useRef } from "react";
-import { FaPlay, FaPause } from "react-icons/fa"; 
+import { FaPlay, FaPause } from "react-icons/fa";
 
 const AlbumCard = ({ album, songs }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
-  const audioRef = useRef(new Audio(songs[0].audioSrc)); 
+  const audioRef = useRef(new Audio(songs[0].audioSrc));
 
-  
   const handlePlayPause = async (index) => {
     if (currentSongIndex === index) {
-     
       if (isPlaying) {
         audioRef.current.pause();
       } else {
@@ -17,9 +15,8 @@ const AlbumCard = ({ album, songs }) => {
       }
       setIsPlaying(!isPlaying);
     } else {
-     
-      audioRef.current.pause(); 
-      audioRef.current.src = songs[index].audioSrc; 
+      audioRef.current.pause();
+      audioRef.current.src = songs[index].audioSrc;
       setCurrentSongIndex(index);
       setIsPlaying(true);
 
@@ -30,30 +27,30 @@ const AlbumCard = ({ album, songs }) => {
       }
     }
   };
-
+console.log(songs);
   return (
-    <div className="bg-gradient-to-b from-orange-500 to-black w-full mx-auto p-6 shadow-lg text-white font-sans">
+    <div className="bg-gradient-to-b from-orange-500 to-black w-full mx-auto p-6 shadow-lg text-white font-sans h-screen">
       {/* Album Header */}
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
         <img
-          src={songs[0].image}
+          src={songs[0]?.image}
           alt={album.name}
-          className="w-32 h-32 rounded-lg object-cover shadow-md"
+          className="w-40 h-36 rounded-lg object-cover shadow-md"
         />
         <div className="text-center sm:text-left">
           <h1 className="text-4xl font-bold tracking-tight">{album.name}</h1>
-          <p className="text-lg text-gray-200 mt-1">{songs[0].artist}</p>
+          <p className="text-lg text-gray-200 mt-1">{songs[0]?.artist}</p>
         </div>
       </div>
 
-      {/* Song List */}
-      <table className="w-full text-left text-gray-200">
+   
+      <table className="w-full table-fixed text-gray-200">
         <thead>
           <tr>
-            <th className="w-10">#</th>
-            <th>Title</th>
-            <th className="text-right">⏱</th>
-            <th className="text-right" colSpan="2">Play</th>
+            <th className="w-10 py-3 text-left">#</th>
+            <th className="py-3 text-left">Title</th>
+            <th className="py-3 text-center">⏱</th>
+            <th className="py-3 text-center w-16">Play</th>
           </tr>
         </thead>
         <tbody>
@@ -64,19 +61,19 @@ const AlbumCard = ({ album, songs }) => {
             >
               <td className="py-2">{index + 1}</td>
               <td
-                className={
+                className={`py-2 ${
                   currentSongIndex === index && isPlaying
                     ? "text-green-500 font-semibold"
                     : ""
-                }
+                }`}
               >
                 {song.title}
               </td>
-              <td className="text-right">{song.duration}</td>
-              <td className="text-right">
+              <td className="py-2 text-center">{song.duration}</td>
+              <td className="py-2 text-center">
                 <button
                   onClick={() => handlePlayPause(index)}
-                  className="text-black font-bold py-1 px-2 rounded-full flex items-center justify-center"
+                  className="w-16 h-8 flex items-center justify-center rounded-full transition-all duration-200"
                 >
                   {currentSongIndex === index && isPlaying ? (
                     <FaPause className="text-white" />

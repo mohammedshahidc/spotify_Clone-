@@ -5,24 +5,29 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AlbumCard from "./MusicCard";
 import { getplaylist } from "../redux/slices/playlistSlice";
-import { getAllsongs } from "../redux/slices/songSlice";
 import { getartist } from "../redux/slices/artist.slice";
+import { getAlbums } from "../redux/slices/albumSlice";
 
 const PlaylistComponent = () => {
   const dispatch = useDispatch();
   const playlist = useSelector((state) => state.playlist.playlist);
   const artistSongs = useSelector((state) => state.artist.artist);
-  const { id, artist } = useParams();
+  const albums = useSelector((state) => state.albums.albums);
+  
+  const { id, artist, albumid } = useParams();
 
   const [filteredPlaylists, setFilteredPlaylists] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
-  const [albumNames, setAlbumNames] = useState([]);
+  const [filteredAlbum, setFilteredAlbum] = useState([]);
 
-  // Fetch playlists when the component mounts or `id` changes
+  
   useEffect(() => {
     dispatch(getplaylist());
+    dispatch(getartist());
+    dispatch(getAlbums());
   }, [dispatch]);
 
+  
   useEffect(() => {
     if (playlist.length > 0 && id) {
       const playlists = playlist[0]?.playlist.filter((item) => item._id === id);
@@ -30,46 +35,53 @@ const PlaylistComponent = () => {
     }
   }, [playlist, id]);
 
-  // Fetch artists when the component mounts
-  useEffect(() => {
-    dispatch(getartist());
-  }, [dispatch]);
-
+ 
   useEffect(() => {
     if (artistSongs.length > 0 && artist) {
       const foundArtist = artistSongs.find((art) => art.artist === artist);
       if (foundArtist) {
         setFilteredSongs(foundArtist.songs || []);
-        const albums = foundArtist.songs.map((song) => song.album);
-        setAlbumNames(albums);
-      } else {
-        setFilteredSongs([]);
-        setAlbumNames([]);
       }
     }
   }, [artistSongs, artist]);
 
+  
+  useEffect(() => {
+    if (albums.length > 0 && albumid) {
+      const filtered = albums.filter((album) => album._id === albumid);
+      setFilteredAlbum(filtered || []);
+    }
+  }, [albums, albumid]);
+
+  const image=filteredSongs?.map((song)=>song?.image).toString()
+  console.log("image:",image);
+
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen bg-gradient-to-r fixed from-gray-800 to-gray-900 text-white">
+      {/* Navbar */}
       <Navbar />
       <div className="flex flex-1">
-        <div className="w-1/5">
+        {/* Sidebar */}
+        <div className="w-1/5 shadow-lg">
           <Sidebar />
         </div>
-        <div className="flex-1">
-          {/* Render playlists if available */}
+
+        
+        <div className="flex-1 p-6 overflow-y-scroll">
+          
           {filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (
               <AlbumCard
                 key={item._id}
                 album={{
-                  image: item[0]?.fileUrl,
+                  image: item.image,
                   title: item.title,
                   artist: item.artist,
                   year: item.year,
                   details: `${item.songs.length} songs`,
                 }}
                 songs={item.songs.map((song) => ({
+                  image: song.image || item.image,
                   title: song.title,
                   duration: song.duration || "N/A",
                   audioSrc: song.fileUrl,
@@ -77,19 +89,22 @@ const PlaylistComponent = () => {
               />
             ))
           ) : filteredSongs.length > 0 ? (
-            <div>
-              <h2 className="text-white">Songs by {artist}:</h2>
+            <>
+              <h2 className="text-2xl font-semibold mb-4">
+                Songs by {artist}:
+              </h2>
               {filteredSongs.map((song, index) => (
                 <AlbumCard
                   key={index}
                   album={{
-                    image: song.fileUrl, // Assuming the song has a `fileUrl` for the image
-                    title: song.artist,
-                    artist: song.artist, // Assuming the artist is available
+                    image: image,
+                    title: song.title,
+                    artist: artist,
                     details: song.duration || "N/A",
                   }}
                   songs={[
                     {
+                      image: image,
                       title: song.title,
                       duration: song.duration || "N/A",
                       audioSrc: song.fileUrl,
@@ -97,22 +112,37 @@ const PlaylistComponent = () => {
                   ]}
                 />
               ))}
-            </div>
+            </>
+          ) : filteredAlbum.length > 0 ? (
+            <>
+              <h2 className="text-2xl font-semibold mb-4">
+                Songs in the Album:
+              </h2>
+              {filteredAlbum.map((album) =>
+                album.songs?.map((song, index) => (
+                  <AlbumCard
+                    key={index}
+                    album={{
+                      image: song[0]?.image ,
+                      title: song.title,
+                      artist: album.artist ,
+                      details: song.duration ,
+                    }}
+                    songs={[
+                      {
+                        image: song.image,
+                        title: song.title,
+                        duration: song.duration || "N/A",
+                        audioSrc: song.fileUrl,
+                      },
+                    ]}
+                  />
+                ))
+              )}
+            </>
           ) : (
-            <p className="text-white">No songs found for this artist.</p>
-          )}
-
-          {/* Optional: Display album names */}
-          {albumNames.length > 0 && (
-            <div>
-              <h2 className="text-white">Albums:</h2>
-              <ul>
-                {albumNames.map((album, index) => (
-                  <li key={index} className="text-white">
-                    {album}
-                  </li>
-                ))}
-              </ul>
+            <div className="text-center text-lg mt-20">
+              <p>No content available.</p>
             </div>
           )}
         </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaSpotify } from 'react-icons/fa'; // Ensure correct import
+import { FaSpotify } from 'react-icons/fa'; 
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../redux/slices/loginSlice';
@@ -21,11 +21,11 @@ const dispatch=useDispatch()
     <nav className="bg-gray-900 p-4 flex items-center justify-between">
       {/* Logo */}
       <div className="text-white text-xl font-bold flex items-center">
-        <FaSpotify className="text-green-500 mr-2" /> {/* Spotify icon */}
+        <FaSpotify className="text-green-500 mr-2" />
         <span>Spotify</span>
       </div>
 
-      {/* Search Input */}
+      
       <div className="flex flex-grow mx-4">
         <input
           type="text"
@@ -37,11 +37,11 @@ const dispatch=useDispatch()
         </button>
       </div>
 
-      {/* Conditional Rendering: Signup/Login or User Info */}
+     
       <div className="flex items-center space-x-2">
         {user ? (
           <div className="relative flex flex-col items-center">
-            {/* User Icon */}
+           
             <div className="group">
               <div className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500 bg-green-500">
                 <p className="text-white text-lg cursor-pointer" onClick={controllDropdown}>
@@ -65,7 +65,7 @@ const dispatch=useDispatch()
               </div>
               )}
 
-              {/* Username Tooltip */}
+            
               <span className="absolute top-10 right-0 translate-x-2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs px-3 py-1 rounded-md transition-opacity duration-300 whitespace-nowrap">
                 {user.name.toUpperCase()}
               </span>
@@ -73,7 +73,7 @@ const dispatch=useDispatch()
           </div>
         ) : (
           <>
-            {/* Signup and Login Buttons */}
+           
             <Link to="/register">
               <button className="bg-gray-700 text-white px-2 py-1 rounded hover:bg-gray-600 text-xs sm:text-sm">
                 Sign up

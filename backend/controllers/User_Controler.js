@@ -322,9 +322,14 @@ const addto_likedsong = async (req, res, next) => {
 //get liked songs
 // ---------------------------------------------------------------------------------------------------------
 
-const get_favourite = async (req, res) => {
+const get_favourite = async (req, res,next) => {
     const id = req.user.id
-    const favourite = await LikedSongs.findOne({ user: id }).populate("songs")
+    const favourite = await LikedSongs.findOne({ user:id}).populate('songs')
+    if(!favourite){
+        return next(new CustomError("liked songs not found",404))
+    }
+    
+    console.log("s:",favourite);
     res.status(200).json(favourite)
 }
 

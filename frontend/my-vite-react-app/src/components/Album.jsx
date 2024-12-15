@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAlbums } from '../redux/slices/albumSlice';
 import CardCarousel from './CardCarousel';
 import Card from './Card';
+import { Link } from 'react-router-dom';
 
 const Album = () => {
     const dispatch = useDispatch();
@@ -18,18 +19,20 @@ const Album = () => {
     if (status === "rejected") {
         return <p className="text-red-500">Error occurred while fetching albums.</p>;
     }
-
+console.log('album:',albums);
     return (
         <div className="bg-gray-900 p-4 text-white rounded-lg shadow-lg">
             <h1 className="text-2xl font-bold mb-4">Albums</h1>
             <CardCarousel>
                 {albums.map((album) => (
+                    <Link key={album._id} to={`/albums/playlcomponent/${album._id}`}>
                     <Card
-                        key={album._id}
-                        image={album.songs[0]?.image || "default-placeholder-image.jpg"} // Use the first song's image
-                        title={album.songs[0]?.album || "No Album Title"} // Use the first song's title
-                        artist={album.songs[0]?.artist || "Unknown Artist"} // Optionally include artist name
+                        
+                        image={album.songs[0]?.image }
+                        title={album.songs[0]?.album } 
+                        artist={album.songs[0]?.artist } 
                     />
+                    </Link>
                 ))}
             </CardCarousel>
         </div>
