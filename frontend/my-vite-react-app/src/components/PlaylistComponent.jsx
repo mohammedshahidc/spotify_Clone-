@@ -110,7 +110,7 @@ const PlaylistComponent = () => {
                       audioSrc: song.fileUrl,
                     },
                   ]}
-                  bgGradient="bg-gradient-to-r from-purple-900 to-pink-400
+                  gradient="bg-gradient-to-r from-purple-600 to-pink-300
 "
 
                 />
@@ -139,7 +139,7 @@ const PlaylistComponent = () => {
                         audioSrc: song.fileUrl,
                       },
                     ]}
-                    bgGradient="bg-gradient-to-r from-teal-400 to-blue-500"
+                    gradient="bg-gradient-to-r from-teal-400 to-blue-500"
                   />
                 ))
               )}

@@ -7,6 +7,7 @@ import artistSlice from './slices/artist.slice'
 import favouriteSlice from './slices/favouriteSlice'
 
 
+
  const store=configureStore({
     reducer:{
         playlist:playlistSlice,
@@ -14,7 +15,8 @@ import favouriteSlice from './slices/favouriteSlice'
         albums:albumSlice,
         user:loginSlice,
         artist:artistSlice,
-        favourite:favouriteSlice
+        favourite:favouriteSlice,
+        
     }
 })
 

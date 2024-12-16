@@ -6,7 +6,7 @@ import axiosInstance from '../../../axiosinstance'
 export const getfavourite=createAsyncThunk("favourite",async()=>{
     try {
         const response=await axiosInstance.get('/user/getfavourite')
-        console.log("favourite:",response.data);
+        console.log("favouriteyycfy:",response.data);
          return response.data
          
     } catch (error) {
@@ -29,7 +29,7 @@ const favouriteSlice=createSlice({
             state.status="pending"
         })
         .addCase(getfavourite.fulfilled,(state,action)=>{
-            state.albums= action.payload
+            state.favourite= action.payload
             state.status="fulfilled"
         })
         .addCase(getfavourite.rejected,(state)=>{

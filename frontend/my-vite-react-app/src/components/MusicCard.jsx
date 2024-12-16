@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
 
-const AlbumCard = ({ album, songs }) => {
+const AlbumCard = ({ album, songs, image,gradient }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const audioRef = useRef(new Audio(songs[0].audioSrc));
@@ -27,13 +27,14 @@ const AlbumCard = ({ album, songs }) => {
       }
     }
   };
-console.log(songs);
+  console.log('defef', songs);
   return (
-    <div className="bg-gradient-to-b from-orange-500 to-black w-full mx-auto p-6 shadow-lg text-white font-sans h-screen">
+    <div className={`w-full mx-auto p-6 shadow-lg text-white font-sans h-screen ${gradient || "bg-gradient-to-b from-orange-500 to-black"
+      }`}>
       {/* Album Header */}
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
         <img
-          src={songs[0]?.image}
+          src={songs[0]?.image || image?.props}
           alt={album.name}
           className="w-40 h-36 rounded-lg object-cover shadow-md"
         />
@@ -43,7 +44,7 @@ console.log(songs);
         </div>
       </div>
 
-   
+
       <table className="w-full table-fixed text-gray-200">
         <thead>
           <tr>
@@ -61,11 +62,10 @@ console.log(songs);
             >
               <td className="py-2">{index + 1}</td>
               <td
-                className={`py-2 ${
-                  currentSongIndex === index && isPlaying
+                className={`py-2 ${currentSongIndex === index && isPlaying
                     ? "text-green-500 font-semibold"
                     : ""
-                }`}
+                  }`}
               >
                 {song.title}
               </td>

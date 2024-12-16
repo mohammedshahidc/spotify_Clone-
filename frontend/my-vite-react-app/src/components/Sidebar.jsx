@@ -35,10 +35,10 @@ const Sidebar = () => {
                     <FaHome className="text-xl" />
                     <span className="hidden md:block">Home</span>
                 </Link>
-                <a href="#" className="flex items-center space-x-4 p-2 hover:bg-gray-800 rounded-lg">
+                <Link to={"/likedsongs"} className="flex items-center space-x-4 p-2 hover:bg-gray-800 rounded-lg">
                     <FaHeart className="text-xl" />
                     <span className="hidden md:block">Liked Songs</span>
-                </a>
+                </Link>
 
               
                 <div className="relative">

@@ -3,6 +3,8 @@ import { FaSpotify } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../redux/slices/loginSlice';
+import Sidebar from './Sidebar';
+import Searchbar from './Searchbar';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user.user);
@@ -26,16 +28,7 @@ const dispatch=useDispatch()
       </div>
 
       
-      <div className="flex flex-grow mx-4">
-        <input
-          type="text"
-          placeholder="What do you want to play?"
-          className="w-full p-2 bg-gray-800 text-white rounded-l-md focus:outline-none md:p-3 md:mr-2"
-        />
-        <button className="p-1 bg-gray-700 text-white rounded hover:bg-gray-600 text-xs sm:text-sm">
-          Search
-        </button>
-      </div>
+      <Searchbar/>
 
      
       <div className="flex items-center space-x-2">
