@@ -19,7 +19,7 @@ const PlaylistComponent = () => {
   const [filteredPlaylists, setFilteredPlaylists] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [filteredAlbum, setFilteredAlbum] = useState([]);
-
+  const {favourite,status}=useSelector((state)=>state.favourite)
   
   useEffect(() => {
     dispatch(getplaylist());
@@ -110,6 +110,9 @@ const PlaylistComponent = () => {
                       audioSrc: song.fileUrl,
                     },
                   ]}
+                  bgGradient="bg-gradient-to-r from-purple-900 to-pink-400
+"
+
                 />
               ))}
             </>
@@ -136,11 +139,13 @@ const PlaylistComponent = () => {
                         audioSrc: song.fileUrl,
                       },
                     ]}
+                    bgGradient="bg-gradient-to-r from-teal-400 to-blue-500"
                   />
                 ))
               )}
             </>
-          ) : (
+          )
+          : (
             <div className="text-center text-lg mt-20">
               <p>No content available.</p>
             </div>

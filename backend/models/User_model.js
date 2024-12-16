@@ -36,7 +36,10 @@ const userSchema = new mongoose.Schema({
     isVerified: { 
         type: Boolean, default: false 
     },
-   
+   likedSongs:[{
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: "Song" 
+   }]
 })
 
 const User = mongoose.model("User", userSchema)

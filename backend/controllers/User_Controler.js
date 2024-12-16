@@ -293,23 +293,24 @@ const addto_likedsong = async (req, res, next) => {
     const id = req.user.id
     const { songId } = req.body
 
-    const likedsongs = await LikedSongs.findOne({ user: id })
-    if (likedsongs) {
-        const songinfavorite = likedsongs.songs.find((song) => song == songId)
+    const user = await User.findById( id )
+    if (user) {
+        const songinfavorite = user.likedSongs.find((song) => song == songId)
         if (songinfavorite) {
             return next(new CustomError("this song allready added to favourite"))
         } else {
-            likedsongs.songs.push(songId)
-            await likedsongs.save()
-            res.status(200).json(likedsongs)
+            user.likedSongs.push(songId)
+            await user.save()
+            res.status(200).json(user)
         }
     } else {
 
-        const newlikedsong = new LikedSongs({
-            user: id,
-            songs: [songId]
+        const newlikedsong = new User({
+            likedSongs: [songId]
         })
-        await newlikedsong.save()
+        await user.save()
+
+
         res.status(200).json(newlikedsong)
 
     }
@@ -324,13 +325,14 @@ const addto_likedsong = async (req, res, next) => {
 
 const get_favourite = async (req, res,next) => {
     const id = req.user.id
-    const favourite = await LikedSongs.findOne({ user:id}).populate('songs')
-    if(!favourite){
+  
+    const s = await User.findById(id).populate('likedSongs')
+    if(!s){
         return next(new CustomError("liked songs not found",404))
     }
     
-    console.log("s:",favourite);
-    res.status(200).json(favourite)
+    console.log("s:",s._id);
+    res.status(200).json(s.likedSongs)
 }
 
 
@@ -341,9 +343,10 @@ const get_favourite = async (req, res,next) => {
 const deletesongfrom_favourite = async (req, res) => {
     const id= req.user.id
     const { songId } = req.body
-    const data = await LikedSongs.findOne({ user: id }).populate('songs')
-    const songIndex = data.songs.findIndex((song) => song == songId)
-    data.songs.splice(songIndex, 1)
+    const data = await User.findById( id )
+    
+    data.likedSongs = data.likedSongs.filter((song) => song != songId)
+    console.log(data.likedSongs);
     await data.save()
     res.status(200).json("song deleted successfully")
 
