@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getplaylist } from '../redux/slices/playlistSlice';
-import Card from "./Card";
-import CardCarousel from "./CardCarousel";
-import { Link, useNavigate } from "react-router-dom";
+import { getplaylist } from '../../redux/slices/playlistSlice';
+import Card from "./Cards/Card";
+import CardCarousel from "./Cards/CardCarousel";
+import { Link } from "react-router-dom";
 
 const Playlist = () => {
     const dispatch = useDispatch();
     const { playlist, status } = useSelector((state) => state.playlist);
-const navigate=useNavigate()
+
     useEffect(() => {
         dispatch(getplaylist());
     }, [dispatch]);
@@ -27,13 +27,13 @@ const navigate=useNavigate()
                 {playlist.map((item) =>
                     item.playlist.map((play) => (
                         <Link key={item._id} to={`/playlist/playlcomponent/${play._id}`}>
-                        <Card
-                            key={play._id}
-                            image={play.songs[0]?.image}
-                            title={play.name}
-                            artist={play.songs[0]?.artist}
-                            id={play._id}
-                        />
+                            <Card
+                                key={play._id}
+                                image={play.songs[0]?.image}
+                                title={play.name}
+                                artist={play.songs[0]?.artist}
+                                id={play._id}
+                            />
                         </Link>
                     ))
                 )}

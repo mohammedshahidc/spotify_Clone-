@@ -1,11 +1,14 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const AlbumCard = ({ album, songs, image,gradient }) => {
+const MusicCard = ({ album, songs, image, gradient }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const audioRef = useRef(new Audio(songs[0].audioSrc));
 
+  const currentuser = localStorage.getItem("current user")
+  const navigate = useNavigate()
   const handlePlayPause = async (index) => {
     if (currentSongIndex === index) {
       if (isPlaying) {
@@ -27,11 +30,11 @@ const AlbumCard = ({ album, songs, image,gradient }) => {
       }
     }
   };
-  console.log('defef', songs);
+ 
   return (
     <div className={`w-full mx-auto p-6 shadow-lg text-white font-sans h-screen ${gradient || "bg-gradient-to-b from-orange-500 to-black"
       }`}>
-      {/* Album Header */}
+      {/* setting album headers */}
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
         <img
           src={songs[0]?.image || image?.props}
@@ -63,8 +66,8 @@ const AlbumCard = ({ album, songs, image,gradient }) => {
               <td className="py-2">{index + 1}</td>
               <td
                 className={`py-2 ${currentSongIndex === index && isPlaying
-                    ? "text-green-500 font-semibold"
-                    : ""
+                  ? "text-green-500 font-semibold"
+                  : ""
                   }`}
               >
                 {song.title}
@@ -72,7 +75,14 @@ const AlbumCard = ({ album, songs, image,gradient }) => {
               <td className="py-2 text-center">{song.duration}</td>
               <td className="py-2 text-center">
                 <button
-                  onClick={() => handlePlayPause(index)}
+                  onClick={() => {
+                    if (currentuser) {
+                      handlePlayPause(index);
+                    } else {
+                      alert('Please login');
+                      navigate("/login");
+                    }
+                  }}
                   className="w-16 h-8 flex items-center justify-center rounded-full transition-all duration-200"
                 >
                   {currentSongIndex === index && isPlaying ? (
@@ -90,4 +100,4 @@ const AlbumCard = ({ album, songs, image,gradient }) => {
   );
 };
 
-export default AlbumCard;
+export default MusicCard;

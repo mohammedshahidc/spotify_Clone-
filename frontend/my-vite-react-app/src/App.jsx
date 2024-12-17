@@ -1,14 +1,13 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import Home from './components/Home'
-import Register from './components/Register'
-import Otp from './components/Otp'
-import Login from './components/Login'
-import ProtectedRouter from './Protectedrouter/ProtectedRouter'
-import PlaylistComponent from './components/PlaylistComponent'
 
-import Likedsong from './components/Likedsong'
-import Searchbar from './components/Searchbar'
+import { Route, Routes } from 'react-router-dom'
+import Home from './components/User components/Layout/Home'
+import Register from './components/User components/Pages/Register'
+import Otp from './components/User components/Pages/Otp'
+import Login from './components/User components/Pages/Login'
+import ProtectedRouter from './Protectedrouter/ProtectedRouter'
+import PlaylistComponent from './components/User components/Music controllers/PlaylistComponent'
+import Likedsong from './components/User components/Likedsong'
+
 
 
 const App = () => {

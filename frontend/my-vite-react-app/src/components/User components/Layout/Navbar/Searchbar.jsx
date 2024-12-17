@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllsongs } from "../redux/slices/songSlice";
+import { getAllsongs } from "../../../../redux/slices/songSlice";
 
 const Searchbar = () => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
-  const [isActive, setIsActive] = useState(false); // State to control search results visibility
+  const [isActive, setIsActive] = useState(false);
 
   useEffect(() => {
     dispatch(getAllsongs());
   }, [dispatch]);
 
   const { songs, status } = useSelector((state) => state.song);
-
-  // Filter songs based on search query
   const filteredsongs = songs.filter((song) => {
     const word = search.toLowerCase().trim();
     return (
@@ -25,25 +23,20 @@ const Searchbar = () => {
 
   return (
     <div className="relative w-full max-w-md mx-4">
-      {/* Search Input */}
       <div className="flex items-center">
         <input
           type="text"
           placeholder="What do you want to play?"
-          onFocus={() => setIsActive(true)} // Activate search results
-          onBlur={() => setTimeout(() => setIsActive(false), 200)} // Hide results on blur with slight delay
+          onFocus={() => setIsActive(true)}
+          onBlur={() => setTimeout(() => setIsActive(false), 200)}
           onChange={(e) => setSearch(e.target.value)}
           value={search}
           className="w-full p-2 bg-gray-800 text-white rounded-l-md focus:outline-none md:p-3"
         />
-        <button className="p-2 bg-gray-700 text-white rounded-r-md hover:bg-gray-600 text-xs sm:text-sm">
-          Search
-        </button>
       </div>
 
-      {/* Display Filtered Songs */}
       {isActive && search && (
-        <div className="relative top-full left-0 w-full mt-1 bg-gray-900 text-white rounded-lg shadow-lg max-h-56 overflow-y-auto">
+        <div className="absolute top-full left-0 mt-1 w-full bg-gray-900 text-white rounded-lg shadow-lg max-h-56 overflow-y-auto z-50">
           {status === "loading" && <p className="p-2">Loading songs...</p>}
           {status === "error" && <p className="p-2 text-red-500">Failed to load songs.</p>}
           {filteredsongs.length > 0 ? (

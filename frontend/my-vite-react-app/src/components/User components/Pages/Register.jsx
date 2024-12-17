@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { schema } from '../Schema';
+import  { useState } from 'react';
+import { schema } from '../../../Schema';
 import { useFormik } from 'formik';
-import axiosInstance from '../../axiosinstance';
+import axiosInstance from '../../../../axiosinstance';
 import { useNavigate } from 'react-router-dom';
 
 const initialValues = {

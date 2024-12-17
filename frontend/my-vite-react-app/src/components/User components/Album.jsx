@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAlbums } from '../redux/slices/albumSlice';
-import CardCarousel from './CardCarousel';
-import Card from './Card';
+import { getAlbums } from '../../redux/slices/albumSlice';
+import CardCarousel from './Cards/CardCarousel';
+import Card from './Cards/Card';
 import { Link } from 'react-router-dom';
 
 const Album = () => {
