@@ -89,6 +89,59 @@ const delete_song=async(req,res,next)=>{
 }
 
 
+let currentSongIndex = -1; // Initialize current song index
+let isPlaying = false; // Initialize playing status
+const songs = []; // Array to hold all songs
+
+// Get the list of songs (you can implement this function to fetch from the database)
+const getSongsList = async () => {
+    return await Song.find(); // Assuming you have a function to get songs from the database
+};
+
+// Select a song by index
+const selectSong = (req, res, next) => {
+    const { index } = req.body; // Get index from the request body
+    if (index < 0 || index >= songs.length) {
+        return next(new CustomError('Invalid song index', 400));
+    }
+    currentSongIndex = index; // Set current song index
+    isPlaying = true; // Set playing status to true
+    const currentSong = songs[currentSongIndex];
+    res.status(200).json({ message: 'Song selected', currentSong });
+};
+
+// Get the current song
+const getCurrentSong = (req, res, next) => {
+    const currentSong = currentSongIndex >= 0 ? songs[currentSongIndex] : null;
+    res.status(200).json({ currentSong, isPlaying, currentSongIndex, totalSongs: songs.length });
+};
+
+// Play the current song
+const playSong = (req, res, next) => {
+    isPlaying = true; // Update playing status
+    res.status(200).json({ message: 'Playing song' });
+};
+
+// Pause the current song
+const pauseSong = (req, res, next) => {
+    isPlaying = false; // Update playing status
+    res.status(200).json({ message: 'Paused song' });
+};
+
+// Play the next song
+const nextSong = (req, res, next) => {
+    currentSongIndex = (currentSongIndex + 1) % songs.length; // Move to the next song
+    const currentSong = songs[currentSongIndex];
+    res.status(200).json({ currentSong });
+};
+
+// Play the previous song
+const previousSong = (req, res, next) => {
+    currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length; // Move to the previous song
+    const currentSong = songs[currentSongIndex];
+    res.status(200).json({ currentSong });
+};
+
 
 
 
@@ -97,5 +150,11 @@ const delete_song=async(req,res,next)=>{
 module.exports={
     addSongs,
     editSong,
-    delete_song
+    delete_song,
+    selectSong,
+    getCurrentSong,
+    playSong,
+    pauseSong,
+    nextSong,
+    previousSong
 }

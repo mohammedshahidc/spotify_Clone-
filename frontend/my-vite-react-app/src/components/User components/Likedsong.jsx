@@ -17,7 +17,6 @@ const Likedsong = () => {
 
   console.log("liked:", favourite);
 
-
   const songs = favourite.map((song) => ({
     image: <FaHeart size={40} className="w-40 h-40 text-white bg-gradient-to-t from-blue-700 to-blue-100" />,
     title: song.title,
@@ -26,22 +25,31 @@ const Likedsong = () => {
   }));
 
   return (
-    <div>
+    <div className="flex flex-col fixed h-screen bg-gradient-to-r from-black to-gray-900 text-white">
+      {/* Navbar */}
       <Navbar />
-      <div className="flex fixed overflow-y-scroll">
-        <Sidebar />
-        {songs.length > 0 ? (
-          <MusicCard
-            album={{
-              name: "Liked Songs",
-            }}
-            songs={songs}
-            image={<FaHeart size={160} className="text-white bg-gradient-to-t from-blue-700 to-blue-100 rounded-lg" />}
-            gradient='bg-gradient-to-t from-blue-900 to-blue-200'
-          />
-        ) : (
-          <p className="text-white text-center mt-4">No liked songs found.</p>
-        )}
+
+      <div className="flex flex-1">
+        {/* Sidebar */}
+        <div className="w-1/5 shadow-lg h-screen overflow-y-auto">
+          <Sidebar />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex-1 relative  p-6 h-screen w-5/6 fixed overflow-y-scroll">
+          {songs.length > 0 ? (
+            <MusicCard
+              album={{
+                name: "Liked Songs",
+              }}
+              songs={songs}
+              image={<FaHeart size={160} className="text-white bg-gradient-to-t from-blue-700 to-blue-100 rounded-lg" />}
+              gradient='bg-gradient-to-t from-blue-900 to-blue-200'
+            />
+          ) : (
+            <p className="text-white text-center mt-4">No liked songs found.</p>
+          )}
+        </div>
       </div>
     </div>
   );

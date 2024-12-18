@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { FaSpotify } from 'react-icons/fa';
+import { FaSpotify, FaSearch, FaHome } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { logout } from '../../../../redux/slices/loginSlice';
@@ -7,31 +7,60 @@ import Searchbar from './Searchbar';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user.user);
-  const [isDropdown, setIsDropdown] = useState(false)
+  const [isDropdown, setIsDropdown] = useState(false);
+  const [click, setClick] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const showSearchbar = () => {
+    setClick(!click);
+  };
 
   const controllDropdown = () => {
-    if (isDropdown) {
-      setIsDropdown(false)
-    } else {
-      setIsDropdown(true)
-    }
-  }
+    setIsDropdown(!isDropdown);
+  };
 
-  const dispatch = useDispatch()
   return (
-    <nav className="bg-gray-900 p-4 flex items-center justify-between">
+    <nav className="bg-black p-4 flex items-center justify-between">
       {/* Logo */}
       <div className="text-white text-xl font-bold flex items-center">
         <FaSpotify className="text-green-500 mr-2" />
         <span>Spotify</span>
       </div>
-      <Searchbar />
+
+      {/* Navigation and Searchbar */}
+      <div className="flex-1 flex justify-center items-center mx-4">
+        <Link
+          to="/"
+          className="flex items-center text-white bg-stone-900 hover:scale-110 transform transition duration-500 p-1 rounded-full mr-5"
+        >
+          <FaHome size={35} />
+        </Link>
+        {/* Searchbar for larger screens */}
+        <div className="hidden md:block w-[450px]">
+          <Searchbar />
+        </div>
+        {/* Search Icon for mobile */}
+        <Link to={"/search"}>
+        <button
+          className="block md:hidden ml-4 text-white p-4 rounded-full bg-stone-900"
+          
+        >
+          <FaSearch size={20} />
+        </button>
+        </Link>
+      </div>
+
+      {/* User Dropdown */}
       <div className="flex items-center space-x-2">
         {user ? (
           <div className="relative flex flex-col items-center">
             <div className="group">
               <div className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500 bg-green-500">
-                <p className="text-white text-lg cursor-pointer" onClick={controllDropdown}>
+                <p
+                  className="text-white text-lg cursor-pointer"
+                  onClick={controllDropdown}
+                >
                   {user.name[0].toUpperCase()}
                 </p>
               </div>
@@ -71,6 +100,13 @@ const Navbar = () => {
           </>
         )}
       </div>
+
+      {/* Searchbar Popup for mobile */}
+      {click && (
+        <div className="absolute top-14 left-0 w-full bg-black p-4 z-50">
+          <Searchbar />
+        </div>
+      )}
     </nav>
   );
 };

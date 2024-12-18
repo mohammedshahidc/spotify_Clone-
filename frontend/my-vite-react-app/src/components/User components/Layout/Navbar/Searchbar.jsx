@@ -22,7 +22,7 @@ const Searchbar = () => {
   });
 
   return (
-    <div className="relative w-full max-w-md mx-4">
+    <div className="relative w-full max-w-md ">
       <div className="flex items-center">
         <input
           type="text"
@@ -31,12 +31,12 @@ const Searchbar = () => {
           onBlur={() => setTimeout(() => setIsActive(false), 200)}
           onChange={(e) => setSearch(e.target.value)}
           value={search}
-          className="w-full p-2 bg-gray-800 text-white rounded-l-md focus:outline-none md:p-3"
+          className="w-full p-2 bg-stone-900 text-white rounded-lg focus:outline-none md:p-3"
         />
       </div>
 
       {isActive && search && (
-        <div className="absolute top-full left-0 mt-1 w-full bg-gray-900 text-white rounded-lg shadow-lg max-h-56 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 mt-1 w-full bg-stone-900 text-white rounded-lg shadow-lg max-h-56 overflow-y-auto z-50">
           {status === "loading" && <p className="p-2">Loading songs...</p>}
           {status === "error" && <p className="p-2 text-red-500">Failed to load songs.</p>}
           {filteredsongs.length > 0 ? (

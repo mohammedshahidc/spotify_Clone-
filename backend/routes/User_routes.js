@@ -3,6 +3,7 @@ const Routes=express.Router()
 const tryCatch=require('../utils/tryCatch')
 const user_Controler=require('../controllers/User_Controler')
 const { user_auth } = require('../middlewares/auth_middleware')
+const { selectSong, getCurrentSong, playSong, pauseSong, nextSong, previousSong } = require('../controllers/Song_controler')
 
 Routes
 .post('/register',tryCatch(user_Controler.user_registration))
@@ -21,6 +22,10 @@ Routes
 .get('/getfavourite',user_auth,tryCatch(user_Controler.get_favourite))
 .delete('/deletefromfavourite',user_auth,tryCatch(user_Controler.deletesongfrom_favourite))
 .delete("/userlogut",user_auth,tryCatch(user_Controler.userlog_out))
-
-
+.post("/select",user_auth,tryCatch(selectSong))
+.get("/current",user_auth,tryCatch(getCurrentSong))
+.post("/play",user_auth,tryCatch(playSong))
+.post("/pause",user_auth,tryCatch(pauseSong))
+.post("/next",user_auth,tryCatch(nextSong))
+.post("/previous",user_auth,tryCatch(previousSong))
 module.exports=Routes

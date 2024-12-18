@@ -163,14 +163,31 @@ const user_login = async (req, res, next) => {
 // ---------------------------------------------------------------------------------------------------------
 
 const get_allsongs = async (req, res, next) => {
-    const songs = await Song.find()
-    if (!songs) {
-        return next(new CustomError("songs not found", 400))
+    try {
+        const songs = await Song.find();
 
+        if (!songs || songs.length === 0) {
+            return next(new CustomError("Songs not found", 400));
+        }
+
+       
+        const formattedSongs = songs.map(song => {
+            const minutes = Math.floor(song.duration / 60); 
+            const seconds = song.duration % 60; // Get seconds
+            const formattedDuration = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+            return {
+                ...song.toObject(), 
+                duration: formattedDuration 
+            };
+        });
+
+        res.status(200).json(formattedSongs);
+    } catch (error) {
+        next(error); // Handle any errors
     }
-    res.status(200).json(songs)
-
 }
+
 
 
 //get songs by id

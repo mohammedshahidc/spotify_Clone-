@@ -8,13 +8,16 @@ import ProtectedRouter from './Protectedrouter/ProtectedRouter'
 import PlaylistComponent from './components/User components/Music controllers/PlaylistComponent'
 import Likedsong from './components/User components/Likedsong'
 
+import Mobliesearch from './components/User components/Layout/Mobliesearch'
+import MusicController from './components/User components/Music controllers/Musicplayer'
+
 
 
 const App = () => {
   
   return (
     <div>
-
+<MusicController/>
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />
@@ -24,6 +27,7 @@ const App = () => {
         <Route path='/artist/playlcomponent/:artist' element={<PlaylistComponent/>}/>
         <Route path='/albums/playlcomponent/:albumid' element={<PlaylistComponent/>}/>
         <Route path='/likedsongs' element={<Likedsong/>} />
+        <Route path='/search' element={<Mobliesearch/>} />
       </Routes>
 
     </div>

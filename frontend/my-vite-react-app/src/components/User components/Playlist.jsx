@@ -21,14 +21,13 @@ const Playlist = () => {
     }
 
     return (
-        <div className="bg-gray-900 p-4 text-white rounded-lg shadow-lg">
+        <div className="bg-stone-900 p-4 text-white rounded-lg shadow-lg">
             <h2 className="text-xl font-bold mb-4">Playlists</h2>
             <CardCarousel>
                 {playlist.map((item) =>
                     item.playlist.map((play) => (
-                        <Link key={item._id} to={`/playlist/playlcomponent/${play._id}`}>
+                        <Link key={play._id} to={`/playlist/playlcomponent/${play._id}`}>
                             <Card
-                                key={play._id}
                                 image={play.songs[0]?.image}
                                 title={play.name}
                                 artist={play.songs[0]?.artist}
