@@ -1,120 +1,186 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Card, CardContent, Typography, IconButton } from '@mui/material';
+import { Card, CardContent, Typography, IconButton, Slider } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import axios from 'axios';
-import axiosInstance from '../../../../axiosinstance';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import Sidebar from '../Layout/Sidebar';
+import Navbar from '../Layout/Navbar/Navbar';
+import { FaHeart } from 'react-icons/fa';
 
 const MusicController = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTrack, setCurrentTrack] = useState(null);
+  const [currentSongIndex, setCurrentSongIndex] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const audio = useRef(new Audio()).current;
-  const [currentSongIndex, setCurrentSongIndex] = useState(-1); // Initialize current song index
-  const [totalSongs, setTotalSongs] = useState(0); // Track total songs
+
+  const Playlist = useSelector((state) => state.playlist.playlist);
+  const { id1, id2 } = useParams();
+
+  const filteredPlaylist = Playlist.playlists.find((item) => item._id === id2);
+  const songs = filteredPlaylist ? filteredPlaylist.songs : [];
 
   useEffect(() => {
-    fetchCurrentTrack();
-  }, []);
+    if (songs.length > 0) {
+      const filteredSongs = songs.filter((song) => song._id === id1);
+      if (filteredSongs.length > 0) {
+        setCurrentTrack(filteredSongs[0]);
+        setCurrentSongIndex(songs.indexOf(filteredSongs[0]));
+      }
+    }
+  }, [songs, id1]);
+
+  const handleEnded = () => {
+    handleSkipNext();
+  };
 
   useEffect(() => {
     if (currentTrack) {
-      audio.src = currentTrack.fileUrl; // Set the audio source to the current track URL
+      audio.src = currentTrack.fileUrl;
+
+      audio.addEventListener('ended', handleEnded);
+      audio.addEventListener('timeupdate', () => {
+        setCurrentTime(audio.currentTime);
+        setDuration(audio.duration);
+      });
+
       if (isPlaying) {
-        audio.play(); // Play the audio if isPlaying is true
+        audio.play().catch((error) => console.error('Error playing audio:', error));
       } else {
-        audio.pause(); // Pause the audio if isPlaying is false
+        audio.pause();
       }
     }
 
-    // Cleanup function to stop audio when the component unmounts
     return () => {
       audio.pause();
       audio.src = '';
+      audio.removeEventListener('ended', handleEnded);
+      audio.removeEventListener('timeupdate', () => {
+        setCurrentTime(audio.currentTime);
+        setDuration(audio.duration);
+      });
     };
   }, [currentTrack, isPlaying, audio]);
 
-  const fetchCurrentTrack = async () => {
-    try {
-      const response = await axiosInstance.get('/user/current'); // Fetch current track from backend
-      setCurrentTrack(response.data.currentSong);
-      setIsPlaying(response.data.isPlaying);
-      setCurrentSongIndex(response.data.currentSongIndex); // Set the current song index
-      setTotalSongs(response.data.totalSongs || 0); // Set total songs if available
-    } catch (error) {
-      console.error('Error fetching current track:', error);
+  const handlePlay = () => {
+    if (audio.src) {
+      audio.play().catch((error) => console.error('Error playing audio:', error));
     }
+    setIsPlaying(true);
   };
 
-  const handlePlay = async () => {
-    try {
-      await axios.post('/user/play'); // Call backend to play music
-      setIsPlaying(true);
-    } catch (error) {
-      console.error('Error playing track:', error);
-    }
+  const handlePause = () => {
+    audio.pause();
+    setIsPlaying(false);
   };
 
-  const handlePause = async () => {
-    try {
-      await axios.post('/user/pause'); // Call backend to pause music
-      setIsPlaying(false);
-    } catch (error) {
-      console.error('Error pausing track:', error);
-    }
+  const handleSkipNext = () => {
+    const nextIndex = (currentSongIndex + 1) % songs.length;
+    setCurrentTrack(songs[nextIndex]);
+    setCurrentSongIndex(nextIndex);
+    setIsPlaying(true);
   };
 
-  const handleSkipNext = async () => {
-    try {
-      const nextIndex = (currentSongIndex + 1) % totalSongs; // Calculate the next song index
-      const response = await axios.post('/user/next'); // Call backend to skip next track
-      setCurrentTrack(response.data.currentSong); // Update the current track
-      setCurrentSongIndex(nextIndex); // Update current song index
-    } catch (error) {
-      console.error('Error skipping to next track:', error);
-    }
+  const handleSkipPrevious = () => {
+    const prevIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+    setCurrentTrack(songs[prevIndex]);
+    setCurrentSongIndex(prevIndex);
+    setIsPlaying(true);
   };
 
-  const handleSkipPrevious = async () => {
-    try {
-      const prevIndex = (currentSongIndex - 1 + totalSongs) % totalSongs; // Calculate the previous song index
-      const response = await axios.post('/user/previous'); // Call backend to skip previous track
-      setCurrentTrack(response.data.currentSong); // Update the current track
-      setCurrentSongIndex(prevIndex); // Update current song index
-    } catch (error) {
-      console.error('Error skipping to previous track:', error);
-    }
+  const handleSeek = (event, newValue) => {
+    audio.currentTime = newValue;
+    setCurrentTime(newValue);
+  };
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
   return (
-    <Card sx={{ maxWidth: 400, margin: 'auto', padding: 2 }}>
-      <CardContent>
-        <Typography variant="h5" component="div">
-          Now Playing
-        </Typography>
-        {currentTrack ? (
-          <Typography variant="body2" color="text.secondary">
-            {currentTrack.title} - {currentTrack.artist} (Song {currentSongIndex + 1} of {totalSongs})
-          </Typography>
-        ) : (
-          <Typography variant="body2" color="text.secondary">
-            No track playing
-          </Typography>
-        )}
-        <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
-          <IconButton onClick={handleSkipPrevious} disabled={currentSongIndex <= 0}>
-            <SkipPreviousIcon fontSize="large" />
-          </IconButton>
-          <IconButton onClick={isPlaying ? handlePause : handlePlay}>
-            {isPlaying ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
-          </IconButton>
-          <IconButton onClick={handleSkipNext} disabled={currentSongIndex >= totalSongs - 1}>
-            <SkipNextIcon fontSize="large" />
-          </IconButton>
+    <div className='fixed w-screen bg-black'>
+      <Navbar />
+      <div className='bg-black flex'>
+        <Sidebar />
+        <div>
+          <Card
+            sx={{
+              maxWidth: 1000,
+              margin: 'auto',
+              padding: 2,
+              backgroundColor: 'black',
+              color: 'white',
+              height: 900,
+            }}
+          >
+            <CardContent>
+              <img src={currentTrack?.image} alt="Track Cover" className='h-72 w-screen' />
+              <Typography variant="h5" component="div" color="white">
+                Now Playing
+              </Typography>
+              {currentTrack ? (
+                <Typography variant="body2" color="white">
+                  {currentTrack.title} - {currentTrack.artist} (Song {currentSongIndex + 1} of {songs.length})
+                </Typography>
+              ) : (
+                <Typography variant="body2" color="white">
+                  No track playing
+                </Typography>
+              )}
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+                <IconButton
+                  onClick={handleSkipPrevious}
+                  disabled={currentSongIndex <= 0}
+                  sx={{ color: 'white' }}
+                >
+                  <SkipPreviousIcon fontSize="large" />
+                </IconButton>
+                <IconButton onClick={isPlaying ? handlePause : handlePlay} sx={{ color: 'white' }}>
+                  {isPlaying ? <PauseIcon fontSize="large" /> : <PlayArrowIcon fontSize="large" />}
+                </IconButton>
+                <IconButton
+                  onClick={handleSkipNext}
+                  disabled={currentSongIndex >= songs.length - 1}
+                  sx={{ color: 'white' }}
+                >
+                  <SkipNextIcon fontSize="large" />
+                </IconButton>
+              </div>
+
+              <div style={{ position: 'relative', marginTop: '20px' }}>
+                <Slider
+                  value={currentTime}
+                  min={0}
+                  max={duration}
+                  onChange={handleSeek}
+                  sx={{ color: 'white' }}
+                />
+                <FaHeart
+                  style={{
+                    position: 'absolute',
+                    top: '-40px',
+                    right: '0',
+                    color: 'red',
+                    fontSize: '24px',
+                    cursor: 'pointer',
+                  }}
+                />
+              </div>
+
+              <Typography variant="body2" color="white">
+                {formatTime(currentTime)} / {formatTime(duration)}
+              </Typography>
+            </CardContent>
+          </Card>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

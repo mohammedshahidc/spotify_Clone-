@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const MusicCard = ({ album, songs, image, gradient }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -30,7 +30,8 @@ const MusicCard = ({ album, songs, image, gradient }) => {
       }
     }
   };
- 
+ console.log("for album:",album.id);
+ console.log("for album:",album.artist);
   return (
     <div className={`w-full mx-auto p-6 shadow-lg text-white font-sans h-screen ${gradient || "bg-gradient-to-b from-orange-500 to-black"
       }`}>
@@ -59,11 +60,15 @@ const MusicCard = ({ album, songs, image, gradient }) => {
         </thead>
         <tbody>
           {songs.map((song, index) => (
+            
             <tr
               key={index}
               className="hover:bg-white hover:bg-opacity-10 hover:text-orange-400 transition-all duration-200"
             >
+             
+            
               <td className="py-2">{index + 1}</td>
+              <Link to={`/playcomponent/${song.id}/${album.id}` }>
               <td
                 className={`py-2 ${currentSongIndex === index && isPlaying
                   ? "text-green-500 font-semibold"
@@ -72,6 +77,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
               >
                 {song.title}
               </td>
+              </Link>
               <td className="py-2 text-center">{song.duration}</td>
               <td className="py-2 text-center">
                 <button
@@ -92,7 +98,10 @@ const MusicCard = ({ album, songs, image, gradient }) => {
                   )}
                 </button>
               </td>
+             
+             
             </tr>
+           
           ))}
         </tbody>
       </table>

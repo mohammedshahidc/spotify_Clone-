@@ -264,13 +264,39 @@ const get_playlist = async (req, res, next) => {
 
 //get playlist
 // ---------------------------------------------------------------------------------------------------------
-const getAll_playlist=async(req,res,next)=>{
-    const playlist=await Playlist.find().populate('songs')
-    if(!playlist){
-        return next(new CustomError('playlist not found',400))
+const getAll_playlist = async (req, res, next) => {
+    try {
+        const playlists = await Playlist.find().populate('songs'); 
+
+        if (!playlists) {
+            return next(new CustomError('Playlist not found', 400));
+        }
+
+        
+        const formattedPlaylists = playlists.map((playlist) => ({
+            ...playlist.toObject(),
+            songs: playlist.songs.map((song) => ({
+                ...song.toObject(),
+                duration: formatDuration(song.duration), 
+            })),
+        }));
+
+        res.status(200).json({ playlists: formattedPlaylists });
+    } catch (error) {
+        next(error);
     }
-    res.status(200).json({playlist})
-}
+};
+
+
+const formatDuration = (seconds) => {
+    
+    const mins = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return [mins, secs]
+        .map((val) => val.toString().padStart(2, '0'))
+        .join(':');
+};
+
 
 //delete playlist
 // ---------------------------------------------------------------------------------------------------------
@@ -340,17 +366,30 @@ const addto_likedsong = async (req, res, next) => {
 //get liked songs
 // ---------------------------------------------------------------------------------------------------------
 
-const get_favourite = async (req, res,next) => {
-    const id = req.user.id
-  
-    const s = await User.findById(id).populate('likedSongs')
-    if(!s){
-        return next(new CustomError("liked songs not found",404))
-    }
+const get_favourite = async (req, res, next) => {
+    const id = req.user.id;
+
     
-    console.log("s:",s._id);
-    res.status(200).json(s.likedSongs)
-}
+    const user = await User.findById(id).populate('likedSongs');
+    if (!user) {
+        return next(new CustomError("Liked songs not found", 404));
+    }
+
+    
+    const formattedSongs = user.likedSongs.map(song => ({
+        ...song._doc, 
+        duration: formatDurationToTime(song.duration), 
+    }));
+
+    res.status(200).json(formattedSongs);
+};
+
+
+const formatDurationToTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`; 
+};
 
 
 //delete song from favourite
@@ -379,20 +418,45 @@ const userlog_out = async (req, res,next) => {
 
 }
 
+
 const getalbums = async (req, res, next) => {
+    // Aggregate songs by album
     const songs = await Song.aggregate([
-        { $group: { _id: "$album", songs: { $push: "$$ROOT" } } }
+        { 
+            $group: { 
+                _id: "$album", 
+                songs: { $push: "$$ROOT" } 
+            } 
+        }
     ]);
 
     if (!songs || songs.length === 0) {
         return next(new CustomError("Albums not found", 400));
     }
 
-    res.status(200).json(songs);
+    // Format the response with converted duration
+    const formattedOutput = songs.map(album => ({
+        _id: album._id,
+        songs: album.songs.map(song => ({
+            ...song,
+            duration: formatSongDuration(song.duration) // Format duration as mm:ss
+        }))
+    }));
+
+    res.status(200).json(formattedOutput);
+};
+
+// Helper function to format duration
+const formatSongDuration = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`; // Format as mm:ss
 };
 
 
+
 const artist = async (req, res, next) => {
+   
     const songs = await Song.aggregate([
         { 
             $group: { 
@@ -402,20 +466,29 @@ const artist = async (req, res, next) => {
         }
     ]);
 
- 
     if (!songs || songs.length === 0) {
-        return next(new CustomError("artist not found", 400));
+        return next(new CustomError("Artist not found", 400));
     }
 
-   
+ 
     const formattedOutput = songs.map(item => ({
         artist: item._id,
-        songs: item.songs
+        songs: item.songs.map(song => ({
+            ...song,
+            duration: convertDuration(song.duration) 
+        }))
     }));
 
-    console.log(formattedOutput); 
     res.status(200).json(formattedOutput);
 };
+
+
+const convertDuration = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`; 
+};
+
 
 
 module.exports = {
