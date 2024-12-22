@@ -32,6 +32,8 @@ const App = () => {
         <Route path='/search' element={<Mobliesearch/>} />
         <Route path='/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/artist/playcomponent/:id1/:id2' element={<MusicController/>}/>
+        <Route path='/albums/playcomponent/:id1/:id2' element={<MusicController/>}/>
+        <Route path='/likedsongs/playcomponent/:id1/:id2' element={<MusicController/>}/>
       </Routes>
 
     </div>

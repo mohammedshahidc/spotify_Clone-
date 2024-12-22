@@ -1,14 +1,16 @@
 import { useState, useRef } from "react";
 import { FaPlay, FaPause } from "react-icons/fa";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 
 const MusicCard = ({ album, songs, image, gradient }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const audioRef = useRef(new Audio(songs[0].audioSrc));
+  const albums = useSelector((state) => state.albums.albums);
+  const currentuser = localStorage.getItem("current user");
+  const navigate = useNavigate();
 
-  const currentuser = localStorage.getItem("current user")
-  const navigate = useNavigate()
   const handlePlayPause = async (index) => {
     if (currentSongIndex === index) {
       if (isPlaying) {
@@ -30,12 +32,18 @@ const MusicCard = ({ album, songs, image, gradient }) => {
       }
     }
   };
- console.log("for album:",album.id);
- console.log("for album:",album.artist);
+
+  const albumFilter = albums.filter((alb) => alb._id === album.id);
+  const albumId = albumFilter.map((alb) => alb._id);
+  
+console.log("liked song:",album);
   return (
-    <div className={`w-full mx-auto p-6 shadow-lg text-white font-sans h-screen ${gradient || "bg-gradient-to-b from-orange-500 to-black"
-      }`}>
-      {/* setting album headers */}
+    <div
+      className={`w-full mx-auto p-6 shadow-lg text-white font-sans h-screen ${
+        gradient || "bg-gradient-to-b from-orange-500 to-black"
+      }`}
+    >
+      {/* Album headers */}
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">
         <img
           src={songs[0]?.image || image?.props}
@@ -48,7 +56,6 @@ const MusicCard = ({ album, songs, image, gradient }) => {
         </div>
       </div>
 
-
       <table className="w-full table-fixed text-gray-200">
         <thead>
           <tr>
@@ -60,23 +67,31 @@ const MusicCard = ({ album, songs, image, gradient }) => {
         </thead>
         <tbody>
           {songs.map((song, index) => (
-            
             <tr
               key={index}
               className="hover:bg-white hover:bg-opacity-10 hover:text-orange-400 transition-all duration-200"
             >
-             
-            
               <td className="py-2">{index + 1}</td>
-              <Link to={`/playcomponent/${song.id}/${album.id}` }>
-              <td
-                className={`py-2 ${currentSongIndex === index && isPlaying
-                  ? "text-green-500 font-semibold"
-                  : ""
+              <Link
+  to={
+    album.id === album.artist
+      ? `/artist/playcomponent/${song.id}/${album.artist}`
+      : album.id === "albumId" 
+      ? `/albums/playcomponent/${song._id}/${albumId}`
+      : album.name === 'Likedsongs'
+      ? `/likedsongs/playcomponent/${song.id}/${album.id}` // Send only song.id
+      : `/playcomponent/${song.id}/${album.id}` // Default case
+  }
+>
+                <td
+                  className={`py-2 ${
+                    currentSongIndex === index && isPlaying
+                      ? "text-green-500 font-semibold"
+                      : ""
                   }`}
-              >
-                {song.title}
-              </td>
+                >
+                  {song.title}
+                </td>
               </Link>
               <td className="py-2 text-center">{song.duration}</td>
               <td className="py-2 text-center">
@@ -85,7 +100,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
                     if (currentuser) {
                       handlePlayPause(index);
                     } else {
-                      alert('Please login');
+                      alert("Please login");
                       navigate("/login");
                     }
                   }}
@@ -98,10 +113,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
                   )}
                 </button>
               </td>
-             
-             
             </tr>
-           
           ))}
         </tbody>
       </table>

@@ -28,4 +28,5 @@ Routes
 .post("/pause",user_auth,tryCatch(pauseSong))
 .post("/next",user_auth,tryCatch(nextSong))
 .post("/previous",user_auth,tryCatch(previousSong))
+
 module.exports=Routes

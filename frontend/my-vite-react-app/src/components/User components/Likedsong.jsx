@@ -22,6 +22,7 @@ const Likedsong = () => {
     title: song.title,
     duration: song.duration || "N/A",
     audioSrc: song.fileUrl,
+    id:song._id
   }));
 
   return (
@@ -40,7 +41,8 @@ const Likedsong = () => {
           {songs.length > 0 ? (
             <MusicCard
               album={{
-                name: "Liked Songs",
+                name: "Likedsongs",
+                id:"Liked Songs"
               }}
               songs={songs}
               image={<FaHeart size={160} className="text-white bg-gradient-to-t from-blue-700 to-blue-100 rounded-lg" />}

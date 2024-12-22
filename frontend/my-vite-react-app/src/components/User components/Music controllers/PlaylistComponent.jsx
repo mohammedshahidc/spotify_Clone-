@@ -25,8 +25,8 @@ const PlaylistComponent = () => {
 
   // Ensure playlist is always an array
   const playlistArray = Array.isArray(playlist) ? playlist : [playlist];
-  const play= playlistArray[0]
-  console.log("play",play.playlists);
+  const play = playlistArray[0]
+  console.log("play", play.playlists);
 
   // Fetch playlists, artists, and albums on component mount
   useEffect(() => {
@@ -39,7 +39,7 @@ const PlaylistComponent = () => {
   useEffect(() => {
     if (playlistArray.length > 0 && id) {
       const playlists = playlistArray[0].playlists.filter((item) => item._id == id);
-      setFilteredPlaylists(playlists );
+      setFilteredPlaylists(playlists);
     }
   }, [playlist, id]);
 
@@ -60,7 +60,7 @@ const PlaylistComponent = () => {
       setFilteredAlbum(filtered || []);
     }
   }, [albums, albumid]);
-console.log("fltply:",filteredPlaylists);
+  console.log("fltply:", albumid);
   return (
     <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed">
       {/* Navbar */}
@@ -83,7 +83,7 @@ console.log("fltply:",filteredPlaylists);
                   title: item.name,
                   artist: "Playlist",
                   details: `${item.songs?.length || 0} songs`,
-                  id:item._id
+                  id: item._id
                 }}
                 songs={item.songs.map((song) => ({
                   id: song._id,
@@ -105,7 +105,7 @@ console.log("fltply:",filteredPlaylists);
                     title: song.title,
                     artist: artist,
                     details: song.duration || "N/A",
-                    id:artist
+                    id: artist
                   }}
                   songs={[
                     {
@@ -123,27 +123,26 @@ console.log("fltply:",filteredPlaylists);
             <div>
               <h2 className="text-2xl font-semibold mb-4">Songs in the Album:</h2>
               {filteredAlbum.map((album) =>
-                album.songs?.map((song, index) => (
+                album.songs.map((song, index) => (
                   <MusicCard
-                    key={index}
+                    key={song._id}
                     album={{
-                      image: song.image || album.image,
-                      title: song.title,
-                      artist: album.artist || "Unknown Artist",
-                      details: song.duration || "N/A",
+                      image: album.songs[0]?.image,
+                      name: album._id,
+                      artist: song.artist || "Unknown Artist",
+                      id: album._id,
                     }}
-                    songs={[
-                      {
-                        id: song._id,
-                        image: song.image || album.image,
-                        title: song.title,
-                        duration: song.duration || "N/A",
-                        audioSrc: song.fileUrl,
-                      },
-                    ]}
+                    songs={album.songs.map((s) => ({
+                      image: s.image,
+                      title: s.title,
+                      duration: s.duration || "N/A",
+                      audioSrc: s.fileUrl,
+                      id: s._id,
+                    }))}
                   />
                 ))
               )}
+
             </div>
           ) : (
             <div className="text-center text-lg mt-20">
