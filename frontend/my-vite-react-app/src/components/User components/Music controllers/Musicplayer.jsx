@@ -4,12 +4,14 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import FavoriteIcon from '@mui/icons-material/Favorite'; // Import heart icon
+import FavoriteIcon from '@mui/icons-material/Favorite';
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import Sidebar from '../Layout/Sidebar';
 import Navbar from '../Layout/Navbar/Navbar';
 import axiosInstance from '../../../../axiosinstance';
+import { addtofavourite, getfavourite,deletefromfavourite } from '../../../redux/slices/favouriteSlice';
+
 
 const MusicController = () => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -18,52 +20,53 @@ const MusicController = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1.0);
-  const audio = useRef(new Audio()).current;
+  const audioRef = useRef(new Audio()); // Initialize audio object
+
   const albums = useSelector((state) => state.albums.albums);
   const Playlist = useSelector((state) => state.playlist.playlist);
   const artist = useSelector((state) => state.artist.artist);
-  const favourite  = useSelector((state) => state.favourite.favourite);
+  const favourite = useSelector((state) => state.favourite.favourite);
+
   const { id1, id2 } = useParams();
-  
+
   const filteredartist = artist.find((item) => item.artist === id2);
   const filteredalbums = albums.find((alb) => alb._id === id2);
-
-  console.log('filteredalbum:', filteredalbums);
   const filteredPlaylist = Playlist.playlists.find((item) => item._id === id2);
+  const dispatch = useDispatch();
+
   const songs =
     (filteredPlaylist && filteredPlaylist.songs) ||
     (filteredartist && filteredartist.songs) ||
     (filteredalbums && filteredalbums.songs) ||
-    (favourite && favourite.length > 0 ? favourite : []) || 
+    (favourite && favourite.length > 0 ? favourite : []) ||
     [];
 
-  console.log("sss:", favourite)
   useEffect(() => {
     if (songs.length > 0) {
-      const filteredSongs = songs.filter((song) => song._id == id1);
+      const filteredSongs = songs.filter((song) => song._id === id1);
       if (filteredSongs.length > 0) {
         setCurrentTrack(filteredSongs[0]);
-        
         setCurrentSongIndex(songs.indexOf(filteredSongs[0]));
       }
-      
     }
-  }, [songs, id1]);
+  }, [songs, id1, id2]);
 
-  const handleEnded = () => {
-    handleSkipNext();
-  };
-
-  // Main useEffect for handling playback
   useEffect(() => {
-    if (currentTrack) {
-      audio.src = currentTrack.fileUrl;
+    const audio = audioRef.current;
 
-      audio.addEventListener('ended', handleEnded);
-      audio.addEventListener('timeupdate', () => {
-        setCurrentTime(audio.currentTime);
-        setDuration(audio.duration);
-      });
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+      setDuration(audio.duration || 0);
+    };
+
+    const handleEnded = () => {
+      handleSkipNext();
+    };
+
+    if (currentTrack) {
+      if (audio.src !== currentTrack.fileUrl) {
+        audio.src = currentTrack.fileUrl;
+      }
 
       if (isPlaying) {
         audio.play().catch((error) => console.error('Error playing audio:', error));
@@ -72,31 +75,24 @@ const MusicController = () => {
       }
     }
 
-    return () => {
-      audio.pause();
-      audio.src = '';
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('timeupdate', () => {
-        setCurrentTime(audio.currentTime);
-        setDuration(audio.duration);
-      });
-    };
-  }, [currentTrack, isPlaying, audio]);
+    audio.addEventListener('timeupdate', updateTime);
+    audio.addEventListener('ended', handleEnded);
 
-  // Separate useEffect for volume handling
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [currentTrack, isPlaying]);
+
   useEffect(() => {
-    audio.volume = volume; // Update the audio volume without affecting playback
+    audioRef.current.volume = volume;
   }, [volume]);
 
   const handlePlay = () => {
-    if (audio.src) {
-      audio.play().catch((error) => console.error('Error playing audio:', error));
-    }
     setIsPlaying(true);
   };
 
   const handlePause = () => {
-    audio.pause();
     setIsPlaying(false);
   };
 
@@ -115,8 +111,11 @@ const MusicController = () => {
   };
 
   const handleSeek = (event, newValue) => {
-    audio.currentTime = newValue;
-    setCurrentTime(newValue);
+    const audio = audioRef.current;
+    if (audio) {
+      audio.currentTime = newValue;
+      setCurrentTime(newValue);
+    }
   };
 
   const handleVolumeChange = (event, newValue) => {
@@ -128,16 +127,25 @@ const MusicController = () => {
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
+  console.log("curtrack:", currentTrack);
+  const liked = currentTrack && favourite.some((song) => song._id === currentTrack._id);
 
+  console.log("liked:", liked);
+
+  const addToFavourite = async(songId) => {
+   await dispatch(addtofavourite(songId))
+   await dispatch(getfavourite())
+  };
   
-
-
-
+  const deletefromFavourite =async (songId) => {
+   await dispatch(deletefromfavourite(songId))
+   await dispatch(getfavourite())
+  };
 
   return (
-    <div className='fixed w-screen bg-black'>
+    <div className="fixed w-screen bg-black">
       <Navbar />
-      <div className='bg-black flex'>
+      <div className="bg-black flex">
         <Sidebar />
         <div>
           <Card
@@ -151,13 +159,14 @@ const MusicController = () => {
             }}
           >
             <CardContent>
-              <img src={currentTrack?.image} alt="Track Cover" className='h-60 w-screen' />
+              <img src={currentTrack?.image} alt="Track Cover" className="h-60 w-screen" />
               <Typography variant="h5" component="div" color="white">
                 Now Playing
               </Typography>
               {currentTrack ? (
                 <Typography variant="body2" color="white">
-                  {currentTrack.title} - {currentTrack.artist} (Song {currentSongIndex + 1} of {songs.length})
+                  {currentTrack.title} - {currentTrack.artist} (Song {currentSongIndex + 1} of{' '}
+                  {songs.length})
                 </Typography>
               ) : (
                 <Typography variant="body2" color="white">
@@ -194,16 +203,20 @@ const MusicController = () => {
                   <SkipNextIcon fontSize="large" />
                 </IconButton>
 
-                {/* Heart Icon on the right */}
                 <IconButton
                   sx={{
                     position: 'absolute',
-                    right: '20px', // Position it to the right
-                    color: 'white',
+                    right: '20px',
+                    color: liked ? "green" : 'white',
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
                     '&:hover': {
                       backgroundColor: 'rgba(255, 255, 255, 0.3)',
                     },
+                  }}
+                  onClick={() => {
+                    liked
+                      ? deletefromFavourite(currentTrack?._id)
+                      : addToFavourite(currentTrack?._id);
                   }}
                 >
                   <FavoriteIcon />
@@ -224,8 +237,14 @@ const MusicController = () => {
                 {formatTime(currentTime)} / {formatTime(duration)}
               </Typography>
 
-              {/* Volume Slider */}
-              <div style={{ marginTop: '20px', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <div
+                style={{
+                  marginTop: '20px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                }}
+              >
                 <Typography variant="body2" color="white" style={{ marginRight: '10px' }}>
                   Volume
                 </Typography>
@@ -237,7 +256,7 @@ const MusicController = () => {
                   onChange={handleVolumeChange}
                   sx={{
                     color: 'white',
-                    width: '150px', // Adjust the width of the slider
+                    width: '150px',
                   }}
                 />
               </div>

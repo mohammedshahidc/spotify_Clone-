@@ -14,7 +14,29 @@ export const getfavourite=createAsyncThunk("favourite",async()=>{
     }
 })
 
+export const addtofavourite=createAsyncThunk("addtofavourite",async (songId) => {
+    try {
+       const response = await axiosInstance.post('/user/addtofavourite', { songId });
 
+      console.log('Added to favorites:', response);
+      
+    } catch (error) {
+      console.error('Error while updating favorites:', error);
+    }
+  })
+
+
+  export const deletefromfavourite=createAsyncThunk("deletefromfavourite",async (songId) => {
+    try {
+      const response = await axiosInstance.delete('/user/deletefromfavourite', {
+        data: { songId },
+      });
+      console.log('Removed from favorites:', response);
+   
+    } catch (error) {
+      console.error('Error while deleting from favorites:', error);
+    }
+  })
 
 const favouriteSlice=createSlice({
     name:"favourite",

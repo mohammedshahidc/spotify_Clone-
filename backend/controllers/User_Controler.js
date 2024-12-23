@@ -351,7 +351,7 @@ const addto_likedsong = async (req, res, next) => {
         const newlikedsong = new User({
             likedSongs: [songId]
         })
-        await user.save()
+        await newlikedsong.save()
 
 
         res.status(200).json(newlikedsong)
@@ -400,7 +400,9 @@ const deletesongfrom_favourite = async (req, res) => {
     const id= req.user.id
     const { songId } = req.body
     const data = await User.findById( id )
-    
+    if(!data){
+        return next(new CustomError("songs not found"))
+    }
     data.likedSongs = data.likedSongs.filter((song) => song != songId)
     console.log(data.likedSongs);
     await data.save()

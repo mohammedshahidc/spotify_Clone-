@@ -116,6 +116,7 @@ const PlaylistComponent = () => {
                       audioSrc: song.fileUrl,
                     },
                   ]}
+                   gradient="bg-gradient-to-r from-purple-900 to-black"
                 />
               ))}
             </div>
@@ -139,6 +140,7 @@ const PlaylistComponent = () => {
                       audioSrc: s.fileUrl,
                       id: s._id,
                     }))}
+                    gradient="bg-gradient-to-r from-teal-800 to-blue-900"
                   />
                 ))
               )}
