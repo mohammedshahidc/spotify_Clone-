@@ -8,13 +8,24 @@ const MusicCard = ({ album, songs, image, gradient }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
   const [dropdownIndex, setDropdownIndex] = useState(null);
-  const [likedsong,setlikedsong]=useState(false)
+  const [likedSongs, setLikedSongs] = useState([]);
   const audioRef = useRef(new Audio(songs[0].audioSrc));
+
   const albums = useSelector((state) => state.albums.albums);
-  const currentuser = localStorage.getItem("current user");
-  const navigate = useNavigate();
-const dispatch=useDispatch()
   const favourite = useSelector((state) => state.favourite.favourite);
+  const currentuser = localStorage.getItem("current user");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getfavourite());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const liked = songs.filter((song) => favourite.some((fav) => fav._id === song.id));
+    setLikedSongs(liked);
+  }, [favourite, songs]);
+
   const handlePlayPause = async (index) => {
     if (currentSongIndex === index) {
       if (isPlaying) {
@@ -38,34 +49,18 @@ const dispatch=useDispatch()
   };
 
   const toggleDropdown = (index) => {
-    if (dropdownIndex === index) {
-      setDropdownIndex(null);
-    } else {
-      setDropdownIndex(index);
-    }
+    setDropdownIndex(dropdownIndex === index ? null : index);
   };
 
-  const albumFilter = albums.filter((alb) => alb._id === album.id);
-  const albumId = albumFilter.map((alb) => alb._id);
-  useEffect(()=>{
-    const liked = favourite.filter((s)=>s._id==songs.id)
-    if(liked){
-      setlikedsong(!likedsong)
-    }
-  },[])
- 
-  
-console.log("liked:",likedsong);
-const addToFavourite=async(songId)=>{
-   await dispatch(addtofavourite(songId))
-   await dispatch(getfavourite())
-}
+  const addToFavourite = async (songId) => {
+    await dispatch(addtofavourite(songId));
+    await dispatch(getfavourite());
+  };
 
-const deletefromFavourite=async (songId)=>{
-  await dispatch(deletefromfavourite(songId))
-  await dispatch(getfavourite())
-}
-
+  const deleteFromFavourite = async (songId) => {
+    await dispatch(deletefromfavourite(songId));
+    await dispatch(getfavourite());
+  };
 
   return (
     <div
@@ -90,7 +85,7 @@ const deletefromFavourite=async (songId)=>{
             <th className="w-10 py-3 text-left">#</th>
             <th className="py-3 text-left">Title</th>
             <th className="py-3 text-center">⏱</th>
-            <th className="py-3 text-center w-10"></th> {/* Heart icon column */}
+            <th className="py-3 text-center w-10">❤️</th>
             <th className="py-3 text-center w-16">Play</th>
             <th className="py-3 text-center w-10">...</th>
           </tr>
@@ -98,7 +93,7 @@ const deletefromFavourite=async (songId)=>{
         <tbody>
           {songs.map((song, index) => (
             <tr
-              key={index}
+              key={song.id}
               className="hover:bg-white hover:bg-opacity-10 hover:text-orange-400 transition-all duration-200"
             >
               <td className="py-2">{index + 1}</td>
@@ -107,15 +102,16 @@ const deletefromFavourite=async (songId)=>{
                 to={
                   album.id === album.artist
                     ? `/artist/playcomponent/${song.id}/${album.artist}`
-                    : album.id === albumId[0]
-                    ? `/albums/playcomponent/${song._id}/${albumId[0]}`
-                    : album.name === "Likedsongs"
-                    ? `/likedsongs/playcomponent/${song.id}/${album.id}`
-                    : `/playcomponent/${song.id}/${album.id}`
+                    : album.id === album._id
+                      ? `/albums/playcomponent/${song._id}/${album.id}`
+                      : `/playcomponent/${song.id}/${album.id}`
                 }
               >
                 <td
-                  className={`py-2 ${currentSongIndex === index && isPlaying ? "text-green-500 font-semibold" : ""}`}
+                  className={`py-2 ${currentSongIndex === index && isPlaying
+                      ? "text-green-500 font-semibold"
+                      : ""
+                    }`}
                 >
                   {song.title}
                 </td>
@@ -123,14 +119,15 @@ const deletefromFavourite=async (songId)=>{
               <td className="py-2 text-center">{song.duration}</td>
               <td className="py-2 text-center">
                 <button
-                  onClick={() => {
-                    if(likedsong){
-                      deletefromFavourite(song._id)
-                    }else{
-                      addToFavourite(song._id)
-                    }
-                  }}
-                  className="text-gray-300 hover:text-white transition duration-200"
+                  onClick={() =>
+                    favourite.some((fav) => fav._id === song.id)
+                      ? deleteFromFavourite(song.id)
+                      : addToFavourite(song.id)
+                  }
+                  className={`transition duration-200 ${favourite.some((fav) => fav._id === song.id)
+                      ? "text-green-500 hover:text-green-700"
+                      : "text-gray-300 hover:text-white"
+                    }`}
                 >
                   <FaHeart />
                 </button>
@@ -167,7 +164,11 @@ const deletefromFavourite=async (songId)=>{
                     <button className="block px-4 py-2 hover:bg-gray-700 rounded-md">
                       Add to playlist
                     </button>
-                    <button className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md">
+                    <button className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md" onClick={() =>
+                      favourite.some((fav) => fav._id === song.id)
+                        ? deleteFromFavourite(song.id)
+                        : addToFavourite(song.id)
+                    }>
                       Save to your Liked Songs
                     </button>
                   </div>

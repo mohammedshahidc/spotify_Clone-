@@ -5,6 +5,7 @@ import albumSlice from './slices/albumSlice'
 import loginSlice from './slices/loginSlice'
 import artistSlice from './slices/artist.slice'
 import favouriteSlice from './slices/favouriteSlice'
+import userplaylistSlice from './slices/userplaylistSlice'
 
 
 
@@ -17,7 +18,7 @@ import favouriteSlice from './slices/favouriteSlice'
         user:loginSlice,
         artist:artistSlice,
         favourite:favouriteSlice,
-        
+        userplaylist:userplaylistSlice
     }
 })
 

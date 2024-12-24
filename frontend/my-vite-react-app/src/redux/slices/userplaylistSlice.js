@@ -2,11 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../../axiosinstance';
 
 
-export const getplaylist = createAsyncThunk(
-    "playlist/getAll",
+export const getuserplaylist = createAsyncThunk(
+    "playlist/getuser",
     async (_, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get('/user/getallplaylist');
+            const response = await axiosInstance.get('/user/getplaylist');
             if (!response.data) {
                 throw new Error("No data received");
             }
@@ -20,30 +20,30 @@ export const getplaylist = createAsyncThunk(
 );
 
 
-const playlistSlice = createSlice({
-    name: 'playlist',
+const userplaylistslice = createSlice({
+    name: 'userplaylist',
     initialState: {
-        playlist: [],
+        userplaylist: [],
         status: 'none', 
         error: null,    
     },
     reducers: {}, 
     extraReducers: (builder) => {
         builder
-            .addCase(getplaylist.pending, (state) => {
+            .addCase(getuserplaylist.pending, (state) => {
                 state.status = "pending";
                 state.error = null; 
             })
-            .addCase(getplaylist.fulfilled, (state, action) => {
-                state.playlist = action.payload; 
+            .addCase(getuserplaylist.fulfilled, (state, action) => {
+                state.userplaylist= action.payload; 
                 state.status = "fulfilled";
                 state.error = null; 
             })
-            .addCase(getplaylist.rejected, (state, action) => {
+            .addCase(getuserplaylist.rejected, (state, action) => {
                 state.status = "rejected";
                 state.error = action.payload || "Failed to fetch playlists";
             });
     },
 });
 
-export default playlistSlice.reducer;
+export default userplaylistslice.reducer;

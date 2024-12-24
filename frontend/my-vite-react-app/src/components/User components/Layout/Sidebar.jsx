@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaHome, FaHeart, FaListUl, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { getplaylist } from '../../../redux/slices/playlistSlice';
+import { getuserplaylist } from '../../../redux/slices/userplaylistSlice';
 
 const Sidebar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -12,13 +12,9 @@ const Sidebar = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
-    const playlist = useSelector((state) => state.playlist?.playlist || []);
-    const playlist1 = playlist[0]?.playlist || [];
-
-    console.log("Playlist Data:", playlist1);
-
+    const playlist = useSelector((state) => state.userplaylist.userplaylist || []);
     useEffect(() => {
-        dispatch(getplaylist());
+        dispatch(getuserplaylist())
     }, [dispatch]);
 
     return (
@@ -56,8 +52,8 @@ const Sidebar = () => {
 
                     {isDropdownOpen && (
                         <ul className="absolute left-0 mt-2 w-full bg-gray-800 rounded-lg shadow-lg overflow-y-scroll">
-                            {playlist1.length > 0 ? (
-                                playlist1.map((playlistItem, index) => (
+                            {playlist.length > 0 ? (
+                                playlist.map((playlistItem, index) => (
                                     <li key={index} className="hover:bg-gray-700 rounded-lg">
                                         <Link
                                             to={`/playlist/playlcomponent/${playlistItem._id}`}
