@@ -12,7 +12,7 @@ const Home = () => {
         <div className='w-1/5'>
           <Sidebar />
         </div>
-        <div className='w-full overflow-y-auto h-screen p-5 bg-stone-950'>
+        <div className='w-full overflow-y-auto h-screen p-5 bg-stone-950 scrollbar-none'>
           <div className='p-6'>
             <Playlist />
           </div>

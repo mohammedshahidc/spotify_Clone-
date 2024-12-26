@@ -7,43 +7,44 @@ import MusicCard from "../Cards/MusicCard";
 import { getplaylist } from "../../../redux/slices/playlistSlice";
 import { getartist } from "../../../redux/slices/artist.slice";
 import { getAlbums } from "../../../redux/slices/albumSlice";
+import { getuserplaylist } from "../../../redux/slices/userplaylistSlice";
 
 const PlaylistComponent = () => {
   const dispatch = useDispatch();
 
-  // Fetching data from the Redux store
+  
   const playlist = useSelector((state) => state.playlist.playlist);
   const artistSongs = useSelector((state) => state.artist.artist);
   const albums = useSelector((state) => state.albums.albums);
+  const userplaylist = useSelector((state) => state.userplaylist.userplaylist);
+  const { id, artist, albumid, userplaylists } = useParams();
 
-  const { id, artist, albumid } = useParams();
-
-  // State variables to manage filtered data
+  
   const [filteredPlaylists, setFilteredPlaylists] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [filteredAlbum, setFilteredAlbum] = useState([]);
+  const [filtereduserplaylist, setFilteredUserPlaylist] = useState([]);
 
-  // Ensure playlist is always an array
+  
   const playlistArray = Array.isArray(playlist) ? playlist : [playlist];
-  const play = playlistArray[0]
-  console.log("play", play.playlists);
 
-  // Fetch playlists, artists, and albums on component mount
+ 
   useEffect(() => {
     dispatch(getplaylist());
     dispatch(getartist());
     dispatch(getAlbums());
+    dispatch(getuserplaylist());
   }, [dispatch]);
 
-  // Filter playlists based on the provided `id`
+  
   useEffect(() => {
     if (playlistArray.length > 0 && id) {
-      const playlists = playlistArray[0].playlists.filter((item) => item._id == id);
+      const playlists = playlistArray[0].playlists.filter((item) => item._id === id);
       setFilteredPlaylists(playlists);
     }
   }, [playlist, id]);
 
-  // Filter songs based on the provided artist
+ 
   useEffect(() => {
     if (artistSongs.length > 0 && artist) {
       const foundArtist = artistSongs.find((art) => art.artist === artist);
@@ -53,16 +54,26 @@ const PlaylistComponent = () => {
     }
   }, [artistSongs, artist]);
 
-  // Filter albums based on the provided album ID
+  
   useEffect(() => {
     if (albums.length > 0 && albumid) {
       const filtered = albums.filter((album) => album._id === albumid);
       setFilteredAlbum(filtered || []);
     }
   }, [albums, albumid]);
-  console.log("fltply:", albumid);
+
+ 
+  useEffect(() => {
+    if (userplaylists) {
+      const filtered = userplaylist.filter((playlist) => playlist._id === userplaylists);
+      setFilteredUserPlaylist(filtered);
+    }
+  }, [userplaylists, userplaylist]);
+
+  console.log('filteredplaylist:', filtereduserplaylist);
+
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed">
+    <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll">
       {/* Navbar */}
       <Navbar />
 
@@ -83,11 +94,11 @@ const PlaylistComponent = () => {
                   title: item.name,
                   artist: "Playlist",
                   details: `${item.songs?.length || 0} songs`,
-                  id: item._id
+                  id: item._id,
                 }}
                 songs={item.songs.map((song) => ({
                   id: song._id,
-                  image: song.image || item.image,
+                  image: song.image || item.image || "default-image-url.jpg",
                   title: song.title,
                   duration: song.duration || "N/A",
                   audioSrc: song.fileUrl,
@@ -105,18 +116,16 @@ const PlaylistComponent = () => {
                     title: song.title,
                     artist: artist,
                     details: song.duration || "N/A",
-                    id: artist
+                    id: artist,
                   }}
-                  songs={[
-                    {
-                      id: song._id,
-                      image: song.image || "default-image-url.jpg",
-                      title: song.title,
-                      duration: song.duration || "N/A",
-                      audioSrc: song.fileUrl,
-                    },
-                  ]}
-                   gradient="bg-gradient-to-r from-purple-900 to-black"
+                  songs={[{
+                    id: song._id,
+                    image: song.image || "default-image-url.jpg",
+                    title: song.title,
+                    duration: song.duration || "N/A",
+                    audioSrc: song.fileUrl,
+                  }]}
+                  gradient="bg-gradient-to-r from-purple-900 to-black"
                 />
               ))}
             </div>
@@ -124,17 +133,17 @@ const PlaylistComponent = () => {
             <div>
               <h2 className="text-2xl font-semibold mb-4">Songs in the Album:</h2>
               {filteredAlbum.map((album) =>
-                album.songs.map((song, index) => (
+                album.songs.map((song) => (
                   <MusicCard
                     key={song._id}
                     album={{
-                      image: album.songs[0]?.image,
+                      image: album.songs[0]?.image || "default-image-url.jpg",
                       name: album._id,
                       artist: song.artist || "Unknown Artist",
                       id: album._id,
                     }}
                     songs={album.songs.map((s) => ({
-                      image: s.image,
+                      image: s.image || "default-image-url.jpg",
                       title: s.title,
                       duration: s.duration || "N/A",
                       audioSrc: s.fileUrl,
@@ -144,7 +153,35 @@ const PlaylistComponent = () => {
                   />
                 ))
               )}
-
+            </div>
+          ) : filtereduserplaylist.length > 0 ? (
+            <div>
+              <h2 className="text-2xl font-semibold mb-4">User Playlists:</h2>
+              {filtereduserplaylist.map((playlistitem) => (
+                <div key={playlistitem._id}>
+                  <h3 className="text-xl font-semibold mb-2">{playlistitem.name}</h3>
+                  {playlistitem.songs.length > 0 && (
+                    <MusicCard
+                      key={playlistitem.songs[0]._id}
+                      album={{
+                        image: playlistitem.songs[0]?.image ,
+                        title: playlistitem.name, 
+                        artist: "User Playlist", 
+                        details: `${playlistitem.songs.length} songs`,
+                        id: playlistitem._id,
+                      }}
+                      songs={playlistitem.songs.map((song) => ({
+                        id: song._id,
+                        image: song.image || "default-image-url.jpg",
+                        title: song.title,
+                        duration: song.duration ? `${Math.floor(song.duration / 60)}:${(song.duration % 60).toString().padStart(2, '0')}` : "N/A",
+                        audioSrc: song.fileUrl,
+                      }))}
+                      gradient="bg-gradient-to-r from-green-800 to-blue-700"
+                    />
+                  )}
+                </div>
+              ))}
             </div>
           ) : (
             <div className="text-center text-lg mt-20">

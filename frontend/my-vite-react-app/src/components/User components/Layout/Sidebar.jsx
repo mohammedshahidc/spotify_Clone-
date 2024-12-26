@@ -3,6 +3,7 @@ import { FaHome, FaHeart, FaListUl, FaChevronDown, FaChevronUp } from 'react-ico
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { getuserplaylist } from '../../../redux/slices/userplaylistSlice';
+import Userplaylist from '../Pages/Userplaylist';
 
 const Sidebar = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -51,30 +52,7 @@ const Sidebar = () => {
 
 
                     {isDropdownOpen && (
-                        <ul className="absolute left-0 mt-2 w-full bg-gray-800 rounded-lg shadow-lg overflow-y-scroll">
-                            {playlist.length > 0 ? (
-                                playlist.map((playlistItem, index) => (
-                                    <li key={index} className="hover:bg-gray-700 rounded-lg">
-                                        <Link
-                                            to={`/playlist/playlcomponent/${playlistItem._id}`}
-                                            className="flex items-center space-x-4 px-4 py-2 hover:bg-gray-700 rounded-lg"
-                                        >
-
-                                            <img
-                                                src={playlistItem?.songs?.[0]?.image || '/default-image.png'}
-                                                alt={playlistItem?.name || 'Playlist'}
-                                                className="w-10 h-10 rounded-full object-cover"
-                                            />
-
-
-                                            <span className="text-sm">{playlistItem?.name || 'Untitled Playlist'}</span>
-                                        </Link>
-                                    </li>
-                                ))
-                            ) : (
-                                <li className="px-4 py-2 text-sm text-gray-400">No playlists available</li>
-                            )}
-                        </ul>
+                        <Userplaylist/>
                     )}
                 </div>
             </nav>

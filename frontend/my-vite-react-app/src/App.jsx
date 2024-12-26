@@ -11,6 +11,7 @@ import Likedsong from './components/User components/Likedsong'
 import Mobliesearch from './components/User components/Layout/Mobliesearch'
 import MusicController from './components/User components/Music controllers/Musicplayer'
 import Playlist from './components/User components/Playlist'
+import Userplaylist from './components/User components/Pages/Userplaylist'
 
 
 
@@ -20,6 +21,7 @@ const App = () => {
     <div>
       {/* <Playlist/> */}
 {/* <MusicController/> */}
+{/* <Userplaylist/> */}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />
@@ -34,6 +36,7 @@ const App = () => {
         <Route path='/artist/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/albums/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/likedsongs/playcomponent/:id1/:id2' element={<MusicController/>}/>
+        <Route path='/userplaylist/playcomponent/:userplaylists' element={<PlaylistComponent/>}/>
       </Routes>
 
     </div>

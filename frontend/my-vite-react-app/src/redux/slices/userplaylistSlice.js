@@ -19,6 +19,40 @@ export const getuserplaylist = createAsyncThunk(
     }
 );
 
+export const createplaylist=createAsyncThunk("addtoplaylist",async({playlistName,songsId})=>{
+    try {
+        const response =await axiosInstance.post('/user/createplaylist',{
+           playlistName,
+            songsId
+        })
+        console.log("createplaylist:",response.data);
+        alert(`song adde to ${playlistName} `)
+    } catch (error) {
+        console.log("create playlist:",error);
+        
+    }
+})
+
+export const deletefromplaylist=createAsyncThunk("remove from playlist",async({playlistid,songId})=>{
+   try {
+    const response=await axiosInstance.delete('/user/deletefromplaylist',{data:{
+        playlistid,
+        songId
+    }})
+    console.log('remove from playlist:',response.data);
+   } catch (error) {
+    console.log('remove from playlist:',error.message);
+   }
+})
+
+export const deleteplaylist=createAsyncThunk('delete playlist',async({playlistId})=>{
+    try {
+        const response=await axiosInstance.delete(`/user/deleteplaylist/${playlistId}`)
+        console.log('delete playlist:',response);
+    } catch (error) {
+         console.log('delete playlist:',error)
+    }
+})
 
 const userplaylistslice = createSlice({
     name: 'userplaylist',

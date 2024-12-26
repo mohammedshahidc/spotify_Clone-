@@ -11,6 +11,7 @@ export const getplaylist = createAsyncThunk(
                 throw new Error("No data received");
             }
             console.log("playlist data:", response.data);
+            
             return response.data;
         } catch (error) {
             console.error("API error:", error);

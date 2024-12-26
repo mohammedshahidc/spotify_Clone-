@@ -9,16 +9,16 @@ const CardCarousel = ({ children }) => {
     return (
         <Swiper
             spaceBetween={20}
-            slidesPerView={1} // Default for mobile
+            slidesPerView={1} 
             breakpoints={{
                 640: {
-                    slidesPerView: 2, // For small devices
+                    slidesPerView: 2,
                 },
                 768: {
-                    slidesPerView: 3, // For medium devices
+                    slidesPerView: 3, 
                 },
                 1024: {
-                    slidesPerView: 4, // For large devices
+                    slidesPerView: 4, 
                 },
             }}
             navigation={true}
