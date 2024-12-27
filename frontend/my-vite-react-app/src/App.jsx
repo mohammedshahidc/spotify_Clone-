@@ -12,6 +12,7 @@ import Mobliesearch from './components/User components/Layout/Mobliesearch'
 import MusicController from './components/User components/Music controllers/Musicplayer'
 import Playlist from './components/User components/Playlist'
 import Userplaylist from './components/User components/Pages/Userplaylist'
+import Dives from './components/User components/Dives'
 
 
 
@@ -19,9 +20,7 @@ const App = () => {
   
   return (
     <div>
-      {/* <Playlist/> */}
-{/* <MusicController/> */}
-{/* <Userplaylist/> */}
+     {/* <Dives/> */}
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />

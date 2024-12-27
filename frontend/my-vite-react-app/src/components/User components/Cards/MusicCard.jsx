@@ -121,7 +121,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
             <th className="w-10 py-3 text-left">#</th>
             <th className="py-3 text-left">Title</th>
             <th className="py-3 text-center">⏱</th>
-            <th className="py-3 text-center w-10">❤️</th>
+            <th className="py-3 text-center w-10"></th>
             <th className="py-3 text-center w-16">Play</th>
             <th className="py-3 text-center w-10">...</th>
           </tr>

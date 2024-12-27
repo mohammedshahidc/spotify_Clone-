@@ -9,7 +9,7 @@ const Navbar = () => {
   const user = useSelector((state) => state.user.user);
   const [isDropdown, setIsDropdown] = useState(false);
   const [click, setClick] = useState(false);
-
+console.log("user:",user);
   const dispatch = useDispatch();
 
   const showSearchbar = () => {
@@ -28,7 +28,7 @@ const Navbar = () => {
         <span>Spotify</span>
       </div>
 
-      {/* Navigation and Searchbar */}
+     
       <div className="flex-1 flex justify-center items-center mx-4">
         <Link
           to="/"
@@ -36,11 +36,11 @@ const Navbar = () => {
         >
           <FaHome size={35} />
         </Link>
-        {/* Searchbar for larger screens */}
+       
         <div className="hidden md:block w-[450px]">
           <Searchbar />
         </div>
-        {/* Search Icon for mobile */}
+        
         <Link to={"/search"}>
         <button
           className="block md:hidden ml-4 text-white p-4 rounded-full bg-stone-900"
@@ -51,7 +51,7 @@ const Navbar = () => {
         </Link>
       </div>
 
-      {/* User Dropdown */}
+     
       <div className="flex items-center space-x-2">
         {user ? (
           <div className="relative flex flex-col items-center">

@@ -20,7 +20,7 @@ const MusicController = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1.0);
-  const audioRef = useRef(new Audio()); // Initialize audio object
+  const audioRef = useRef(new Audio()); 
 
   const albums = useSelector((state) => state.albums.albums);
   const Playlist = useSelector((state) => state.playlist.playlist);

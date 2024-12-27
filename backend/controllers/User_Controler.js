@@ -20,35 +20,53 @@ const LikedSongs = require('../models/Likedsongs')
 
 
 const user_registration = async (req, res, next) => {
-
-    const { value, error } = userValidationSchema.validate(req.body)
-    const { name, email, password, cpassword } = value
+    const { value, error } = userValidationSchema.validate(req.body);
+    const { name, email, password, cpassword } = value;
 
     if (error) {
-        console.log('registration error:', error);
-        return next(new CustomError('registration error', error))
+        console.log('Registration error:', error);
+        return next(new CustomError('Validation error', 400));
     }
-    if (password !== cpassword) {
-        return next(new CustomError('invalid password', 404))
+
+    
+    if (cpassword && password !== cpassword) {
+        return next(new CustomError('Passwords do not match', 400));
     }
-    const hashpassword = await bcrypt.hash(password, 6)
+
+   
+    const hashpassword = await bcrypt.hash(password, 6);
 
 
     const otp = (Math.floor(Math.random() * 900000) + 100000).toString();
-    console.log(otp);
-    const new_user = new User({ name, email, password: hashpassword, cpassword: hashpassword, otp, isVerified: false })
-    await new_user.save()
+    console.log('Generated OTP:', otp);
 
+   
+    const new_user = new User({
+        name,
+        email,
+        password: hashpassword,
+        otp,
+        isVerified: false,
+    });
+
+    await new_user.save();
+
+    
     const emailTemplate = `
-     <h1>Welcome, ${name}!</h1>
-     <p>Your OTP for email verification is:</p>
-     <h2>${otp}</h2>
-     <p>Please use this OTP to verify your email.</p>`;
+        <h1>Welcome, ${name}!</h1>
+        <p>Your OTP for email verification is:</p>
+        <h2>${otp}</h2>
+        <p>Please use this OTP to verify your email.</p>`;
 
     await sendEmail(email, 'Verify Your Email with OTP', emailTemplate);
 
-    res.status(200).json({ errorcode: 0, status: true, msg: "User registered successfully. Please check your email for the OTP.", new_user })
-}
+    res.status(200).json({
+        errorcode: 0,
+        status: true,
+        msg: "User registered successfully. Please check your email for the OTP.",
+        new_user,
+    });
+};
 
 
 //email verification
@@ -90,71 +108,58 @@ const verify_otp = async (req, res, next) => {
 
 
 const user_login = async (req, res, next) => {
+    try {
+        const { value, error } = userLoginValidationSchema.validate(req.body);
+        if (error) {
+            return next(new CustomError(error.message, 400));
+        }
+        const { email, password } = value;
+        console.log('Login Attempt:', email);
 
-    const { value, error } = userLoginValidationSchema.validate(req.body);
-    if (error) {
-        return next(new CustomError(error.message));
+        
+        const user = await User.findOne({ email });
+        if (!user) {
+            return next(new CustomError("User not found", 400));
+        }
+
+        
+        console.log('User found:', user);
+
+        
+        const isPasswordMatching = await bcrypt.compare(password, user.password);
+        console.log("Password Match Status:", isPasswordMatching);
+
+        if (!isPasswordMatching) {
+            return next(new CustomError("Invalid email or password", 401));
+        }
+
+        
+        if (!user.isVerified) {
+            return next(new CustomError("User is not verified", 403));
+        }
+
+       
+        const token = jwt.sign(
+            { id: user._id, username: user.name, email: user.email },
+            process.env.JWT_KEY,
+            { expiresIn: "1m" }
+        );
+        const refreshmentToken = jwt.sign(
+            { id: user._id, username: user.name, email: user.email },
+            process.env.JWT_KEY,
+            { expiresIn: "7d" }
+        );
+
+      
+        res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 60 * 1000, sameSite: 'none' });
+        res.cookie('refreshmentToken', refreshmentToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+       
+        res.status(200).json({ message: "Login successful", data:{user:user,token:token,refreshmentToken:refreshmentToken} });
+    } catch (error) {
+        console.error('Login error:', error);
+        return next(new CustomError("An error occurred during login", 500));
     }
-
-
-    const { email, password } = value;
-
-
-    const user = await User.findOne({ email });
-    if (!user) {
-        return next(new CustomError("User not found", 400));
-    }
-
-
-    const matching = await bcrypt.compare(password, user.password);
-    if (!matching) {
-        return next(new CustomError("Password is not matching"));
-    }
-
-
-    if (user.isVerified !== true) {
-        return next(new CustomError("User is not verified", 400));
-    }
-
-
-    const token = jwt.sign(
-        { id: user._id, username: user.name, email: user.email },
-        process.env.JWT_KEY,
-        { expiresIn: "1m" }
-    );
-
-    const refreshmentToken = jwt.sign(
-        { id: user._id, username: user.name, email: user.email },
-        process.env.JWT_KEY,
-        { expiresIn: "7d" }
-    );
-
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: true,
-        maxAge: 1 * 60 * 1000, // 1 minute
-        sameSite: 'none'
-    });
-
-    res.cookie("refreshmentToken", refreshmentToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-    });
-
-
-
-    return res.status(200).json({
-        errorCode: 0,
-        status: true,
-        msg: 'User login successfully',
-        data: {
-            user: { id: user._id, name: user.name, email: user.email },
-            token: token,
-            refreshmentToken: refreshmentToken
-        },
-    });
 };
 
 

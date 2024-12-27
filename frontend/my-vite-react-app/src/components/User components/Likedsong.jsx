@@ -46,7 +46,7 @@ const Likedsong = () => {
               }}
               songs={songs}
               image={<FaHeart size={160} className="text-white bg-gradient-to-t from-blue-700 to-blue-100 rounded-lg" />}
-              gradient='bg-gradient-to-t from-blue-900 to-blue-200'
+              gradient='bg-gradient-to-t from-blue-800 to-blue-950'
             />
           ) : (
             <p className="text-white text-center mt-4">No liked songs found.</p>

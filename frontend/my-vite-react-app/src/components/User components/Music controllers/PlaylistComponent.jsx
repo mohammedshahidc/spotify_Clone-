@@ -74,16 +74,16 @@ const PlaylistComponent = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll">
-      {/* Navbar */}
+      
       <Navbar />
 
       <div className="flex flex-1">
-        {/* Sidebar */}
+       
         <div className="w-1/5 shadow-lg">
           <Sidebar />
         </div>
 
-        {/* Main Content */}
+        
         <div className="flex-1 p-6 overflow-y-scroll">
           {filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (

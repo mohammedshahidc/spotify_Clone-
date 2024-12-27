@@ -3,6 +3,7 @@ import { loginschema } from '../../../Schema'
 import { useFormik } from 'formik'
 import { userlogin } from '../../../redux/slices/loginSlice'
 import { useDispatch, useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -14,13 +15,14 @@ const Login = () => {
   const dispatch = useDispatch()
 const error=useSelector((state)=>state.user.error)
 
-
+const navigate=useNavigate()
   const { errors, values, handleChange, handleSubmit, touched, resetForm } = useFormik({
     initialValues: initialvalue,
     validationSchema: loginschema,
     onSubmit: async () => {
       dispatch(userlogin(values))
        resetForm()
+       navigate('/')
     }
   })
 

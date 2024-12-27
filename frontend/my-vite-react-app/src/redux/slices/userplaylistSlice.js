@@ -47,6 +47,7 @@ export const deletefromplaylist=createAsyncThunk("remove from playlist",async({p
 
 export const deleteplaylist=createAsyncThunk('delete playlist',async({playlistId})=>{
     try {
+        console.log('aaa:',playlistId);
         const response=await axiosInstance.delete(`/user/deleteplaylist/${playlistId}`)
         console.log('delete playlist:',response);
     } catch (error) {
