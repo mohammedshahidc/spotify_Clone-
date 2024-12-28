@@ -36,7 +36,7 @@ const Searchbar = () => {
       </div>
 
       {isActive && search && (
-        <div className="absolute top-full left-0 mt-1 w-full bg-stone-900 text-white rounded-lg shadow-lg max-h-56 overflow-y-auto z-50">
+        <div className="absolute top-full left-0 mt-1 w-full bg-stone-900 text-white rounded-lg shadow-lg max-h-56 overflow-y-auto z-50 scrollbar-none">
           {status === "loading" && <p className="p-2">Loading songs...</p>}
           {status === "error" && <p className="p-2 text-red-500">Failed to load songs.</p>}
           {filteredsongs.length > 0 ? (

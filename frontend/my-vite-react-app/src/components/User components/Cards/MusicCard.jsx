@@ -100,7 +100,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
   }
   return (
     <div
-      className={`w-full mx-auto p-6 shadow-lg text-white font-sans overflow-y-scroll ${gradient || "bg-gradient-to-b from-orange-500 to-black"}`}
+      className={`w-full mx-auto p-6 shadow-lg text-white font-sans overflow-y-scroll ${gradient || "bg-gradient-to-b from-orange-500 to-black"} scrollbar-none`}
       style={{ height: "calc(100vh - 100px)" }}
     >
       <div className="flex flex-col sm:flex-row items-center gap-4 mb-4">

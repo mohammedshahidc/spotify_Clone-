@@ -12,9 +12,7 @@ const Navbar = () => {
 console.log("user:",user);
   const dispatch = useDispatch();
 
-  const showSearchbar = () => {
-    setClick(!click);
-  };
+  
 
   const controllDropdown = () => {
     setIsDropdown(!isDropdown);
@@ -61,7 +59,8 @@ console.log("user:",user);
                   className="text-white text-lg cursor-pointer"
                   onClick={controllDropdown}
                 >
-                  {user.name[0].toUpperCase()}
+                  {user[0].toUpperCase()}
+
                 </p>
               </div>
               {isDropdown && (
@@ -81,7 +80,7 @@ console.log("user:",user);
                 </div>
               )}
               <span className="absolute top-10 right-0 translate-x-2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs px-3 py-1 rounded-md transition-opacity duration-300 whitespace-nowrap">
-                {user.name.toUpperCase()}
+                {user.toUpperCase()}
               </span>
             </div>
           </div>

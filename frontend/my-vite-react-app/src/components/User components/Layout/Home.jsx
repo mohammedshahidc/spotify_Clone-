@@ -7,16 +7,16 @@ import Sidebar from './Sidebar'
 import Dives from '../Dives'
 const Home = () => {
   return (
-    <div className='bg-black p-5'>
+    <div className='bg-black p-5 scrollbar-none'>
       <Navbar />
       <div className='flex'>
         <div className='w-1/5'>
           <Sidebar />
         </div>
         <div className='w-full overflow-y-auto h-screen p-5 bg-stone-950 scrollbar-none'>
-        {/* <div className='p-6'>
+      <div className='p-6 bg-stone-950'>
             <Dives/>
-          </div> */}
+          </div>
           <div className='p-6'>
             <Playlist />
           </div>

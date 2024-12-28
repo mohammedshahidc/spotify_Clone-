@@ -3,12 +3,12 @@ const Routes=express.Router()
 const tryCatch=require('../utils/tryCatch')
 const user_Controler=require('../controllers/User_Controler')
 const { user_auth } = require('../middlewares/auth_middleware')
-const { selectSong, getCurrentSong, playSong, pauseSong, nextSong, previousSong } = require('../controllers/Song_controler')
-
+const handleUpload=require('../middlewares/upload_middleware')
 Routes
 .post('/register',tryCatch(user_Controler.user_registration))
 .put('/verifyotp',tryCatch(user_Controler.verify_otp))
 .post('/login',tryCatch(user_Controler.user_login))
+.put('/edituser',user_auth,handleUpload,tryCatch(user_Controler.edituser))
 .get('/getsongs',tryCatch(user_Controler.get_allsongs))
 .get('/getsongByid/:id',user_auth,tryCatch(user_Controler.getSongs_byId))
 .get('/getalbums',tryCatch(user_Controler.getalbums))
@@ -22,11 +22,6 @@ Routes
 .get('/getfavourite',user_auth,tryCatch(user_Controler.get_favourite))
 .delete('/deletefromfavourite',user_auth,tryCatch(user_Controler.deletesongfrom_favourite))
 .delete("/userlogut",user_auth,tryCatch(user_Controler.userlog_out))
-.post("/select",user_auth,tryCatch(selectSong))
-.get("/current",user_auth,tryCatch(getCurrentSong))
-.post("/play",user_auth,tryCatch(playSong))
-.post("/pause",user_auth,tryCatch(pauseSong))
-.post("/next",user_auth,tryCatch(nextSong))
-.post("/previous",user_auth,tryCatch(previousSong))
+
 
 module.exports=Routes

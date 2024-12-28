@@ -22,25 +22,17 @@ const LikedSongs = require('../models/Likedsongs')
 const user_registration = async (req, res, next) => {
     const { value, error } = userValidationSchema.validate(req.body);
     const { name, email, password, cpassword } = value;
-
+console.log('val:',value);
     if (error) {
         console.log('Registration error:', error);
         return next(new CustomError('Validation error', 400));
     }
-
-    
-    if (cpassword && password !== cpassword) {
+     if (cpassword && password !== cpassword) {
         return next(new CustomError('Passwords do not match', 400));
     }
-
-   
     const hashpassword = await bcrypt.hash(password, 6);
-
-
     const otp = (Math.floor(Math.random() * 900000) + 100000).toString();
     console.log('Generated OTP:', otp);
-
-   
     const new_user = new User({
         name,
         email,
@@ -48,10 +40,8 @@ const user_registration = async (req, res, next) => {
         otp,
         isVerified: false,
     });
-
     await new_user.save();
 
-    
     const emailTemplate = `
         <h1>Welcome, ${name}!</h1>
         <p>Your OTP for email verification is:</p>
@@ -59,7 +49,6 @@ const user_registration = async (req, res, next) => {
         <p>Please use this OTP to verify your email.</p>`;
 
     await sendEmail(email, 'Verify Your Email with OTP', emailTemplate);
-
     res.status(200).json({
         errorcode: 0,
         status: true,
@@ -116,14 +105,12 @@ const user_login = async (req, res, next) => {
         const { email, password } = value;
         console.log('Login Attempt:', email);
 
-        
-        const user = await User.findOne({ email });
+         const user = await User.findOne({ email });
         if (!user) {
             return next(new CustomError("User not found", 400));
         }
 
-        
-        console.log('User found:', user);
+         console.log('User found:', user);
 
         
         const isPasswordMatching = await bcrypt.compare(password, user.password);
@@ -133,13 +120,11 @@ const user_login = async (req, res, next) => {
             return next(new CustomError("Invalid email or password", 401));
         }
 
-        
         if (!user.isVerified) {
             return next(new CustomError("User is not verified", 403));
         }
 
-       
-        const token = jwt.sign(
+       const token = jwt.sign(
             { id: user._id, username: user.name, email: user.email },
             process.env.JWT_KEY,
             { expiresIn: "1m" }
@@ -150,12 +135,11 @@ const user_login = async (req, res, next) => {
             { expiresIn: "7d" }
         );
 
-      
-        res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 60 * 1000, sameSite: 'none' });
+         res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 60 * 1000, sameSite: 'none' });
         res.cookie('refreshmentToken', refreshmentToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
 
-       
-        res.status(200).json({ message: "Login successful", data:{user:user,token:token,refreshmentToken:refreshmentToken} });
+       res.status(200).json({ message: "Login successful", data:{user:user.name,token:token,refreshmentToken:refreshmentToken,
+        profilePicture:user.profilePicture} });
     } catch (error) {
         console.error('Login error:', error);
         return next(new CustomError("An error occurred during login", 500));
@@ -163,6 +147,29 @@ const user_login = async (req, res, next) => {
 };
 
 
+const edituser=async(req,res,next)=>{
+const {value,error}=userValidationSchema.validate(req.body)
+console.log("req:",req.files);
+const{name}=value
+const id=req.user.id
+if(error){
+    console.log("edit user:",error);
+    return next(new CustomError("validation error",404))
+}
+const updatedfields={}
+
+if(name){
+    updatedfields.name=name
+}
+if (req.files && req.files.imageFile) {
+    updatedfields.profilePicture = req.files?.imageFile[0]?.path;
+}
+const user=await User.findByIdAndUpdate(id,updatedfields,{new:true})
+if(!user){
+    return next(new CustomError("user not found",404))
+}
+res.status(200).json({statcode:0,data:user})
+}
 
 //get song
 // ---------------------------------------------------------------------------------------------------------
@@ -521,6 +528,7 @@ module.exports = {
     userlog_out,
     getAll_playlist,
     getalbums,
-    artist
+    artist,
+    edituser
 
 }

@@ -7,18 +7,19 @@ const userValidationSchema = Joi.object({
         .required(),
     email: Joi.string()
         .email()
-        .required(),
+        .optional(),
 
     password: Joi.string()
         .min(8)
-        .required(),
+        .optional(),
 
     cpassword: Joi.string()
         .valid(Joi.ref('password'))
-        .required(),
+        .optional(),
 
     admin: Joi.boolean().optional(),
     block: Joi.boolean().optional(),
+    profilePicture: Joi.string().allow('', null).optional(),
 
 });
 
@@ -39,7 +40,7 @@ const songValidationSchema = Joi.object({
     duration: Joi.number()
         .min(1)
         .required(),
-        imageFile: Joi.string().allow('', null).optional(),
+    imageFile: Joi.string().allow('', null).optional(),
     audioFile: Joi.string().allow('', null).optional(),
     type: Joi.string()
         .required(),

@@ -6,7 +6,7 @@ import { getplaylist } from '../../../redux/slices/playlistSlice';
 
 const Userplaylist = () => {
     const dispatch = useDispatch();
-    const [isdropdown, setisdropdown] = useState(null); // Store index or ID of the active dropdown
+    const [isdropdown, setisdropdown] = useState(null); 
     const userplaylist = useSelector((state) => state.userplaylist.userplaylist);
 
     const handledelete = async (playlistId) => {
@@ -17,23 +17,23 @@ const Userplaylist = () => {
     };
 
     const handledropdown = (id) => {
-        setisdropdown((prev) => (prev === id ? null : id)); // Toggle dropdown visibility
+        setisdropdown((prev) => (prev === id ? null : id)); 
     };
 
     return (
         <div>
-            <ul className="absolute left-0 mt-2 w-full bg-black rounded-lg shadow-lg overflow-y-scroll scrollbar-none">
+            <ul className="relative left-0 mt-2 h-96 bg-stone-900 rounded-lg shadow-lg overflow-y-scroll scrollbar-none sm:w-20 md:w-52">
                 {userplaylist.length > 0 ? (
                     userplaylist.map((playlistItem, index) => (
                         <li key={index} className="hover:bg-gray-700 rounded-lg">
                             <div className="flex items-center justify-between px-4 py-3">
-                                <Link to={`/userplaylist/playcomponent/${playlistItem._id}`} className="flex items-center space-x-3 w-full">
+                                <Link to={`/userplaylist/playcomponent/${playlistItem._id}`} className="flex items-center w-full sm:space-x-1 md:space-x-3">
                                     <img
                                         src={playlistItem?.songs?.[0]?.image || '/default-image.png'}
                                         alt={playlistItem?.name || 'Playlist'}
                                         className="w-12 h-12 rounded-full object-cover"
                                     />
-                                    <span className="text-md text-white font-semibold">{playlistItem?.name || 'Untitled Playlist'}</span>
+                                    <span className="text-md text-white font-semibold sm:block">{playlistItem?.name || 'Untitled Playlist'}</span>
                                 </Link>
                                 {/* Three-dot icon */}
                                 <div className="relative">

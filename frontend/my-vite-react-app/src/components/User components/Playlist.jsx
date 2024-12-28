@@ -4,6 +4,7 @@ import { getplaylist } from '../../redux/slices/playlistSlice';
 import Card from './Cards/Card'; 
 import CardCarousel from './Cards/CardCarousel'; 
 import { Link } from 'react-router-dom';
+import Dives from './Dives';
 
 const Playlist = () => {
     const dispatch = useDispatch();
@@ -35,7 +36,8 @@ const Playlist = () => {
     const newplaylist = playlistArray.map((item) => item.playlists);
 
     return (
-        <div className="bg-stone-900 p-4 text-white rounded-lg shadow-lg">
+        <div className="bg-stone-950 p-4 text-white rounded-lg shadow-lg">
+            
             <h2 className="text-xl font-bold mb-4">Playlists</h2>
             <CardCarousel>
                 {newplaylist[0]?.map((playlistItem) => {

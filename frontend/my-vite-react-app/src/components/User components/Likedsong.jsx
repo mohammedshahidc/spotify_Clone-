@@ -32,12 +32,12 @@ const Likedsong = () => {
 
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className="w-1/5 shadow-lg h-screen overflow-y-auto">
+        <div className="w-1/5 shadow-lg h-screen overflow-y-auto scrollbar-none">
           <Sidebar />
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 relative  p-6 h-screen w-5/6 fixed overflow-y-scroll">
+        <div className="flex-1 relative  p-6 h-screen w-5/6 fixed overflow-y-scroll scrollbar-none">
           {songs.length > 0 ? (
             <MusicCard
               album={{

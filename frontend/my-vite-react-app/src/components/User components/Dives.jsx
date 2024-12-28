@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getfavourite } from '../../redux/slices/favouriteSlice';
 import { getplaylist } from '../../redux/slices/playlistSlice';
+import { Link } from 'react-router-dom';
 
 const Dives = () => {
     const dispatch = useDispatch();
@@ -15,44 +16,53 @@ const Dives = () => {
     const { playlist } = useSelector((state) => state.playlist);
 
     return (
-        <div className="bg-gradient-to-b from-violet-950 to-gray-500 min-h-[50vh] max-w-5xl mx-auto flex flex-col p-6 rounded-lg">
+        <div className="bg-stone-950 p-4 text-white rounded-lg shadow-lg">
+        <div className="bg-gradient-to-b from-violet-950 to-gray-500 min-h-[25vh] max-w-4xl mx-auto flex flex-col p-3 rounded-md">
             {/* Button Section */}
-            <div className="flex flex-wrap justify-center sm:justify-start space-x-2 sm:space-x-4 mb-6">
-                <button className="bg-white text-black rounded-md px-4 py-2 font-semibold hover:bg-gray-200">
+            <div className="flex flex-wrap justify-center sm:justify-start space-x-2 mb-4">
+                <Link to={"/"}>
+                <button className="bg-white text-black rounded px-3 py-1 text-sm font-medium hover:bg-gray-200">
                     All
                 </button>
-                <button className="bg-white text-black rounded-md px-4 py-2 font-semibold hover:bg-gray-200">
+                </Link>
+                <Link>
+                <button className="bg-white text-black rounded px-3 py-1 text-sm font-medium hover:bg-gray-200">
                     Music
                 </button>
+                </Link>
             </div>
 
             {/* Grid Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {/* Liked Songs */}
-                <div className="bg-transparent w-full sm:w-56 h-20 rounded-lg flex items-center text-white shadow-lg p-4 space-x-4 transition-transform transform hover:scale-105 hover:bg-stone-900">
+                <Link  to={"/likedsongs"}>
+                <div className="bg-transparent w-full sm:w-44 h-14 rounded-md flex items-center text-white shadow-md p-2 space-x-2 transition-transform transform hover:scale-105 hover:bg-stone-900">
                     <img
                         src={favourite[0]?.image}
                         alt="Liked Songs"
-                        className="h-fit w-16 object-cover"
+                        className="h-fit w-10 object-cover rounded-sm"
                     />
-                    <h1 className="text-lg font-semibold">Liked Songs</h1>
+                    <h1 className="text-sm font-medium">Liked Songs</h1>
                 </div>
-
+                </Link>
                 {/* Playlists */}
                 {playlist.playlists?.map((pl) => (
+                    <Link key={pl._id} to={`/playlist/playlcomponent/${pl._id}`}>
                     <div
-                        key={pl._id}
-                        className="bg-transparent w-full sm:w-56 h-20 rounded-lg flex items-center text-white shadow-lg p-4 space-x-4 transition-transform transform hover:scale-105 hover:bg-stone-900"
+                        
+                        className="bg-transparent w-full sm:w-44 h-14 rounded-md flex items-center text-white shadow-md p-2 space-x-2 transition-transform transform hover:scale-105 hover:bg-stone-900"
                     >
                         <img
                             src={pl.songs[0]?.image || 'default-image-url.jpg'}
                             alt={pl.name}
-                            className="h-fit w-16 object-cover"
+                            className="h-fit w-10 object-cover rounded-sm"
                         />
-                        <h1 className="text-lg font-semibold">{pl.name}</h1>
+                        <h1 className="text-sm font-medium">{pl.name}</h1>
                     </div>
+                    </Link>
                 ))}
             </div>
+        </div>
         </div>
     );
 };

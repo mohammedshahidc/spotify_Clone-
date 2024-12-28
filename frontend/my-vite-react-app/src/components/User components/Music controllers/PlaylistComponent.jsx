@@ -73,7 +73,7 @@ const PlaylistComponent = () => {
   console.log('filteredplaylist:', filtereduserplaylist);
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll">
+    <div className="flex flex-col h-fit bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll scrollbar-none">
       
       <Navbar />
 
@@ -84,7 +84,7 @@ const PlaylistComponent = () => {
         </div>
 
         
-        <div className="flex-1 p-6 overflow-y-scroll">
+        <div className="flex-1 p-6 overflow-y-scroll scrollbar-none">
           {filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (
               <MusicCard

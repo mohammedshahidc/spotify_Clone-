@@ -13,6 +13,7 @@ import MusicController from './components/User components/Music controllers/Musi
 import Playlist from './components/User components/Playlist'
 import Userplaylist from './components/User components/Pages/Userplaylist'
 import Dives from './components/User components/Dives'
+import Profile from './components/User components/Profile'
 
 
 
@@ -20,6 +21,7 @@ const App = () => {
   
   return (
     <div>
+      <Profile/>
      {/* <Dives/> */}
       <Routes>
         <Route path='/' element={<Home />} />
