@@ -53,6 +53,7 @@ const upload = multer({
 }).fields([
     { name: 'audioFile', maxCount: 1 },
     { name: 'imageFile', maxCount: 1 },
+    { name: 'profilePicture', maxCount: 1 },
 ]);
 
 module.exports = upload;

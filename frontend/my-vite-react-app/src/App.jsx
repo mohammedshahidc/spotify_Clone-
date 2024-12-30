@@ -21,8 +21,7 @@ const App = () => {
   
   return (
     <div>
-      <Profile/>
-     {/* <Dives/> */}
+     
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />
@@ -38,6 +37,7 @@ const App = () => {
         <Route path='/albums/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/likedsongs/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/userplaylist/playcomponent/:userplaylists' element={<PlaylistComponent/>}/>
+        <Route path='/profile' element={<Profile/>}/>
       </Routes>
 
     </div>

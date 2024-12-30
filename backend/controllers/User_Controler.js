@@ -147,29 +147,36 @@ const user_login = async (req, res, next) => {
 };
 
 
-const edituser=async(req,res,next)=>{
-const {value,error}=userValidationSchema.validate(req.body)
-console.log("req:",req.files);
-const{name}=value
-const id=req.user.id
-if(error){
-    console.log("edit user:",error);
-    return next(new CustomError("validation error",404))
-}
-const updatedfields={}
+const edituser = async (req, res, next) => {
+    console.log("Request files:", req.files); // Log the incoming files
+    const { value, error } = userValidationSchema.validate(req.body);
+    const { name } = value;
+    const id = req.user.id;
 
-if(name){
-    updatedfields.name=name
-}
-if (req.files && req.files.imageFile) {
-    updatedfields.profilePicture = req.files?.imageFile[0]?.path;
-}
-const user=await User.findByIdAndUpdate(id,updatedfields,{new:true})
-if(!user){
-    return next(new CustomError("user not found",404))
-}
-res.status(200).json({statcode:0,data:user})
-}
+    if (error) {
+        console.log("edit user:", error);
+        return next(new CustomError("validation error", 404));
+    }
+
+    const updatedFields = {};
+
+    if (name) {
+        updatedFields.name = name;
+    }
+
+    // Correctly access the profilePicture
+    if (req.files && req.files.profilePicture) {
+        updatedFields.profilePicture = req.files.profilePicture[0]?.path; // Use the correct field name
+    }
+
+    const user = await User.findByIdAndUpdate(id, updatedFields, { new: true });
+    if (!user) {
+        return next(new CustomError("user not found", 404));
+    }
+
+    res.status(200).json({ statcode: 0, data: user });
+};
+
 
 //get song
 // ---------------------------------------------------------------------------------------------------------
