@@ -14,6 +14,8 @@ import Playlist from './components/User components/Playlist'
 import Userplaylist from './components/User components/Pages/Userplaylist'
 import Dives from './components/User components/Dives'
 import Profile from './components/User components/Profile'
+import AdminSidebar from './Admin components/AdminSidebar'
+import AdminHome from './Admin components/AdminHome'
 
 
 
@@ -38,6 +40,8 @@ const App = () => {
         <Route path='/likedsongs/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/userplaylist/playcomponent/:userplaylists' element={<PlaylistComponent/>}/>
         <Route path='/profile' element={<Profile/>}/>
+
+        <Route path='/admin' element={<AdminHome/>}/>
       </Routes>
 
     </div>

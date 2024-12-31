@@ -26,7 +26,7 @@ const Likedsong = () => {
   }));
 
   return (
-    <div className="flex flex-col fixed h-screen bg-gradient-to-r from-black to-gray-900 text-white">
+    <div className="flex flex-col fixed w-screen h-screen bg-gradient-to-r from-black to-gray-900 text-white">
       {/* Navbar */}
       <Navbar />
 

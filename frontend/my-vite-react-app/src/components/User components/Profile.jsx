@@ -15,9 +15,9 @@ const Profile = () => {
     const user = useSelector((state) => state.user);
     const playlists = useSelector((state) => state.userplaylist.userplaylist);
     const dispatch = useDispatch();
-
+    const savedProfilePicture = localStorage.getItem('profilepicture');
     useEffect(() => {
-        const savedProfilePicture = localStorage.getItem('profilepicture');
+        
         const savedName = localStorage.getItem('current user');
 
         if (savedProfilePicture) {
@@ -51,7 +51,7 @@ const Profile = () => {
             setProfilePicture(file);
         }
     };
-
+console.log('image:',profilePicture);
     return (
         <div>
             <Navbar />
@@ -76,7 +76,7 @@ const Profile = () => {
                                 />
                             ) : (
                                 <img
-                                    src={profilePicture || '/default-profile.png'}
+                                    src={profilePicture }
                                     alt="Profile"
                                     className="w-24 h-24 border-solid border-4 border-gray-700 rounded-full object-cover"
                                 />
