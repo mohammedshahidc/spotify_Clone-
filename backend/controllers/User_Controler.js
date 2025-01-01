@@ -97,58 +97,63 @@ const verify_otp = async (req, res, next) => {
 
 
 const user_login = async (req, res, next) => {
-    try {
-        const { value, error } = userLoginValidationSchema.validate(req.body);
-        if (error) {
-            return next(new CustomError(error.message, 400));
-        }
-        const { email, password } = value;
-        console.log('Login Attempt:', email);
-
-         const user = await User.findOne({ email });
-        if (!user) {
-            return next(new CustomError("User not found", 400));
-        }
-
-         console.log('User found:', user);
-
-        
-        const isPasswordMatching = await bcrypt.compare(password, user.password);
-        console.log("Password Match Status:", isPasswordMatching);
-
-        if (!isPasswordMatching) {
-            return next(new CustomError("Invalid email or password", 401));
-        }
-
-        if (!user.isVerified) {
-            return next(new CustomError("User is not verified", 403));
-        }
-
-       const token = jwt.sign(
-            { id: user._id, username: user.name, email: user.email },
-            process.env.JWT_KEY,
-            { expiresIn: "1m" }
-        );
-        const refreshmentToken = jwt.sign(
-            { id: user._id, username: user.name, email: user.email },
-            process.env.JWT_KEY,
-            { expiresIn: "7d" }
-        );
-
-         res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 60 * 1000, sameSite: 'none' });
-        res.cookie('refreshmentToken', refreshmentToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
-
-       res.status(200).json({ message: "Login successful", data:{user:user.name,token:token,refreshmentToken:refreshmentToken,
-        profilePicture:user.profilePicture} });
-    } catch (error) {
-        console.error('Login error:', error);
-        return next(new CustomError("An error occurred during login", 500));
+    const { value, error } = userLoginValidationSchema.validate(req.body);
+    if (error) {
+        return next(new CustomError(error.message, 400));
     }
+
+    const { email, password } = value;
+    console.log('Login Attempt:', email);
+
+    const user = await User.findOne({ email });
+    if (!user) {
+        return next(new CustomError("User not found", 400));
+    }
+
+    console.log('User found:', user);
+
+    const isPasswordMatching = await bcrypt.compare(password, user.password);
+    console.log("Password Match Status:", isPasswordMatching);
+
+    if (!isPasswordMatching) {
+        return next(new CustomError("Invalid email or password", 401));
+    }
+
+    if (!user.isVerified) {
+        return next(new CustomError("User is not verified", 403));
+    }
+
+    // Ensure username is properly serialized
+    const token = jwt.sign(
+        { id: user._id, username: user.name, email: user.email },
+        process.env.JWT_KEY,
+        { expiresIn: "1m" }
+    );
+    const refreshmentToken = jwt.sign(
+        { id: user._id, username: user.name, email: user.email },
+        process.env.JWT_KEY,
+        { expiresIn: "7d" }
+    );
+
+    res.cookie('token', token, { httpOnly: true, secure: true, maxAge: 60 * 1000, sameSite: 'none' });
+    res.cookie('refreshmentToken', refreshmentToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 });
+
+    res.status(200).json({
+        message: "Login successful",
+        data: {
+            user: user.name, // No extra quotes
+            token: token,
+            refreshmentToken: refreshmentToken,
+            profilePicture: user.profilePicture,
+            admin: user.admin
+        }
+    });
 };
 
 
+
 const edituser = async (req, res, next) => {
-    console.log("Request files:", req.files); // Log the incoming files
+    console.log("Request files:", req.files); 
     const { value, error } = userValidationSchema.validate(req.body);
     const { name } = value;
     const id = req.user.id;
@@ -164,9 +169,9 @@ const edituser = async (req, res, next) => {
         updatedFields.name = name;
     }
 
-    // Correctly access the profilePicture
+    
     if (req.files && req.files.profilePicture) {
-        updatedFields.profilePicture = req.files.profilePicture[0]?.path; // Use the correct field name
+        updatedFields.profilePicture = req.files.profilePicture[0]?.path;
     }
 
     const user = await User.findByIdAndUpdate(id, updatedFields, { new: true });

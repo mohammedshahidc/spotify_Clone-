@@ -41,13 +41,21 @@ const admin_Login=async(req,res,next)=>{
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        res.status(200).json({errorCode:0,status:true,msg:'admin login successfully',data:{token:token,isAdmin:true,refreshmentToken:refreshmentToken}})
+        res.status(200).json({errorCode:0,status:true,msg:'admin login successfully',data:{token:token,isAdmin:true,refreshmentToken:refreshmentToken,adminname:"mohammed shahid"}})
     
     }
 
 }
 
+const get_Allusers=async(req,res,next)=>{
 
+    const users=await User.find()
+    if(!users){
+        return next(new CustomError("users not found"))
+    }
+
+    res.status(200).json(users)
+}
 
 const block_user=async(req,res,next)=>{
     const{id}=req.params
@@ -79,5 +87,6 @@ const admin_logout = async (req, res,next) => {
     module.exports={
         admin_Login,
         block_user,
-        admin_logout
+        admin_logout,
+        get_Allusers
     }

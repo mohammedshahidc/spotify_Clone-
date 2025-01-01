@@ -10,21 +10,26 @@ import Likedsong from './components/User components/Likedsong'
 
 import Mobliesearch from './components/User components/Layout/Mobliesearch'
 import MusicController from './components/User components/Music controllers/Musicplayer'
-import Playlist from './components/User components/Playlist'
-import Userplaylist from './components/User components/Pages/Userplaylist'
-import Dives from './components/User components/Dives'
+// import Playlist from './components/User components/Playlist'
+// import Userplaylist from './components/User components/Pages/Userplaylist'
+// import Dives from './components/User components/Dives'
 import Profile from './components/User components/Profile'
-import AdminSidebar from './Admin components/AdminSidebar'
-import AdminHome from './Admin components/AdminHome'
+import AdminHome from './Admin components/Admin layouts/AdminHome'
+import AdminLogin from './Admin components/Adminpages/AdminLogin'
+import { useSelector } from 'react-redux'
+import AdminUsers from './Admin components/AdminUsers'
+import Adminsong from './Admin components/Adminsong'
+import AdminUserprofile from './Admin components/AdminUserprofile'
 
 
 
 const App = () => {
+  const isAdmin=useSelector((state)=>state.admin.admin)
   
   return (
     <div>
-     
-      <Routes>
+  
+     {!isAdmin ||isAdmin==null?( <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/register' element={<ProtectedRouter><Register /></ProtectedRouter>} />
         <Route path='/otp' element={<ProtectedRouter><Otp/></ProtectedRouter>} />
@@ -40,9 +45,16 @@ const App = () => {
         <Route path='/likedsongs/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/userplaylist/playcomponent/:userplaylists' element={<PlaylistComponent/>}/>
         <Route path='/profile' element={<Profile/>}/>
-
+        <Route path='/adminlogin' element={<AdminLogin/>}/>
+      </Routes>):(
+        <Routes>
         <Route path='/admin' element={<AdminHome/>}/>
-      </Routes>
+       <Route path='/admin/users' element={<AdminUsers/>}/>
+       <Route path='/admin/songs' element={<Adminsong/>}/>
+       <Route path='/admin/userprofile/:id' element={<AdminUserprofile/>}/>
+        </Routes>
+      )}
+     
 
     </div>
   )

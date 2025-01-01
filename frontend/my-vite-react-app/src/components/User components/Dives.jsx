@@ -6,11 +6,18 @@ import { Link } from 'react-router-dom';
 
 const Dives = () => {
     const dispatch = useDispatch();
+const user=useSelector((state)=>state.admin.admin)
+console.log('ss:',user);
 
     useEffect(() => {
-        dispatch(getfavourite());
-        dispatch(getplaylist());
+        if(user){
+            dispatch(getfavourite());
+            dispatch(getplaylist());
+        }
+      
     }, [dispatch]);
+
+   
 
     const { favourite } = useSelector((state) => state.favourite);
     const { playlist } = useSelector((state) => state.playlist);
@@ -46,7 +53,7 @@ const Dives = () => {
                 </div>
                 </Link>
                 {/* Playlists */}
-                {playlist.playlists?.map((pl) => (
+                {playlist?.playlists?.map((pl) => (
                     <Link key={pl._id} to={`/playlist/playlcomponent/${pl._id}`}>
                     <div
                         

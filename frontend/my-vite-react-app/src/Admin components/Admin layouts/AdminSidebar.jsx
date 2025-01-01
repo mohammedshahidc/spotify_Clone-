@@ -12,7 +12,7 @@ const AdminSidebar = () => {
         <ul className="space-y-4">
           <li>
             <Link
-              to="/admin/dashboard"
+              to="/admin"
               className={`flex items-center justify-center md:justify-start space-x-3 p-2 rounded ${activeStyle('/admin/dashboard')} transition`}
             >
               <FaHome size={24} />

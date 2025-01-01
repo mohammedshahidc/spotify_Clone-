@@ -39,10 +39,10 @@ const activeuser = (() => {
             return JSON.parse(userString);
         } catch (error) {
             console.error('Error parsing current user:', error);
-            return null; // Handle error as needed
+            return null;
         }
     }
-    return null; // Return null if userString is invalid
+    return null;
 })();
 
 
@@ -54,8 +54,9 @@ const loginSlice = createSlice({
         status: null,
         token: localStorage.getItem('token') || null,
         refreshmenttoken: localStorage.getItem('refreshmenttoken') || null,
-        profilePicture:null,
+        profilePicture: null,
         error: null,
+        admin: null
     },
     reducers: {
         logout: (state) => {
@@ -68,6 +69,7 @@ const loginSlice = createSlice({
             localStorage.removeItem('token');
             localStorage.removeItem('refreshmenttoken');
             localStorage.removeItem('profilepicture');
+            localStorage.removeItem('admin')
         },
     },
     extraReducers: (builder) => {
@@ -82,20 +84,28 @@ const loginSlice = createSlice({
                     user: action.payload.user,
                     token: action.payload.token,
                     refreshmenttoken: action.payload.refreshmenttoken,
-                    profilePicture: action.payload.profilePicture
+                    profilePicture: action.payload.profilePicture,
                 };
+
+                if (typeof userData.user === 'string') {
+                    try {
+                        userData.user = JSON.parse(userData.user);
+                    } catch (error) {
+                        console.error('Failed to parse user data:', error);
+                    }
+                }
 
                 state.user = userData.user;
                 state.status = 'fulfilled';
                 state.token = userData.token;
                 state.refreshmenttoken = userData.refreshmenttoken;
                 state.profilePicture = userData.profilePicture;
-
-                // Save to localStorage as JSON
+                state.admin = action.payload.admin
                 localStorage.setItem('current user', JSON.stringify(userData.user));
                 localStorage.setItem('token', userData.token);
                 localStorage.setItem('refreshmenttoken', userData.refreshmenttoken);
                 localStorage.setItem('profilepicture', JSON.stringify(userData.profilePicture));
+                localStorage.setItem('admin',action.payload.admin)
             })
             .addCase(userlogin.rejected, (state, action) => {
                 state.user = null;
@@ -106,8 +116,9 @@ const loginSlice = createSlice({
                 state.status = null;
             })
             .addCase(edituser.fulfilled, (state, action) => {
-                state.user = action.payload.name;  // Assuming action.payload.name is the updated name
-                state.profilePicture = action.payload.profilePicture; // Ensure this is the updated picture
+                console.log("userrrrrrrrr:", action.payload);
+                state.user = action.payload.name;
+                state.profilePicture = action.payload.profilePicture;
                 console.log('profile:', action.payload);
                 state.status = 'fulfilled';
                 localStorage.setItem('current user', state.user);
