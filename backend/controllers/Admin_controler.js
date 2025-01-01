@@ -49,11 +49,11 @@ const admin_Login=async(req,res,next)=>{
 
 const get_Allusers=async(req,res,next)=>{
 
-    const users=await User.find()
+    const users=await User.find().populate("likedSongs")
     if(!users){
         return next(new CustomError("users not found"))
     }
-
+console.log("users:",users);
     res.status(200).json(users)
 }
 

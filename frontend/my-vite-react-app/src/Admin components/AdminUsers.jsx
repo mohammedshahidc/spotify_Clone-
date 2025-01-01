@@ -42,11 +42,11 @@ const AdminUsers = () => {
                                                 <td className="border-b border-gray-600 px-4 py-2 text-center">{user.email}</td>
                                                 <td className="border-b border-gray-600 px-4 py-2 text-center">{user.isVerified ? 'Yes' : 'No'}</td>
                                                 <td className="border-b border-gray-600 px-4 py-2 text-center">
-                                                    {/* <Link to={`/admin/userprofile/${user._id}`}> */}
+                                                    <Link to={`/admin/userprofile/${user._id}`}>
                                                     <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">
                                                         View Details
                                                     </button>
-                                                    {/* </Link> */}
+                                                    </Link>
                                                 </td>
                                             </tr>
                                         ))}

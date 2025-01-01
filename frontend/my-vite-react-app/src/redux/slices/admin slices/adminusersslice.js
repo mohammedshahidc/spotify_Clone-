@@ -14,6 +14,16 @@ export const getAllusers=createAsyncThunk("getAllusers",async()=>{
     }
 })
 
+export const blockuser=createAsyncThunk('blockuser',async(userid)=>{
+    try {
+        const response=await axiosInstance.put(`/admin/blockuser/${userid}`)
+        console.log('block user:',response.data);
+        return response.data
+    } catch (error) {
+        console.log('block user:',error);
+    }
+})
+
 
 
 const adminUsersSlice=createSlice({
@@ -34,6 +44,17 @@ const adminUsersSlice=createSlice({
         })
         .addCase(getAllusers.rejected,(state)=>{
             state.status="rejected"
+        })
+
+        .addCase(blockuser.pending,(state)=>{
+            state.status="pending"
+        })
+        .addCase(blockuser.fulfilled,(state)=>{
+            state.status='fulfilled'
+        })
+
+        .addCase(blockuser.rejected,(state)=>{
+            state.status='rejected'
         })
     }
 
