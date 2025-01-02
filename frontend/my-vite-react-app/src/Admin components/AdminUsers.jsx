@@ -23,9 +23,9 @@ const AdminUsers = () => {
                 <AdminSidebar />
                 <div className="bg-black text-white p-4 w-full overflow-hidden">
                     <h1 className="text-2xl font-bold mb-4">Users</h1>
-                    <div className="h-[calc(100vh-64px)] overflow-y-scroll"> {/* Adjust height based on Navbar height */}
+                    <div className="h-[calc(100vh-64px)] overflow-y-scroll">
                         {users && users.length > 0 ? (
-                            <div className="overflow-x-auto">
+                            <div className="overflow-x-auto mb-40">
                                 <table className="min-w-full bg-gray-800 border border-gray-700">
                                     <thead>
                                         <tr>

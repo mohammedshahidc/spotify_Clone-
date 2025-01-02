@@ -31,19 +31,17 @@ const userLoginValidationSchema = Joi.object({
 
 
 const songValidationSchema = Joi.object({
-    title: Joi.string()
-        .required(),
-    artist: Joi.string()
-        .required(),
-    album: Joi.string()
-        .required(),
-    duration: Joi.number()
-        .min(1)
-        .required(),
+    _id: Joi.string().optional(),
+    __v: Joi.string().optional(),
+    title: Joi.string(),
+    artist: Joi.string(),
+    album: Joi.string(),
+    duration: Joi.number().min(1),
+    image: Joi.string().allow('', null).optional(),
     imageFile: Joi.string().allow('', null).optional(),
     audioFile: Joi.string().allow('', null).optional(),
+    fileUrl: Joi.string().allow('', null).optional(),
     type: Joi.string()
-        .required(),
 });
 
 

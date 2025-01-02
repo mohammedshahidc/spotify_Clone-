@@ -10,9 +10,6 @@ import Likedsong from './components/User components/Likedsong'
 
 import Mobliesearch from './components/User components/Layout/Mobliesearch'
 import MusicController from './components/User components/Music controllers/Musicplayer'
-// import Playlist from './components/User components/Playlist'
-// import Userplaylist from './components/User components/Pages/Userplaylist'
-// import Dives from './components/User components/Dives'
 import Profile from './components/User components/Profile'
 import AdminHome from './Admin components/Admin layouts/AdminHome'
 import AdminLogin from './Admin components/Adminpages/AdminLogin'
@@ -20,6 +17,8 @@ import { useSelector } from 'react-redux'
 import AdminUsers from './Admin components/AdminUsers'
 import Adminsong from './Admin components/Adminsong'
 import AdminUserprofile from './Admin components/AdminUserprofile'
+import Addsong from './Admin components/Addsong'
+import Editsongs from './Admin components/Editsongs'
 
 
 
@@ -52,6 +51,8 @@ const App = () => {
        <Route path='/admin/users' element={<AdminUsers/>}/>
        <Route path='/admin/songs' element={<Adminsong/>}/>
        <Route path='/admin/userprofile/:id' element={<AdminUserprofile/>}/>
+       <Route path='/admin/songs/addsongs' element={<Addsong/>}/>
+       <Route path='/admin/songs/editsong/:id' element={<Editsongs/>}/>
         </Routes>
       )}
      

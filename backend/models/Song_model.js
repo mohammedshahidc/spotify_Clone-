@@ -6,7 +6,6 @@ const songSchema = new Schema(
     {
         title: {
             type: String,
-            required: true,
 
         },
         artist: {

@@ -12,3 +12,21 @@ export const loginschema=Yup.object({
     email:Yup.string().email().required('email is required'),
     password:Yup.string().min(8).required("password is required")
 })
+
+export const songValidationSchema = Yup.object().shape({
+    title: Yup.string(),
+    artist: Yup.string()
+      .required("Artist is required"),
+    album: Yup.string()
+      .required("Album is required"),
+    duration: Yup.number()
+      .min(1, "Duration must be at least 1 minute")
+      .required("Duration is required"),
+    imageFile: Yup.mixed()
+      .nullable(),
+    audioFile: Yup.mixed()
+      .nullable(),
+    type: Yup.string()
+      .required("Type is required"),
+  });
+  

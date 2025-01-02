@@ -29,7 +29,10 @@ const AdminUserprofile = () => {
     }
 
     const { name, email, profilePicture, likedSongs,block} = user;
-
+const handleblock= async ()=>{
+   await dispatch(blockuser(id))
+    dispatch(getAllusers())
+}
     return (
         <div className="bg-black h-screen flex flex-col">
             <Navbar />
@@ -51,7 +54,7 @@ const AdminUserprofile = () => {
                         <div>
                             <h2 className="text-2xl font-bold">{name}</h2>
                             <p className="text-sm">{email}</p>
-                            <button className='bg-green-700 text-white mt-5 w-20 h-6 rounded-md hover:bg-green-300 'onClick={()=>dispatch(blockuser(id))}  aria-label={block ? 'Unblock user' : 'Block user'}>{block?'Unblock':'Block'}</button>
+                            <button className='bg-green-700 text-white mt-5 w-20 h-6 rounded-md hover:bg-green-300 'onClick={handleblock}  aria-label={block ? 'Unblock user' : 'Block user'}>{block?'Unblock':'Block'}</button>
                         </div>
                     </div>
 

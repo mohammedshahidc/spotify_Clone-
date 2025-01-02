@@ -9,16 +9,16 @@ const addSongs = async (req, res, next) => {
     const { value, error } = songValidationSchema.validate(req.body);
 
     if (error) {
-        return next(new CustomError(error)); // Handle validation error
+        return next(new CustomError(error));
     }
 
     const { title, artist, album, duration, type } = value;
 
-    // Extract Cloudinary URLs from req.files
-    const audioFileUrl = req.files.audioFile[0].path; // Cloudinary URL for the audio file
-    const imageFileUrl = req.files.imageFile[0].path; // Cloudinary URL for the image file
+   
+    const audioFileUrl = req.files?.audioFile[0]?.path; 
+    const imageFileUrl = req.files?.imageFile[0]?.path; 
 
-    // Create a new song document
+    
     const newSong = new Song({
         title,
         artist,
@@ -29,10 +29,10 @@ const addSongs = async (req, res, next) => {
         image: imageFileUrl,
     });
 
-    // Save the song document to MongoDB
+   
     await newSong.save();
 
-    // Send success response
+    
     res.status(201).json(newSong);
 };
 
@@ -48,6 +48,8 @@ const editSong = async (req, res, next) => {
             return next(new CustomError(error.details[0].message, 400));
         }
             const updatedData = { ...value };
+
+            console.log(updatedData, "aaa");
 
         if (req.files?.imageFile?.[0]?.path) {
             updatedData.imageFile = req.files.imageFile[0].path;
