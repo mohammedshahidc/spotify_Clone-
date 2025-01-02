@@ -56,7 +56,8 @@ const loginSlice = createSlice({
         refreshmenttoken: localStorage.getItem('refreshmenttoken') || null,
         profilePicture: null,
         error: null,
-        admin: null
+        admin: null,
+        id:null
     },
     reducers: {
         logout: (state) => {
@@ -70,6 +71,7 @@ const loginSlice = createSlice({
             localStorage.removeItem('refreshmenttoken');
             localStorage.removeItem('profilepicture');
             localStorage.removeItem('admin')
+            localStorage.removeItem('persist:root');
         },
     },
     extraReducers: (builder) => {
@@ -85,6 +87,7 @@ const loginSlice = createSlice({
                     token: action.payload.token,
                     refreshmenttoken: action.payload.refreshmenttoken,
                     profilePicture: action.payload.profilePicture,
+                    id:action.payload._id
                 };
 
                 if (typeof userData.user === 'string') {
@@ -101,6 +104,7 @@ const loginSlice = createSlice({
                 state.refreshmenttoken = userData.refreshmenttoken;
                 state.profilePicture = userData.profilePicture;
                 state.admin = action.payload.admin
+                state.id=userData.id
                 localStorage.setItem('current user', JSON.stringify(userData.user));
                 localStorage.setItem('token', userData.token);
                 localStorage.setItem('refreshmenttoken', userData.refreshmenttoken);

@@ -40,7 +40,7 @@ console.log('ss:',user);
             </div>
 
             {/* Grid Section */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                 {/* Liked Songs */}
                 <Link  to={"/likedsongs"}>
                 <div className="bg-transparent w-full sm:w-44 h-14 rounded-md flex items-center text-white shadow-md p-2 space-x-2 transition-transform transform hover:scale-105 hover:bg-stone-900">

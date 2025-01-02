@@ -13,14 +13,14 @@ import adminloginSlice from './slices/admin slices/adminloginSlice';
 import adminusersslice from './slices/admin slices/adminusersslice';
 import AdminSongSlice from './slices/admin slices/AdminSongSlice';
 
-// Redux-Persist Configuration
+
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['admin','playlist'], // Only persist the 'admin' slice
+  whitelist: ['admin','playlist','user'], 
 };
 
-// Combine Reducers
+
 const rootReducer = combineReducers({
   playlist: playlistSlice,
   song: songSlice,
@@ -34,10 +34,10 @@ const rootReducer = combineReducers({
   adminSongs:AdminSongSlice
 });
 
-// Persisted Reducer
+
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-// Configure Store
+
 const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
@@ -48,6 +48,6 @@ const store = configureStore({
     }),
 });
 
-// Export Persistor and Store
+
 export const persistor = persistStore(store);
 export default store;

@@ -16,6 +16,7 @@ const Profile = () => {
     const playlists = useSelector((state) => state.userplaylist.userplaylist);
     const dispatch = useDispatch();
     const savedProfilePicture = localStorage.getItem('profilepicture');
+    console.log('wefh:',user);
     useEffect(() => {
         
         const savedName = localStorage.getItem('current user');
@@ -30,6 +31,7 @@ const Profile = () => {
 
     useEffect(() => {
         dispatch(getuserplaylist());
+        
     }, [dispatch]);
 
     const handleProfileUpdate = (e) => {
@@ -56,7 +58,7 @@ console.log('image:',profilePicture);
         <div>
             <Navbar />
             <div className="flex fixed w-screen h-screen  ">
-                <div className="shadow-lg w-1/5 bg-black text-white">
+                <div className="shadow-lg w-1/5 bg-black text-white ">
                     <Sidebar />
                 </div>
                 <div className="flex-1 flex flex-col items-center p-6 bg-black text-white min-h-screen overflow-y-scroll scrollbar-none ">
@@ -76,7 +78,7 @@ console.log('image:',profilePicture);
                                 />
                             ) : (
                                 <img
-                                    src={profilePicture }
+                                    src={user.profilePicture }
                                     alt="Profile"
                                     className="w-24 h-24 border-solid border-4 border-gray-700 rounded-full object-cover"
                                 />

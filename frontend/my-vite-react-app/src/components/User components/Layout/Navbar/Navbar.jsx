@@ -1,34 +1,50 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaSpotify, FaSearch, FaHome } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../../../../redux/slices/loginSlice';
 import Searchbar from './Searchbar';
 import { adminlogout } from '../../../../redux/slices/admin slices/adminloginSlice';
+import { getAllusers } from '../../../../redux/slices/admin slices/adminusersslice';
+import { persistor } from '../../../../redux/store';
 
 const Navbar = () => {
-  const user = useSelector((state) => state.user.user);
+  const user = useSelector((state) => state.user);
+  const localuser=localStorage.getItem('current user')
+  
   const admin = useSelector((state) => state.admin.user);
   const [isDropdown, setIsDropdown] = useState(false);
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-console.log("uu:",user);
+
   const toggleDropdown = () => {
     setIsDropdown(!isDropdown);
   };
+  useEffect(()=>{
+    dispatch(getAllusers())
+  },[])
 
   const handleLogout = () => {
     if (user) {
       dispatch(logout());
+      persistor.purge().then(() => {
+        localStorage.clear(); // Explicitly clear all localStorage keys
+        console.log("Persisted state and localStorage cleared.");
+      });
     } else if (admin) {
       dispatch(adminlogout());
+      persistor.purge().then(() => {
+        localStorage.clear(); // Explicitly clear all localStorage keys
+        console.log("Persisted state and localStorage cleared for admin.");
+      });
     }
     navigate('/');
   };
+  
 
   return (
-    <nav className="bg-black p-4 flex items-center justify-between">
+    <nav className="bg-black p-4 flex items-center justify-between relative z-50">
       {/* Logo */}
       <div className="text-white text-xl font-bold flex items-center">
         <FaSpotify className="text-green-500 mr-2" />
@@ -55,22 +71,20 @@ console.log("uu:",user);
         </Link>
       </div>
 
-      {/* Profile and Actions */}
+      
       <div className="flex items-center space-x-2">
-        {user || admin ? (
+        {localuser  ? (
           <div className="relative flex flex-col items-center group">
             <div
               className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-gray-500 bg-green-500 cursor-pointer"
               onClick={toggleDropdown}
             >
-              <p className="text-white text-lg">
-                {user?.[0]?.toUpperCase() || admin?.[0]?.toUpperCase()}
-              </p>
+             <img src={user?.profilePicture}/>
             </div>
 
             {/* Username Hover Tooltip */}
             <span className="absolute top-10 right-0 translate-x-2 opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs px-3 py-1 rounded-md transition-opacity duration-300 whitespace-nowrap">
-              {user?.toUpperCase() || admin?.toUpperCase()}
+              {user?.user?.toUpperCase()}
             </span>
 
             {/* Dropdown Menu */}
