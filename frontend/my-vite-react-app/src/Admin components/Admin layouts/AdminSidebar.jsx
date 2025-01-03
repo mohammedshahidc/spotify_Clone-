@@ -1,10 +1,21 @@
 import React from 'react';
 import { FaHome, FaMusic, FaUsers, FaSignOutAlt } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+import { adminlogout } from '../../redux/slices/admin slices/adminloginSlice';
 
 const AdminSidebar = () => {
+  const dispatch=useDispatch()
+  const navigate=useNavigate()
   const activeStyle = (path) => (window.location.pathname === path ? 'bg-green-500 text-black' : 'hover:bg-green-500 hover:text-black');
-
+const handleLogout=()=>{
+try {
+  dispatch(adminlogout())
+navigate('/')
+} catch (error) {
+  console.log(error);
+}
+}
   return (
     <div className="h-[550px] bg-black text-white flex flex-col w-16 sm:w-16 md:w-64 transition-all duration-300">
       {/* Navigation Links */}

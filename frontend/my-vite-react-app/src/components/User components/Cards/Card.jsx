@@ -2,8 +2,8 @@ import React from "react";
 
 const Card = ({ image, title, artist, id }) => {
     return (
-        <div className="relative bg-stone-900 text-white rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 w-full sm:w-64 md:w-72 lg:w-80">
-            {/* Three-dot icon */}
+        <div className="relative bg-stone-900 text-white p-3 rounded-lg shadow-lg overflow-hidden transition-transform transform hover:scale-105 w-full sm:w-64 md:w-72 lg:w-80">
+           
             <div className="absolute top-2 right-2 cursor-pointer text-gray-600">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

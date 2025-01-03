@@ -72,6 +72,7 @@ const loginSlice = createSlice({
             localStorage.removeItem('profilepicture');
             localStorage.removeItem('admin')
             localStorage.removeItem('persist:root');
+            window.location.reload()
         },
     },
     extraReducers: (builder) => {
@@ -110,6 +111,7 @@ const loginSlice = createSlice({
                 localStorage.setItem('refreshmenttoken', userData.refreshmenttoken);
                 localStorage.setItem('profilepicture', JSON.stringify(userData.profilePicture));
                 localStorage.setItem('admin',action.payload.admin)
+                // window.location.reload()
             })
             .addCase(userlogin.rejected, (state, action) => {
                 state.user = null;

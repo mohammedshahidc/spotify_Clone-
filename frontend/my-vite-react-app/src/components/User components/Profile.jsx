@@ -53,6 +53,7 @@ const Profile = () => {
             setProfilePicture(file);
         }
     };
+    console.log('ds:',user);
 console.log('image:',profilePicture);
     return (
         <div>
@@ -78,7 +79,7 @@ console.log('image:',profilePicture);
                                 />
                             ) : (
                                 <img
-                                    src={user.profilePicture }
+                                    src={user?.profilePicture }
                                     alt="Profile"
                                     className="w-24 h-24 border-solid border-4 border-gray-700 rounded-full object-cover"
                                 />

@@ -4,6 +4,7 @@ import { getAllusers } from '../redux/slices/admin slices/adminusersslice';
 import Navbar from '../components/User components/Layout/Navbar/Navbar';
 import AdminSidebar from './Admin layouts/AdminSidebar';
 import { Link } from 'react-router-dom';
+import AdminNavbar from './Admin layouts/AdminNavbar';
 
 const AdminUsers = () => {
     const dispatch = useDispatch();
@@ -16,8 +17,8 @@ const AdminUsers = () => {
     console.log(users);
 
     return (
-        <div className='flex flex-col fixed w-screen h-screen'>
-            <Navbar />
+        <div className='flex flex-col fixed w-screen h-screen bg-black'>
+          <AdminNavbar/>
 
             <div className='flex flex-1 w-full'>
                 <AdminSidebar />

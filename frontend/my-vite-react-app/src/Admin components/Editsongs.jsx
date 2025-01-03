@@ -33,9 +33,9 @@ const Editsongs = () => {
   }
 
   return (
-    <div className='h-screen bg-black'>
+    <div className='h-screen bg-black '>
         <Navbar/>
-    <div className='flex'>
+    <div className='flex fixed w-full'>
         <div className='h-screen'>
             <AdminSidebar/>
         </div>

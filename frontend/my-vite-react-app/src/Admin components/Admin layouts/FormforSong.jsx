@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { songValidationSchema } from "../../Schema";
 import { editSong, getAlladminSongs } from "../../redux/slices/admin slices/AdminSongSlice";
 import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const initialSongs = {
   title: "",
@@ -20,7 +22,7 @@ const FormforSong = ({ handleuploadSubmit, oldSong }) => {
     oldSong?.imageFile ? URL.createObjectURL(oldSong.imageFile) : null
   );
   const dispatch = useDispatch();
-
+const navigate=useNavigate()
 
   const {
     errors,
@@ -45,17 +47,18 @@ const FormforSong = ({ handleuploadSubmit, oldSong }) => {
           
           await dispatch(editSong({ formData, id: oldSong._id }));
           dispatch(getAlladminSongs());
-      
+          toast.success('song updated successfully')
+          navigate('/admin/songs')
           console.log('sdhfsty');
           console.log("sda:",formData); 
         } else {
           console.log('sss');
           await handleuploadSubmit(formData); 
         }
-        alert("Song uploaded successfully!");
+        
       } catch (error) {
         console.error("Error uploading song:", error);
-        alert("Failed to upload the song. Please try again.");
+        
       } finally {
         setLoading(false);
       }

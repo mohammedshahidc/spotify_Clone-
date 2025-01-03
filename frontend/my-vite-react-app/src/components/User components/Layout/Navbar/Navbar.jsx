@@ -29,7 +29,7 @@ const Navbar = () => {
     if (user) {
       dispatch(logout());
       persistor.purge().then(() => {
-        localStorage.clear(); // Explicitly clear all localStorage keys
+        localStorage.clear(); 
         console.log("Persisted state and localStorage cleared.");
       });
     } else if (admin) {

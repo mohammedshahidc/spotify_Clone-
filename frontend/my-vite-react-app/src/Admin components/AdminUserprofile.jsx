@@ -3,8 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { blockuser, getAllusers } from '../redux/slices/admin slices/adminusersslice';
 import { getplaylist } from '../redux/slices/playlistSlice';
-import Navbar from '../components/User components/Layout/Navbar/Navbar';
+
 import AdminSidebar from './Admin layouts/AdminSidebar';
+import AdminNavbar from './Admin layouts/AdminNavbar';
+import { toast } from 'react-toastify';
 
 const AdminUserprofile = () => {
     const { id } = useParams();
@@ -30,12 +32,19 @@ const AdminUserprofile = () => {
 
     const { name, email, profilePicture, likedSongs,block} = user;
 const handleblock= async ()=>{
-   await dispatch(blockuser(id))
-    dispatch(getAllusers())
+    try {
+        await dispatch(blockuser(id))
+        dispatch(getAllusers())
+        
+    } catch (error) {
+        console.log(error);
+        toast.error('an error occured')
+    }
+
 }
     return (
         <div className="bg-black h-screen flex flex-col">
-            <Navbar />
+          <AdminNavbar/>
             <div className="flex flex-grow overflow-hidden">
                 {/* Sidebar */}
                 <div className=" bg-black">

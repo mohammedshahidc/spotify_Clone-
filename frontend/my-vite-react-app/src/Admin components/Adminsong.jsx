@@ -4,12 +4,14 @@ import { deleteSongs, getAlladminSongs } from '../redux/slices/admin slices/Admi
 import Navbar from '../components/User components/Layout/Navbar/Navbar';
 import AdminSidebar from './Admin layouts/AdminSidebar';
 import { Link } from 'react-router-dom';
+import AdminNavbar from './Admin layouts/AdminNavbar';
+import { toast } from 'react-toastify';
 
 const Adminsong = () => {
     const dispatch = useDispatch();
     const songs = useSelector((state) => state.adminSongs.adminSongs);
-console.log('sss:',songs);
-    // State for the selected song type
+    console.log('sss:', songs);
+
     const [selectedType, setSelectedType] = useState('');
 
     useEffect(() => {
@@ -17,18 +19,25 @@ console.log('sss:',songs);
     }, [dispatch]);
 
     const handledeleteSongs = async (songId) => {
-        await dispatch(deleteSongs(songId));
-        await dispatch(getAlladminSongs());
+        try {
+            await dispatch(deleteSongs(songId));
+            await dispatch(getAlladminSongs());
+            toast.success('song deleted successfully')
+        } catch (error) {
+            console.log(error);
+            toast.error('an error occured')
+        }
+
     };
 
-    // Filter songs based on the selected type
+
     const filteredSongs = selectedType
         ? songs.filter((song) => song.type == selectedType)
         : songs;
-console.log('hf:',selectedType);
+    console.log('hf:', selectedType);
     return (
         <div className="flex flex-col bg-black fixed w-screen h-screen">
-            <Navbar />
+            <AdminNavbar />
             <div className="flex flex-1 w-full">
                 <AdminSidebar />
                 <div className="bg-black text-white p-4 w-full overflow-hidden">
@@ -45,7 +54,7 @@ console.log('hf:',selectedType);
                             className="bg-gray-700 text-white px-4 py-2 rounded"
                         >
                             <option value="">All Types</option>
-                            
+
                             <option value="melody">Melody</option>
                             <option value="rap">Rap</option>
                             <option value="dance">Dance</option>
