@@ -6,6 +6,7 @@ import { addtofavourite, deletefromfavourite, getfavourite } from "../../../redu
 import { createplaylist, deletefromplaylist, getuserplaylist } from "../../../redux/slices/userplaylistSlice";
 import { getplaylist } from "../../../redux/slices/playlistSlice";
 import { Button } from "@mui/material";
+import { toast } from "react-toastify";
 
 const MusicCard = ({ album, songs, image, gradient }) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -13,18 +14,16 @@ const MusicCard = ({ album, songs, image, gradient }) => {
   const [dropdownIndex, setDropdownIndex] = useState(null);
   const [playlistDropdownIndex, setPlaylistDropdownIndex] = useState(null);
   const [likedSongs, setLikedSongs] = useState([]);
-  const [input, setinput] = useState(false)
+  const [input, setInput] = useState(false);
+  const [name, setName] = useState('');
   const audioRef = useRef(new Audio(songs[0].audioSrc));
-  const userplaylist = useSelector((state) => state.userplaylist.userplaylist)
-  console.log("userplaylist:", userplaylist);
-  const albums = useSelector((state) => state.albums.albums);
+  const userplaylist = useSelector((state) => state.userplaylist.userplaylist);
   const favourite = useSelector((state) => state.favourite.favourite);
   const currentuser = localStorage.getItem("current user");
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { userplaylists } = useParams()
-  const [name,setname]=useState('')
-  console.log('userplaylists', userplaylists);
+  const { userplaylists } = useParams();
+
   useEffect(() => {
     dispatch(getfavourite());
   }, [dispatch]);
@@ -47,7 +46,6 @@ const MusicCard = ({ album, songs, image, gradient }) => {
       audioRef.current.src = songs[index].audioSrc;
       setCurrentSongIndex(index);
       setIsPlaying(true);
-
       try {
         await audioRef.current.play();
       } catch (error) {
@@ -57,10 +55,16 @@ const MusicCard = ({ album, songs, image, gradient }) => {
   };
 
   const toggleDropdown = (index) => {
-    setDropdownIndex(dropdownIndex === index ? null : index);
+    if(currentuser){
+      setDropdownIndex(dropdownIndex === index ? null : index);
+    }else{
+      toast.error('please login')
+    }
+   
   };
 
   const togglePlaylistDropdown = (index) => {
+
     setPlaylistDropdownIndex(playlistDropdownIndex === index ? null : index);
   };
 
@@ -75,29 +79,30 @@ const MusicCard = ({ album, songs, image, gradient }) => {
   };
 
   const addtoplaylist = async (playlistName, songsId) => {
-    await dispatch(createplaylist({ playlistName, songsId }))
-    await dispatch(getuserplaylist())
-    await dispatch(getplaylist())
-
-  }
+    await dispatch(createplaylist({ playlistName, songsId }));
+    await dispatch(getuserplaylist());
+    await dispatch(getplaylist());
+  };
 
   const removefromplaylist = async (playlistid, songId) => {
-    await dispatch(deletefromplaylist({ playlistid, songId }))
-    await dispatch(getuserplaylist())
-    await dispatch(getplaylist())
-  }
+    await dispatch(deletefromplaylist({ playlistid, songId }));
+    await dispatch(getuserplaylist());
+    await dispatch(getplaylist());
+  };
 
   const changetoinp = () => {
-    setinput(!input)
-  }
+    setInput(!input);
+  };
 
-  const handlesubmit=async (playlistName, songsId) => {
-    await dispatch(createplaylist({ playlistName, songsId }))
-    await dispatch(getuserplaylist())
-    await dispatch(getplaylist())
-    setinput(false)
-   setname('')
-  }
+  const handlesubmit = async (e, playlistName, songsId) => {
+    e.preventDefault(); // Prevent default form submission
+    await dispatch(createplaylist({ playlistName, songsId }));
+    await dispatch(getuserplaylist());
+    await dispatch(getplaylist());
+    setInput(false);
+    setName('');
+  };
+
   return (
     <div
       className={`w-full mx-auto p-6 shadow-lg text-white font-sans overflow-y-scroll ${gradient || "bg-gradient-to-b from-orange-500 to-black"} scrollbar-none`}
@@ -134,12 +139,8 @@ const MusicCard = ({ album, songs, image, gradient }) => {
             >
               <td className="py-2">{index + 1}</td>
 
-              <Link
-                to={`/playcomponent/${song.id}/${album.id}`}
-              >
-                <td
-                  className={`py-2 ${currentSongIndex === index && isPlaying ? "text-green-500 font-semibold" : ""}`}
-                >
+              <Link to={`/playcomponent/${song.id}/${album.id}`}>
+                <td className={`py-2 ${currentSongIndex === index && isPlaying ? "text-green-500 font-semibold" : ""}`}>
                   {song.title}
                 </td>
               </Link>
@@ -151,10 +152,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
                       ? deleteFromFavourite(song.id)
                       : addToFavourite(song.id)
                   }
-                  className={`transition duration-200 ${favourite.some((fav) => fav._id === song.id)
-                    ? "text-green-500 hover:text-green-700"
-                    : "text-gray-300 hover:text-white"
-                    }`}
+                  className={`transition duration-200 ${favourite.some((fav) => fav._id === song.id) ? "text-green-500 hover:text-green-700" : "text-gray-300 hover:text-white"}`}
                 >
                   <FaHeart />
                 </button>
@@ -186,7 +184,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
                 >
                   <FaEllipsisH />
                 </button>
-                {dropdownIndex === index && (
+                {dropdownIndex === index && currentuser ? (
                   <div className="absolute top-full right-0 mt-2 w-40 bg-black text-white text-sm rounded-md shadow-lg">
                     <button
                       className="block px-4 py-2 hover:bg-gray-700 rounded-md"
@@ -196,56 +194,44 @@ const MusicCard = ({ album, songs, image, gradient }) => {
                     </button>
                     {playlistDropdownIndex === index && (
                       <div className="absolute top-12 right-0 mt-2 w-40 bg-black text-white text-sm rounded-md shadow-lg overflow-y-scroll">
-
                         {input ? (
                           <div className="flex items-center space-x-2 bg-gray-800 p-2 rounded-md hover:bg-gray-700 transition-all duration-200">
-                            <form className="flex-grow" onSubmit={()=>handlesubmit(name,song.id)}>
+                            <form className="flex-grow" onSubmit={(e) => handlesubmit(e, name, song.id)}>
                               <input
                                 type="text"
                                 placeholder="New Playlist"
                                 className="bg-gray-900 text-white rounded-md p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200 h-7"
-                                onChange={(e)=>setname(e.target.value)}
+                                onChange={(e) => setName(e.target.value)}
                               />
-                               <button
-                              type="submit"
-                              className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-all duration-200"
-                            >
-                              Create
-                            </button>
+                              <button
+                                type="submit"
+                                className="bg-blue-600 text-white px-2 py-1 rounded-md hover:bg-blue-700 transition-all duration-200"
+                              >
+                                Create new
+                              </button>
                             </form>
-                           
                           </div>
-                        ) : (<button className="block px-4 py-2 hover:bg-gray-600 rounded-md" onClick={changetoinp}>create new </button>)}
+                        ) : (
+                          <button
+                            onClick={changetoinp}
+                            className="block px-4 py-2 hover:bg-gray-700 rounded-md"
+                          >
+                            Create New Playlist
+                          </button>
+                        )}
                         {userplaylist.map((playlist) => (
-                          <div key={playlist._id} className="flex flex-col space-y-2">
-                            <button className="flex items-center space-x-4 px-4 py-2 hover:bg-gray-700 rounded-lg" onClick={() => addtoplaylist(playlist.name, song.id)}>
-                              <img
-                                src={playlist.songs[0]?.image || "/default-image.png"}
-                                alt={playlist.name || "Playlist"}
-                                className="w-10 h-10 rounded-full object-cover"
-                              />
-                              <span className="text-sm">{playlist.name || "Untitled Playlist"}</span>
-                            </button>
-                          </div>
+                          <button
+                            key={playlist._id}
+                            onClick={() => addtoplaylist(playlist.name, song.id)}
+                            className="block px-4 py-2 hover:bg-gray-700 rounded-md"
+                          >
+                            {playlist.name}
+                          </button>
                         ))}
-
                       </div>
                     )}
-                    <button
-                      className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
-                      onClick={() =>
-                        favourite.some((fav) => fav._id === song.id)
-                          ? deleteFromFavourite(song.id)
-                          : addToFavourite(song.id)
-                      }
-                    >
-                      Save to your Liked Songs
-                    </button>
-                    {userplaylists ? (
-                      <button className="block w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md" onClick={() => removefromplaylist(userplaylists, song.id)}>Remove from Playlist</button>
-                    ) : null}
                   </div>
-                )}
+                ) : null}
               </td>
             </tr>
           ))}

@@ -21,7 +21,7 @@ const Album = () => {
     }
 console.log('album:',albums);
     return (
-        <div className="bg-stone-950 p-4 text-white rounded-lg shadow-lg">
+        <div className="bg-stone-950  text-white rounded-lg shadow-lg">
             <h1 className="text-2xl font-bold mb-4">Albums</h1>
             <CardCarousel>
                 {albums.map((album) => (

@@ -1,25 +1,20 @@
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getAllsongs } from "../../../../redux/slices/songSlice";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Searchbar = () => {
-  const dispatch = useDispatch();
+const Searchbar = ({songs, status}) => {
   const [search, setSearch] = useState("");
   const [isActive, setIsActive] = useState(false);
 
-  useEffect(() => {
-    dispatch(getAllsongs());
-  }, [dispatch]);
-
-  const { songs, status } = useSelector((state) => state.song);
-  const filteredsongs = songs.filter((song) => {
+  const filteredsongs = songs?.filter((song) => {
     const word = search.toLowerCase().trim();
-    return (
+    return (  
       song.title.toLowerCase().includes(word) ||
       song.artist.toLowerCase().includes(word) ||
       song.album.toLowerCase().includes(word)
     );
   });
+  
+// setSongs(filteredsongs)
 
   return (
     <div className="relative w-full max-w-md ">
@@ -42,8 +37,9 @@ const Searchbar = () => {
           {filteredsongs.length > 0 ? (
             <ul>
               {filteredsongs.map((song) => (
+                <Link  key={song._id} >
                 <li
-                  key={song._id}
+                 
                   className="flex items-center space-x-2 p-2 hover:bg-gray-800 rounded-lg"
                 >
                   <img
@@ -57,6 +53,7 @@ const Searchbar = () => {
                     <p className="text-sm text-gray-500">{song.album}</p>
                   </div>
                 </li>
+                </Link>
               ))}
             </ul>
           ) : (

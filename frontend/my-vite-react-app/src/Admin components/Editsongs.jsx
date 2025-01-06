@@ -5,6 +5,7 @@ import {  getAlladminSongs } from '../redux/slices/admin slices/AdminSongSlice';
 import FormforSong from './Admin layouts/FormforSong';
 import AdminSidebar from './Admin layouts/AdminSidebar';
 import Navbar from '../components/User components/Layout/Navbar/Navbar';
+import AdminNavbar from './Admin layouts/AdminNavbar';
 
 const Editsongs = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ const Editsongs = () => {
 
   return (
     <div className='h-screen bg-black '>
-        <Navbar/>
+        <AdminNavbar/>
     <div className='flex fixed w-full'>
         <div className='h-screen'>
             <AdminSidebar/>

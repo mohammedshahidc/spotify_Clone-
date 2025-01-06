@@ -24,12 +24,14 @@ const MusicController = () => {
   const albums = useSelector((state) => state.albums.albums);
   const Playlist = useSelector((state) => state.playlist.playlist);
   const favourite = useSelector((state) => state.favourite.favourite);
-
+  const allsongs=useSelector((state)=>state.song.songs)
   useEffect(() => {
     const filteredArtist = artist?.find((item) => item.artist === id2);
     const filteredAlbums = albums?.find((alb) => alb._id === id2);
     const filteredPlaylist = Playlist.playlists.find((item) => item._id === id2);
-
+    
+    
+    console.log('sd:',allsongs);
     const songsForPlay =
       (filteredPlaylist && filteredPlaylist.songs) ||
       (filteredArtist && filteredArtist.songs) ||

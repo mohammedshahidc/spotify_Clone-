@@ -7,12 +7,15 @@ import Searchbar from './Searchbar';
 import { adminlogout } from '../../../../redux/slices/admin slices/adminloginSlice';
 import { getAllusers } from '../../../../redux/slices/admin slices/adminusersslice';
 import { persistor } from '../../../../redux/store';
+import { getAllsongs } from '../../../../redux/slices/songSlice';
 
 const Navbar = () => {
   const user = useSelector((state) => state.user);
   const localuser=localStorage.getItem('current user')
   
   const admin = useSelector((state) => state.admin.user);
+  const { songs, status } = useSelector((state) => state.song);
+
   const [isDropdown, setIsDropdown] = useState(false);
   const [click, setClick] = useState(false);
   const navigate = useNavigate();
@@ -23,6 +26,8 @@ const Navbar = () => {
   };
   useEffect(()=>{
     dispatch(getAllusers())
+    dispatch(getAllsongs());
+
   },[])
 
   const handleLogout = () => {
@@ -35,7 +40,7 @@ const Navbar = () => {
     } else if (admin) {
       dispatch(adminlogout());
       persistor.purge().then(() => {
-        localStorage.clear(); // Explicitly clear all localStorage keys
+        localStorage.clear(); 
         console.log("Persisted state and localStorage cleared for admin.");
       });
     }
@@ -61,7 +66,7 @@ const Navbar = () => {
         </Link>
 
         <div className="hidden md:block w-[450px]">
-          <Searchbar />
+          <Searchbar songs={songs} status={status}  />
         </div>
 
         <Link to="/search">

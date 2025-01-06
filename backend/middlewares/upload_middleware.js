@@ -2,14 +2,14 @@ const multer = require('multer');
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const cloudinary = require('cloudinary').v2;
 
-// Cloudinary configuration
+
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// Define storage for audio files
+
 const audioStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -19,7 +19,7 @@ const audioStorage = new CloudinaryStorage({
     },
 });
 
-// Define storage for image files
+
 const imageStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
@@ -29,7 +29,7 @@ const imageStorage = new CloudinaryStorage({
     },
 });
 
-// Configure multer with Cloudinary storage
+
 const upload = multer({
     storage: new CloudinaryStorage({
         cloudinary: cloudinary,

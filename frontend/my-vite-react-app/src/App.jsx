@@ -19,6 +19,8 @@ import Adminsong from './Admin components/Adminsong'
 import AdminUserprofile from './Admin components/AdminUserprofile'
 import Addsong from './Admin components/Addsong'
 import Editsongs from './Admin components/Editsongs'
+import Laibrery from './components/User components/mobile view/Laibrery'
+// import CreatePlaylist from './components/User components/CreatePlaylist'
 
 
 
@@ -45,6 +47,9 @@ const App = () => {
         <Route path='/userplaylist/playcomponent/:userplaylists' element={<PlaylistComponent/>}/>
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/adminlogin' element={<AdminLogin/>}/>
+        <Route path='/laibrery' element={<Laibrery/>}/>
+
+        {/* <Route path='/createplaylist' element={<CreatePlaylist/>}/> */}
       </Routes>):(
         <Routes>
         <Route path='/admin' element={<AdminHome/>}/>
@@ -53,6 +58,7 @@ const App = () => {
        <Route path='/admin/userprofile/:id' element={<AdminUserprofile/>}/>
        <Route path='/admin/songs/addsongs' element={<Addsong/>}/>
        <Route path='/admin/songs/editsong/:id' element={<Editsongs/>}/>
+     
         </Routes>
       )}
      

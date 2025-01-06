@@ -6,7 +6,8 @@ import { Link } from "react-router-dom";
 
 const Dives = () => {
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.admin.admin);
+    
+    const user = localStorage.getItem('current user');
 
     useEffect(() => {
         if (user) {
@@ -19,11 +20,9 @@ const Dives = () => {
     const { playlist } = useSelector((state) => state.playlist);
 
     return (
-        <div className="bg-stone-950 p-6 text-white rounded-lg shadow-xl max-w-5xl mx-auto mt-8">
-            {/* Gradient Header */}
-            <div className="bg-gradient-to-b from-violet-950 to-gray-700 min-h-[25vh] rounded-lg p-6 shadow-md">
-                {/* Button Section */}
-                <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-6">
+        <div className="bg-stone-950 text-white rounded-lg sm:max-w-full md:max-w-3/4 lg:max-w-2/3 mx-auto mt-8 shadow-lg">
+            <div className="bg-gradient-to-b from-violet-950 to-gray-700 sm:p-0 md:p-4 max-w-full min-h-[25vh] rounded-lg p-2 shadow-md">
+                {/* <div className="flex flex-wrap justify-center sm:justify-start gap-3 mb-6">
                     <Link to="/">
                         <button className="bg-gray-800 text-white rounded-lg px-4 py-2 text-sm font-semibold hover:bg-gray-700 transition">
                             All
@@ -34,31 +33,31 @@ const Dives = () => {
                             Music
                         </button>
                     </Link>
-                </div>
+                </div> */}
 
                 {/* Grid Section */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-4">
                     {/* Liked Songs */}
                     <Link to="/likedsongs">
-                        <div className="bg-stone-900 rounded-lg flex items-center p-3 gap-4 hover:scale-105 hover:bg-stone-800 transition">
+                        <div className="bg-stone-900 rounded-lg flex items-center p-3 gap-2 hover:scale-105 hover:bg-stone-800 transition">
                             <img
                                 src={favourite[0]?.image || "default-image-url.jpg"}
                                 alt="Liked Songs"
-                                className="h-12 w-12 object-cover rounded-lg"
+                                className="h-10 w-10 object-cover rounded-lg"
                             />
-                            <h1 className="text-sm font-medium">Liked Songs</h1>
+                            <h1 className="text-xs font-medium truncate">Liked Songs</h1>
                         </div>
                     </Link>
                     {/* Playlists */}
-                    {playlist?.playlists?.map((pl) => (
+                    {playlist?.playlists?.slice(0, 5).map((pl) => (
                         <Link key={pl._id} to={`/playlist/playlcomponent/${pl._id}`}>
-                            <div className="bg-stone-900 rounded-lg flex items-center p-2 min-w-fit gap-4 hover:scale-105 max-w-fit hover:bg-stone-800 transition">
+                            <div className="bg-stone-900 rounded-lg flex items-center p-3 gap-2 hover:scale-105 hover:bg-stone-800 transition">
                                 <img
                                     src={pl.songs[0]?.image || "default-image-url.jpg"}
                                     alt={pl.name}
-                                    className="h-12 w-12 object-cover rounded-lg"
+                                    className="h-10 w-10 object-cover rounded-lg"
                                 />
-                                <h1 className="text-sm  font-normal ">{pl.name}</h1>
+                                <h1 className="text-xs font-normal truncate">{pl.name}</h1>
                             </div>
                         </Link>
                     ))}

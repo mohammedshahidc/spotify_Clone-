@@ -15,7 +15,7 @@ const Playlist = () => {
     }, [dispatch]);
 
     
-    console.log("Current Playlist State:", { playlist, status, error });
+    
 
     if (status === "pending") {
         return <p className="text-white text-center">Loading...</p>;
@@ -36,7 +36,7 @@ const Playlist = () => {
     const newplaylist = playlistArray.map((item) => item.playlists);
 
     return (
-        <div className="bg-stone-950 p-4 text-white rounded-lg shadow-lg">
+        <div className="bg-stone-950 text-white rounded-lg shadow-lg">
             
             <h2 className="text-xl font-bold mb-4">Playlists</h2>
             <CardCarousel>

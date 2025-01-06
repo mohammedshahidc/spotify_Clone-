@@ -9,7 +9,7 @@ const CardCarousel = ({ children }) => {
     return (
         <Swiper
             spaceBetween={20}
-            slidesPerView={1} 
+            slidesPerView={2.5} 
             breakpoints={{
                 640: {
                     slidesPerView: 2,
