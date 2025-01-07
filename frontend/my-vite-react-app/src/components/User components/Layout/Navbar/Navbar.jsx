@@ -60,7 +60,7 @@ const Navbar = () => {
       <div className="flex-1 flex justify-center items-center mx-4">
         <Link
           to="/"
-          className="flex items-center text-white bg-stone-900 hover:scale-110 transform transition duration-500 p-1 rounded-full mr-5"
+          className="flex hidden sm:block items-center text-white bg-stone-900 hover:scale-110 transform transition duration-500 p-1 rounded-full mr-5"
         >
           <FaHome size={35} />
         </Link>
@@ -70,7 +70,7 @@ const Navbar = () => {
         </div>
 
         <Link to="/search">
-          <button className="block md:hidden ml-4 text-white p-4 rounded-full bg-stone-900">
+          <button className="block hidden sm:block md:hidden ml-4 text-white p-4 rounded-full bg-stone-900">
             <FaSearch size={20} />
           </button>
         </Link>

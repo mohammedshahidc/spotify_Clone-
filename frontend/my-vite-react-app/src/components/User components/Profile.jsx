@@ -6,6 +6,7 @@ import { edituser } from '../../redux/slices/loginSlice';
 import { Link } from 'react-router-dom';
 import Navbar from './Layout/Navbar/Navbar';
 import Sidebar from './Layout/Sidebar';
+import Smnavbar from './Layout/Navbar/Smnavbar';
 
 const Profile = () => {
     const [isEditing, setIsEditing] = useState(false);
@@ -58,8 +59,8 @@ console.log('image:',profilePicture);
     return (
         <div>
             <Navbar />
-            <div className="flex fixed w-screen h-screen  ">
-                <div className="shadow-lg w-1/5 bg-black text-white ">
+            <div className="flex w-screen h-screen overflow-y-scroll">
+                <div className="shadow-lg relative fixed hidden sm:block w-1/5 bg-black text-white ">
                     <Sidebar />
                 </div>
                 <div className="flex-1 flex flex-col items-center p-6 bg-black text-white min-h-screen overflow-y-scroll scrollbar-none ">
@@ -118,7 +119,7 @@ console.log('image:',profilePicture);
                         <h2 className="text-2xl font-semibold mb-6 border-b border-white pb-2">
                             Your Playlists
                         </h2>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
+                        <ul className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-6 ">
                             {playlists && playlists.length > 0 ? (
                                 playlists.map((playlist) => (
                                     <Link
@@ -126,12 +127,12 @@ console.log('image:',profilePicture);
                                         to={`/userplaylist/playcomponent/${playlist._id}`}
                                     >
                                         <li
-                                            className="flex flex-col bg-gradient-to-b from-stone-950 to-stone-600 p-4 rounded-lg hover:bg-gray-700 shadow-md transition-transform transform hover:scale-105"
+                                            className="flex flex-col w-28 h bg-gradient-to-b from-stone-950 to-stone-600 p-4 rounded-lg sm:w-60 sm:h-72 hover:bg-gray-700 shadow-md transition-transform transform hover:scale-105"
                                         >
                                             <img
                                                 src={playlist.songs[0]?.image || '/default-image.png'}
                                                 alt={playlist.name}
-                                                className="w-full h-32 rounded-lg mb-4 object-cover"
+                                                className="w-full h-20 rounded-lg mb-4 object-cover sm:h-32"
                                             />
                                             <span className="text-lg font-semibold mb-2">
                                                 {playlist.name}
@@ -151,6 +152,9 @@ console.log('image:',profilePicture);
                     </div>
                 </div>
             </div>
+            <div className="fixed bottom-0 left-0 w-full z-50">
+        <Smnavbar />
+      </div>
         </div>
     );
 };

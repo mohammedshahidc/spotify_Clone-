@@ -100,9 +100,13 @@ const MusicController = () => {
 
   return (
     <div className="w-screen fixed h-screen bg-black flex flex-col">
+    <div className='hidden sm:block'>
       <Navbar />
-      <div className="flex flex-grow">
+      </div>
+      <div className="flex flex-grow ">
+        <div className='hidden sm:block'>
         <Sidebar />
+        </div>
         <div className="flex-grow flex justify-center items-center mt-[20px] w-96 bg-black">
           <Card
             sx={{

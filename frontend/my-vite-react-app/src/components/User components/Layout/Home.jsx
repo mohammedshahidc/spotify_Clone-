@@ -21,7 +21,7 @@ const Home = () => {
 
   return (
     <div className="bg-black p-5 overflow-hidden sm:p-6 md:p-4 lg:p-8">
-      <div className="hidden sm:block">
+      <div className="">
         <Navbar />
       </div>
 

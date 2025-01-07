@@ -8,27 +8,24 @@ import { getplaylist } from "../../../redux/slices/playlistSlice";
 import { getartist } from "../../../redux/slices/artist.slice";
 import { getAlbums } from "../../../redux/slices/albumSlice";
 import { getuserplaylist } from "../../../redux/slices/userplaylistSlice";
+import Smnavbar from "../Layout/Navbar/Smnavbar";
 
 const PlaylistComponent = () => {
   const dispatch = useDispatch();
 
-  
   const playlist = useSelector((state) => state.playlist.playlist);
   const artistSongs = useSelector((state) => state.artist.artist);
   const albums = useSelector((state) => state.albums.albums);
   const userplaylist = useSelector((state) => state.userplaylist.userplaylist);
   const { id, artist, albumid, userplaylists } = useParams();
 
-  
   const [filteredPlaylists, setFilteredPlaylists] = useState([]);
   const [filteredSongs, setFilteredSongs] = useState([]);
   const [filteredAlbum, setFilteredAlbum] = useState([]);
   const [filtereduserplaylist, setFilteredUserPlaylist] = useState([]);
 
-  
   const playlistArray = Array.isArray(playlist) ? playlist : [playlist];
 
- 
   useEffect(() => {
     dispatch(getplaylist());
     dispatch(getartist());
@@ -36,7 +33,6 @@ const PlaylistComponent = () => {
     dispatch(getuserplaylist());
   }, [dispatch]);
 
-  
   useEffect(() => {
     if (playlistArray.length > 0 && id) {
       const playlists = playlistArray[0].playlists.filter((item) => item._id === id);
@@ -44,7 +40,6 @@ const PlaylistComponent = () => {
     }
   }, [playlist, id]);
 
- 
   useEffect(() => {
     if (artistSongs.length > 0 && artist) {
       const foundArtist = artistSongs.find((art) => art.artist === artist);
@@ -54,7 +49,6 @@ const PlaylistComponent = () => {
     }
   }, [artistSongs, artist]);
 
-  
   useEffect(() => {
     if (albums.length > 0 && albumid) {
       const filtered = albums.filter((album) => album._id === albumid);
@@ -62,7 +56,6 @@ const PlaylistComponent = () => {
     }
   }, [albums, albumid]);
 
- 
   useEffect(() => {
     if (userplaylists) {
       const filtered = userplaylist.filter((playlist) => playlist._id === userplaylists);
@@ -73,17 +66,17 @@ const PlaylistComponent = () => {
   console.log('filteredplaylist:', filtereduserplaylist);
 
   return (
-    <div className="flex flex-col h-fit bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll scrollbar-none">
-      
-      <Navbar />
-
+    <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll scrollbar-none">
+    
+      <div className="hidden sm:block">
+      <Navbar/>
+      </div>
       <div className="flex flex-1">
-       
-        <div className="w-1/5 shadow-lg">
+        
+        <div className="hidden sm:w-1/5 sm:block shadow-lg">
           <Sidebar />
         </div>
 
-        
         <div className="flex-1 p-6 overflow-y-scroll scrollbar-none">
           {filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (
@@ -190,8 +183,11 @@ const PlaylistComponent = () => {
           )}
         </div>
       </div>
+      <div className="fixed bottom-0 left-0 w-full z-50">
+        <Smnavbar />
+      </div>
     </div>
   );
 };
 
-export default PlaylistComponent;
+export default PlaylistComponent; 
