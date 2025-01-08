@@ -1,7 +1,7 @@
 const { userValidationSchema, userLoginValidationSchema } = require('../models/validation')
 const User = require('../models/User_model')
 const CustomError = require('../utils/CustomError')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const sendEmail = require('../utils/emailService')
 const jwt = require('jsonwebtoken')
 const Song = require('../models/Song_model')
