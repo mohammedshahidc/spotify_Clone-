@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../../axiosinstance';
+import { toast } from 'react-toastify';
 
 
 export const getuserplaylist = createAsyncThunk(
@@ -26,7 +27,7 @@ export const createplaylist=createAsyncThunk("addtoplaylist",async({playlistName
             songsId
         })
         console.log("createplaylist:",response.data);
-        alert(`song adde to ${playlistName} `)
+        toast.success(`song adde to ${playlistName} `)
     } catch (error) {
         console.log("create playlist:",error);
         

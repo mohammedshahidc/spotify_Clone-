@@ -37,7 +37,7 @@ const Searchbar = ({songs, status}) => {
           {filteredsongs.length > 0 ? (
             <ul>
               {filteredsongs.map((song) => (
-                <Link  key={song._id} >
+                <Link  key={song._id} to={`/searchbar/${song._id}`} >
                 <li
                  
                   className="flex items-center space-x-2 p-2 hover:bg-gray-800 rounded-lg"

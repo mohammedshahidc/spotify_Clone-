@@ -108,7 +108,7 @@ const MusicCard = ({ album, songs, image, gradient }) => {
   };
 
   const handlesubmit = async (e, playlistName, songsId) => {
-    e.preventDefault(); // Prevent default form submission
+    e.preventDefault();
     await dispatch(createplaylist({ playlistName, songsId }));
     await dispatch(getuserplaylist());
     await dispatch(getplaylist());

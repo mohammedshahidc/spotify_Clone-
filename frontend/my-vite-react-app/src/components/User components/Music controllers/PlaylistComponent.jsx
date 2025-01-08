@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Sidebar from "../Layout/Sidebar";
 import Navbar from "../Layout/Navbar/Navbar";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import MusicCard from "../Cards/MusicCard";
 import { getplaylist } from "../../../redux/slices/playlistSlice";
@@ -9,7 +9,7 @@ import { getartist } from "../../../redux/slices/artist.slice";
 import { getAlbums } from "../../../redux/slices/albumSlice";
 import { getuserplaylist } from "../../../redux/slices/userplaylistSlice";
 import Smnavbar from "../Layout/Navbar/Smnavbar";
-
+import { IoMdArrowBack } from "react-icons/io";
 const PlaylistComponent = () => {
   const dispatch = useDispatch();
 
@@ -67,12 +67,17 @@ const PlaylistComponent = () => {
 
   return (
     <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll scrollbar-none">
-    
-      <div className="hidden sm:block">
-      <Navbar/>
+
+      <div>
+        <Navbar />
+      </div>
+      <div>
+        <Link to={'/'}>
+      <IoMdArrowBack size={35} className="m-5"/>
+      </Link>
       </div>
       <div className="flex flex-1">
-        
+
         <div className="hidden sm:w-1/5 sm:block shadow-lg">
           <Sidebar />
         </div>
@@ -157,9 +162,9 @@ const PlaylistComponent = () => {
                     <MusicCard
                       key={playlistitem.songs[0]._id}
                       album={{
-                        image: playlistitem.songs[0]?.image ,
-                        title: playlistitem.name, 
-                        artist: "User Playlist", 
+                        image: playlistitem.songs[0]?.image,
+                        title: playlistitem.name,
+                        artist: "User Playlist",
                         details: `${playlistitem.songs.length} songs`,
                         id: playlistitem._id,
                       }}

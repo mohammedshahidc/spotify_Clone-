@@ -44,6 +44,7 @@ const App = () => {
         <Route path='/artist/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/albums/playcomponent/:id1/:id2' element={<MusicController/>}/>
         <Route path='/likedsongs/playcomponent/:id1/:id2' element={<MusicController/>}/>
+        <Route path='/searchbar/:id1' element={<MusicController/>}/>
         <Route path='/userplaylist/playcomponent/:userplaylists' element={<PlaylistComponent/>}/>
         <Route path='/profile' element={<Profile/>}/>
         <Route path='/adminlogin' element={<AdminLogin/>}/>

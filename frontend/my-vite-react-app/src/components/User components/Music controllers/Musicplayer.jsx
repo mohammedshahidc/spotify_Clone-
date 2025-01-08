@@ -11,6 +11,7 @@ import { useParams } from 'react-router-dom';
 import Navbar from '../Layout/Navbar/Navbar';
 import Sidebar from '../Layout/Sidebar';
 import { addtofavourite, deletefromfavourite, getfavourite } from '../../../redux/slices/favouriteSlice';
+import Smnavbar from '../Layout/Navbar/Smnavbar';
 
 const MusicController = () => {
   const [currentSongIndex, setCurrentSongIndex] = useState(0);
@@ -29,13 +30,14 @@ const MusicController = () => {
     const filteredArtist = artist?.find((item) => item.artist === id2);
     const filteredAlbums = albums?.find((alb) => alb._id === id2);
     const filteredPlaylist = Playlist.playlists.find((item) => item._id === id2);
+    const filteredsong=[] 
+    filteredsong.push(allsongs.find((song)=>song._id==id1))
     
-    
-    console.log('sd:',allsongs);
     const songsForPlay =
       (filteredPlaylist && filteredPlaylist.songs) ||
       (filteredArtist && filteredArtist.songs) ||
       (filteredAlbums && filteredAlbums.songs) ||
+      (filteredsong && filteredsong)||
       (favourite && favourite.length > 0 ? favourite : []) ||
       [];
     setSongs(songsForPlay);
@@ -45,7 +47,7 @@ const MusicController = () => {
     const songIndex = songs.findIndex((song) => song._id === id1);
     if (songIndex >= 0) {
       setCurrentSongIndex(songIndex);
-      setIsPlaying(true); // Set to play when song is selected
+      setIsPlaying(true); 
     }
   }, [id1, songs]);
 
@@ -100,7 +102,7 @@ const MusicController = () => {
 
   return (
     <div className="w-screen fixed h-screen bg-black flex flex-col">
-    <div className='hidden sm:block'>
+    <div>
       <Navbar />
       </div>
       <div className="flex flex-grow ">
@@ -117,9 +119,9 @@ const MusicController = () => {
               height: '900px',
               color: '#fff',
             }}
-            className="bg-[#121212] rounded-lg shadow-lg"
+            className="flex bg-[#121212] rounded-lg shadow-lg"
           >
-            <CardContent className="flex flex-col items-center">
+            <CardContent className="flex flex-col items-center justify-center sm:justify-normal">
               {songs.length > 0 && songs[currentSongIndex] ? (
                 <>
                   <img
@@ -189,6 +191,9 @@ const MusicController = () => {
             </CardContent>
           </Card>
         </div>
+      </div>
+      <div className="fixed bottom-0 left-0 w-full z-50">
+        <Smnavbar />
       </div>
     </div>
   );
