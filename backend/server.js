@@ -1,48 +1,48 @@
-require ('dotenv').config()
-const express=require('express')
-const mongoose=require('mongoose')
-const userRouter=require('./routes/User_routes')
-const ErrorManager=require('./middlewares/Error_handler')
-const CustomError=require('./utils/CustomError')
-const adminRouter=require('./routes/Admin_routes')
-const app=express()
+require('dotenv').config();
+const express = require('express');
+const mongoose = require('mongoose');
+const userRouter = require('./routes/User_routes');
+const ErrorManager = require('./middlewares/Error_handler');
+const CustomError = require('./utils/CustomError');
+const adminRouter = require('./routes/Admin_routes');
+const app = express();
 const cookieParser = require('cookie-parser');
-const cors=require('cors')
+const cors = require('cors');
 
-app.use(express.json())
-
+app.use(express.json());
 app.use(cors({
     origin: "https://spotify-clone-rose-seven-51.vercel.app",
-    //origin: "http://localhost:5173",
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
-  }));
-
+}));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-app.use('/user',userRouter)
-app.use('/admin',adminRouter)
+app.use('/user', userRouter);
+app.use('/admin', adminRouter);
 
-app.use(ErrorManager)
+app.use(ErrorManager);
 
-
-const PORT =process.env.PORT||3001
-
-mongoose.connect(PORT)
-.then(()=>{
-    console.log('connected successfully');
-})
-.catch((error)=>{
-    console.log("failed to connect",Error);
-})
-
-
-app.all("*",(req,res,next)=>{
+app.all("*", (req, res, next) => {
     const err = new CustomError(`Cannot ${req.method} ${req.originalUrl}`, 404);
-     next(err);
-     console.log("err:",err);
-})
+    next(err);
+});
 
-app.listen(PORT,()=>{console.log(`server run on ${PORT}`)})
+const CONNECTION_STRING = process.env.CONNECTION_STRING;
+const PORT = process.env.PORT || 3001;
+
+mongoose.connect(CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => {
+        console.log('Connected to MongoDB successfully');
+    })
+    .catch((error) => {
+        console.log("Failed to connect to MongoDB", error.message);
+    });
+
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
