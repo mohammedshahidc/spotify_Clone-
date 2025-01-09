@@ -82,7 +82,7 @@ const PlaylistComponent = () => {
           <Sidebar />
         </div>
 
-        <div className="flex-1 p-6 overflow-y-scroll scrollbar-none">
+        <div className="flex-1 ml-4 p-6 overflow-y-scroll scrollbar-none">
           {filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (
               <MusicCard
