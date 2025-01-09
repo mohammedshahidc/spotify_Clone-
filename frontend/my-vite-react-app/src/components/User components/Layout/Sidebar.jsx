@@ -43,7 +43,7 @@ const Sidebar = () => {
           <span className="hidden md:block">Liked Songs</span>
         </Link>
         <div className="relative">
-         <ul> {/* <ul className="relative left-0 mt-2 h-96 bg-stone-900 rounded-lg shadow-lg overflow-y-scroll scrollbar-none w-fit"> */}
+          <ul className="relative left-0 mt-2 bg-stone-900 rounded-lg shadow-lg overflow-y-scroll scrollbar-none w-fit">
             {userplaylist.length > 0 && user ? (
               userplaylist.map((playlistItem, index) => (
                 <li key={index} className="hover:bg-gray-700 rounded-lg">
