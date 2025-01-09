@@ -32,7 +32,7 @@ const Likedsong = () => {
 
       <div className="flex flex-1">
         {/* Sidebar */}
-        <div className="w-1/5 shadow-lg h-screen overflow-y-auto scrollbar-none">
+        <div className="w-1/5 shadow-lg h-screen overflow-y-auto scrollbar-none hidden sm:block">
           <Sidebar />
         </div>
 
