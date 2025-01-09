@@ -28,9 +28,9 @@ app.use('/admin',adminRouter)
 app.use(ErrorManager)
 
 
+const PORT =process.env.PORT||3001
 
-
-mongoose.connect(process.env.CONNECTION_STRING || 3001)
+mongoose.connect(PORT)
 .then(()=>{
     console.log('connected successfully');
 })
@@ -45,4 +45,4 @@ app.all("*",(req,res,next)=>{
      console.log("err:",err);
 })
 
-app.listen(process.env.PORT,()=>{console.log(`server run on ${process.env.PORT}`)})
+app.listen(PORT,()=>{console.log(`server run on ${PORT}`)})
