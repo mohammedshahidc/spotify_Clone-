@@ -28,7 +28,7 @@ const Sidebar = () => {
   const user = localStorage.getItem('current user');
 
   return (
-    <div className="bg-stone-900 text-white h-screen rounded-lg ml-3 sm:w-20 md:w-64 flex flex-col transition-all duration-300">
+    <div className="bg-stone-900 text-white h-screen rounded-lg ml-3 sm:w-16 md:w-64 flex flex-col transition-all duration-300">
       <div className="flex items-center justify-center md:justify-start py-6 px-4 md:px-6">
         <span className="text-2xl font-bold hidden md:block">Spotify</span>
         <span className="text-2xl font-bold block md:hidden">S</span>

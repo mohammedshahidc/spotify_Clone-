@@ -76,7 +76,7 @@ const PlaylistComponent = () => {
       <IoMdArrowBack size={35} className="m-5"/>
       </Link>
       </div>
-      <div className="flex flex-1">
+      <div className="flex flex-1 p-6">
 
         <div className="hidden sm:w-1/5 sm:block shadow-lg">
           <Sidebar />
