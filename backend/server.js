@@ -30,7 +30,7 @@ app.use(ErrorManager)
 
 
 
-mongoose.connect(process.env.CONNECTION_STRING)
+mongoose.connect(process.env.CONNECTION_STRING || 3001)
 .then(()=>{
     console.log('connected successfully');
 })
