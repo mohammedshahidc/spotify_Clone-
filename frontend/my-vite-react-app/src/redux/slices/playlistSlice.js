@@ -10,7 +10,6 @@ export const getplaylist = createAsyncThunk(
             if (!response.data) {
                 throw new Error("No data received");
             }
-            console.log("playlist data:", response.data);
             
             return response.data;
         } catch (error) {

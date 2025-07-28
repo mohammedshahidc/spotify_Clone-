@@ -10,13 +10,11 @@ const Otp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         navigate('/login')
-        console.log('otp:', otp);
 
         try {
             const response = await axiosInstance.put("/user/verifyotp", { otp });
 
             setResponseMessage(response.data.msg);
-            console.log("resp:", response.data.msg);
             setError('');
         } catch (error) {
             if (error.response) {
@@ -33,7 +31,7 @@ const Otp = () => {
 
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-black">
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg w-80">
+            <div className="bg-black p-6 rounded-lg shadow-lg w-80">
                 <img
                     src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg"
                     alt="Spotify Logo"

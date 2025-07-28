@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import  { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getfavourite } from "../../redux/slices/favouriteSlice";
 import { getplaylist } from "../../redux/slices/playlistSlice";
@@ -39,7 +39,7 @@ const Dives = () => {
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 lg:gap-4">
                     {/* Liked Songs */}
                     <Link to="/likedsongs">
-                        <div className="bg-stone-900 rounded-lg flex items-center p-3 gap-2 hover:scale-105 hover:bg-stone-800 transition">
+                        <div className="bg-black rounded-lg flex items-center p-3 gap-2 hover:scale-105 hover:bg-stone-800 transition">
                             <img
                                 src={favourite[0]?.image || "default-image-url.jpg"}
                                 alt="Liked Songs"
@@ -51,7 +51,7 @@ const Dives = () => {
                     {/* Playlists */}
                     {playlist?.playlists?.slice(0, 5).map((pl) => (
                         <Link key={pl._id} to={`/playlist/playlcomponent/${pl._id}`}>
-                            <div className="bg-stone-900 rounded-lg flex items-center p-3 gap-2 hover:scale-105 hover:bg-stone-800 transition">
+                            <div className="bg-black rounded-lg flex items-center p-3 gap-2 hover:scale-105 hover:bg-stone-800 transition">
                                 <img
                                     src={pl.songs[0]?.image || "default-image-url.jpg"}
                                     alt={pl.name}

@@ -45,7 +45,7 @@ const upload = multer({
                 return {
                     folder: 'songs/images',
                     resource_type: 'image',
-                    allowed_formats: ['png', 'jpg', 'jpeg'],
+                    allowed_formats: ['png', 'jpg', 'jpeg','webp'],
                 };
             }
         },
@@ -54,6 +54,8 @@ const upload = multer({
     { name: 'audioFile', maxCount: 1 },
     { name: 'imageFile', maxCount: 1 },
     { name: 'profilePicture', maxCount: 1 },
+    { name: 'artistImage', maxCount: 1 },
+
 ]);
 
 module.exports = upload;

@@ -1,4 +1,4 @@
-const { required } = require("joi");
+const { required, string } = require("joi");
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
@@ -36,6 +36,9 @@ const songSchema = new Schema(
         type:{
             type:String,
             required:true
+        },
+        artistImage:{
+            type:String
         }
     },
 

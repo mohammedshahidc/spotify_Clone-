@@ -10,7 +10,6 @@ const Userplaylist = () => {
     const userplaylist = useSelector((state) => state.userplaylist.userplaylist);
 
     const handledelete = async (playlistId) => {
-        console.log('ddd:',playlistId);
         await dispatch(deleteplaylist({playlistId}));
         await dispatch(getuserplaylist());
         await dispatch(getplaylist());

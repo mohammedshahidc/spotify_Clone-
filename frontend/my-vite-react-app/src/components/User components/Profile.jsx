@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import  { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getuserplaylist } from '../../redux/slices/userplaylistSlice';
 import { FaPencilAlt } from "react-icons/fa";
@@ -54,8 +54,6 @@ const Profile = () => {
             setProfilePicture(file);
         }
     };
-    console.log('ds:',user);
-console.log('image:',profilePicture);
     return (
         <div>
             <Navbar />

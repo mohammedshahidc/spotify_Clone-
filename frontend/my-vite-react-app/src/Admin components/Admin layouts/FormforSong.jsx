@@ -14,6 +14,7 @@ const initialSongs = {
   type: "",
   audioFile: null,
   imageFile: null,
+  artistImage: null,
 };
 
 const FormforSong = ({ handleuploadSubmit, oldSong }) => {
@@ -21,8 +22,16 @@ const FormforSong = ({ handleuploadSubmit, oldSong }) => {
   const [imagePreview, setImagePreview] = useState(
     oldSong?.imageFile ? URL.createObjectURL(oldSong.imageFile) : null
   );
+  const [artistImagePreview, setArtistImagePreview] = useState(() => {
+    if (oldSong?.artistImage instanceof File) {
+      return URL.createObjectURL(oldSong.artistImage);
+    } else if (typeof oldSong?.artistImage === 'string') {
+      return oldSong.artistImage;
+    }
+    return null;
+  });
   const dispatch = useDispatch();
-const navigate=useNavigate()
+  const navigate = useNavigate()
 
   const {
     errors,
@@ -42,23 +51,23 @@ const navigate=useNavigate()
         formData.append(key, values[key]);
       }
       try {
-       console.log(oldSong, "aaa");
+        console.log(oldSong, "aaa");
         if (oldSong) {
-          
+
           await dispatch(editSong({ formData, id: oldSong._id }));
           dispatch(getAlladminSongs());
           toast.success('song updated successfully')
           navigate('/admin/songs')
           console.log('sdhfsty');
-          console.log("sda:",formData); 
+          console.log("sda:", formData);
         } else {
           console.log('sss');
-          await handleuploadSubmit(formData); 
+          await handleuploadSubmit(formData);
         }
-        
+
       } catch (error) {
         console.error("Error uploading song:", error);
-        
+
       } finally {
         setLoading(false);
       }
@@ -70,6 +79,13 @@ const navigate=useNavigate()
     if (file) {
       setFieldValue("imageFile", file);
       setImagePreview(URL.createObjectURL(file));
+    }
+  };
+  const handleArtistImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFieldValue("artistImage", file);
+      setArtistImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -180,6 +196,26 @@ const navigate=useNavigate()
                 />
               )}
             </div>
+            {/* Artist Image File */}
+            <div className="mb-4">
+              <label htmlFor="artistImage" className="block text-sm font-medium text-white mb-2">
+                Artist Image
+              </label>
+              <input
+                type="file"
+                id="artistImage"
+                onChange={handleArtistImageChange}
+                className="w-full text-white bg-gray-800 p-2 rounded-md focus:outline-none focus:ring-spotifyGreen focus:border-spotifyGreen"
+              />
+              {artistImagePreview && (
+                <img
+                  src={artistImagePreview}
+                  alt="Artist Preview"
+                  className="mt-4 w-32 h-32 object-cover rounded-md"
+                />
+              )}
+            </div>
+
             {/* Audio File */}
             <div className="mb-4">
               <label htmlFor="audioFile" className="block text-sm font-medium text-white mb-2">
@@ -212,11 +248,10 @@ const navigate=useNavigate()
             </div>
             <button
               type="submit"
-              className={`w-full font-bold py-3 rounded-md transition ${
-                loading
+              className={`w-full font-bold py-3 rounded-md transition ${loading
                   ? "bg-gray-600 cursor-not-allowed"
                   : "bg-spotifyGreen text-white hover:bg-green-500"
-              }`}
+                }`}
               disabled={loading}
             >
               {loading ? "Uploading..." : oldSong ? "Update Song" : "Add Song"}

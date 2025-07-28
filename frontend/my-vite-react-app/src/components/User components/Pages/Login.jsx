@@ -30,8 +30,8 @@ const navigate=useNavigate()
   })
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-800">
-      <div className="bg-gray-900 text-white p-8 rounded-lg shadow-lg w-full max-w-sm">
+    <div className="flex justify-center items-center h-screen bg-black">
+      <div className="bg-black text-white p-8 rounded-lg shadow-lg w-full max-w-sm">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/2/26/Spotify_logo_with_text.svg"
           alt="Spotify Logo"

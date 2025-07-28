@@ -11,7 +11,8 @@ const cors = require('cors');
 
 app.use(express.json());
 app.use(cors({
-    origin: "https://spotify-clone-rose-seven-51.vercel.app",
+    // origin: "https://spotify-clone-rose-seven-51.vercel.app",
+    origin:'http://localhost:5173',
     credentials: true,
     allowedHeaders: ["Content-Type", "Authorization"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE"

@@ -6,7 +6,6 @@ export const userlogin = createAsyncThunk(
     async (userdata, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.post('/user/login', userdata);
-            console.log('Response user:', response.data.data);
             return response.data.data;
         } catch (error) {
             if (error.response) {
@@ -125,7 +124,6 @@ const loginSlice = createSlice({
                 console.log("userrrrrrrrr:", action.payload);
                 state.user = action.payload.name;
                 state.profilePicture = action.payload.profilePicture;
-                console.log('profile:', action.payload);
                 state.status = 'fulfilled';
                 localStorage.setItem('current user', state.user);
                 localStorage.setItem('profilepicture', state.profilePicture);

@@ -6,7 +6,6 @@ import axiosInstance from '../../../axiosinstance'
 export const getAllsongs=createAsyncThunk("songs",async()=>{
     try {
         const response=await axiosInstance.get('/user/getsongs')
-        console.log("songdata:",response.data)
          return response.data
          
     } catch (error) {
@@ -20,9 +19,29 @@ const songSlice=createSlice({
     name:"songs",
     initialState:{
         songs:[],
-        status:"none"
+        status:"none",
+        currentSong: null,
+        isPlaying: false,
+        volume: 0.7,
+        isShuffled: false,
+        repeatMode: 0,    },
+    reducers:{
+        setCurrentsong: (state, action) => {
+            state.currentSong = action.payload;
+          },
+          setPlaying: (state, action) => {
+            state.isPlaying = action.payload;
+          },
+          setVolume: (state, action) => {
+            state.volume = action.payload;
+          },
+          setRepeatMode: (state, action) => {
+            state.repeatMode = action.payload;
+          },
+          toggleShuffle: (state) => {
+            state.isShuffled = !state.isShuffled;
+          },
     },
-    reducers:{},
     extraReducers:(Builder)=>{
         Builder
         .addCase(getAllsongs.pending,(state)=>{
@@ -41,6 +60,11 @@ const songSlice=createSlice({
 
 
  export default songSlice.reducer
+ export const {setCurrentsong,
+    setPlaying,
+    setVolume,
+    setRepeatMode,
+    toggleShuffle,}=songSlice.actions
 
 
 

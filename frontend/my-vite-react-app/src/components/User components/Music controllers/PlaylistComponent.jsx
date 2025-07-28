@@ -10,9 +10,9 @@ import { getAlbums } from "../../../redux/slices/albumSlice";
 import { getuserplaylist } from "../../../redux/slices/userplaylistSlice";
 import Smnavbar from "../Layout/Navbar/Smnavbar";
 import { IoMdArrowBack } from "react-icons/io";
+
 const PlaylistComponent = () => {
   const dispatch = useDispatch();
-
   const playlist = useSelector((state) => state.playlist.playlist);
   const artistSongs = useSelector((state) => state.artist.artist);
   const albums = useSelector((state) => state.albums.albums);
@@ -63,26 +63,29 @@ const PlaylistComponent = () => {
     }
   }, [userplaylists, userplaylist]);
 
-  console.log('filteredplaylist:', filtereduserplaylist);
-
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-r from-black to-gray-900 text-white fixed overflow-y-scroll scrollbar-none">
-
-      <div>
-        <Navbar />
+    <div className="flex h-screen overflow-hidden bg-gradient-to-r from-black to-gray-900 text-white">
+      {/* Sidebar */}
+      <div className="hidden sm:block sm:w-[270px] flex-shrink-0 shadow-lg">
+        <Sidebar />
       </div>
-      <div>
-        <Link to={'/'}>
-      <IoMdArrowBack size={35} className="m-5"/>
-      </Link>
-      </div>
-      <div className="flex flex-1">
 
-        <div className="hidden sm:w-1/5 sm:block shadow-lg">
-          <Sidebar />
+      {/* Main Content */}
+      <div className="flex flex-col flex-grow overflow-y-scroll scrollbar-none">
+        {/* Navbar */}
+        <div className="sticky top-0 z-40 bg-black">
+          <Navbar />
         </div>
 
-        <div className="flex-1 ml-4 p-6 overflow-y-scroll scrollbar-none">
+        {/* Back Button */}
+        <div className="px-4 sm:px-6">
+          <Link to={"/"}>
+            <IoMdArrowBack size={35} className="m-5" />
+          </Link>
+        </div>
+
+        {/* Content */}
+        <div className="flex-grow px-4 sm:px-6 pb-32 fixed mt-36 overflow-y-auto">
           {filteredPlaylists.length > 0 ? (
             filteredPlaylists.map((item) => (
               <MusicCard
@@ -105,31 +108,27 @@ const PlaylistComponent = () => {
             ))
           ) : filteredSongs.length > 0 ? (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Songs by {artist}:</h2>
-              {filteredSongs.map((song, index) => (
-                <MusicCard
-                  key={index}
-                  album={{
-                    image: song.image || "default-image-url.jpg",
-                    title: song.title,
-                    artist: artist,
-                    details: song.duration || "N/A",
-                    id: artist,
-                  }}
-                  songs={[{
-                    id: song._id,
-                    image: song.image || "default-image-url.jpg",
-                    title: song.title,
-                    duration: song.duration || "N/A",
-                    audioSrc: song.fileUrl,
-                  }]}
-                  gradient="bg-gradient-to-r from-purple-900 to-black"
-                />
-              ))}
+              <h2 className="text-2xl font-semibold ml-10 mb-4">Songs by {artist}:</h2>
+              <MusicCard
+                album={{
+                  image: filteredSongs[0]?.image || "default-image-url.jpg",
+                  name: artist,
+                  artist: artist,
+                  id: artist,
+                }}
+                songs={filteredSongs.map((song) => ({
+                  id: song._id,
+                  image: song.image || "default-image-url.jpg",
+                  title: song.title,
+                  duration: song.duration || "N/A",
+                  audioSrc: song.fileUrl,
+                }))}
+                gradient="bg-gradient-to-br from-purple-600 to-blue-600"
+              />
             </div>
           ) : filteredAlbum.length > 0 ? (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">Songs in the Album:</h2>
+              <h2 className="text-2xl font-semibold ml-10 mb-4">Songs in the Album:</h2>
               {filteredAlbum.map((album) =>
                 album.songs.map((song) => (
                   <MusicCard
@@ -147,14 +146,14 @@ const PlaylistComponent = () => {
                       audioSrc: s.fileUrl,
                       id: s._id,
                     }))}
-                    gradient="bg-gradient-to-r from-teal-800 to-blue-900"
+                    gradient="bg-gradient-to-br from-cyan-800  to-blue-900"
                   />
                 ))
               )}
             </div>
           ) : filtereduserplaylist.length > 0 ? (
             <div>
-              <h2 className="text-2xl font-semibold mb-4">User Playlists:</h2>
+              <h2 className="text-2xl font-semibold ml-10 mb-4">User Playlists:</h2>
               {filtereduserplaylist.map((playlistitem) => (
                 <div key={playlistitem._id}>
                   <h3 className="text-xl font-semibold mb-2">{playlistitem.name}</h3>
@@ -172,10 +171,14 @@ const PlaylistComponent = () => {
                         id: song._id,
                         image: song.image || "default-image-url.jpg",
                         title: song.title,
-                        duration: song.duration ? `${Math.floor(song.duration / 60)}:${(song.duration % 60).toString().padStart(2, '0')}` : "N/A",
+                        duration: song.duration
+                          ? `${Math.floor(song.duration / 60)}:${(song.duration % 60)
+                              .toString()
+                              .padStart(2, "0")}`
+                          : "N/A",
                         audioSrc: song.fileUrl,
                       }))}
-                      gradient="bg-gradient-to-r from-green-800 to-blue-700"
+                      gradient="bg-gradient-to-br from-emerald-500 to-teal-500"
                     />
                   )}
                 </div>
@@ -188,6 +191,8 @@ const PlaylistComponent = () => {
           )}
         </div>
       </div>
+
+      {/* Bottom Navbar */}
       <div className="fixed bottom-0 left-0 w-full z-50">
         <Smnavbar />
       </div>
@@ -195,4 +200,4 @@ const PlaylistComponent = () => {
   );
 };
 
-export default PlaylistComponent; 
+export default PlaylistComponent;

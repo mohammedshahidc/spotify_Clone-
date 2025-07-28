@@ -11,7 +11,6 @@ export const getuserplaylist = createAsyncThunk(
             if (!response.data) {
                 throw new Error("No data received");
             }
-            console.log("playlist data:", response.data);
             return response.data;
         } catch (error) {
             console.error("API error:", error);
@@ -26,7 +25,6 @@ export const createplaylist=createAsyncThunk("addtoplaylist",async({playlistName
            playlistName,
             songsId
         })
-        console.log("createplaylist:",response.data);
         toast.success(`song adde to ${playlistName} `)
     } catch (error) {
         console.log("create playlist:",error);
@@ -40,7 +38,6 @@ export const deletefromplaylist=createAsyncThunk("remove from playlist",async({p
         playlistid,
         songId
     }})
-    console.log('remove from playlist:',response.data);
    } catch (error) {
     console.log('remove from playlist:',error.message);
    }
@@ -50,7 +47,6 @@ export const deleteplaylist=createAsyncThunk('delete playlist',async({playlistId
     try {
         console.log('aaa:',playlistId);
         const response=await axiosInstance.delete(`/user/deleteplaylist/${playlistId}`)
-        console.log('delete playlist:',response);
     } catch (error) {
          console.log('delete playlist:',error)
     }

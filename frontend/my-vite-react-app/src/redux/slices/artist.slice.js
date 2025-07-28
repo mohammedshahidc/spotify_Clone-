@@ -7,7 +7,6 @@ import axiosInstance from '../../../axiosinstance'
 export const getartist=createAsyncThunk("artist",async()=>{
     try {
         const response=await axiosInstance.get('/user/artist')
-        console.log('dataaaa:',response.data);
         return response.data
         
     } catch (error) {

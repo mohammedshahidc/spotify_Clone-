@@ -17,6 +17,7 @@ const addSongs = async (req, res, next) => {
    
     const audioFileUrl = req.files?.audioFile[0]?.path; 
     const imageFileUrl = req.files?.imageFile[0]?.path; 
+    const artistImage = req.files?.artistImage[0]?.path; 
 
     
     const newSong = new Song({
@@ -27,6 +28,7 @@ const addSongs = async (req, res, next) => {
         type,
         fileUrl: audioFileUrl,
         image: imageFileUrl,
+        artistImage:artistImage
     });
 
    
@@ -62,7 +64,11 @@ const editSong = async (req, res, next) => {
         } else if (!value.audioFile) {
             delete updatedData.audioFile; 
         }
-
+        if ( req.files?.artistImage[0]?.path) {
+            updatedData.artistImage = req.files.artistImage[0].path;
+        } else if (!value.artistImage) {
+            delete updatedData.artistImage; 
+        }
         const updatedSong = await Song.findByIdAndUpdate(req.params.id, updatedData, {
             new: true,
             runValidators: true,

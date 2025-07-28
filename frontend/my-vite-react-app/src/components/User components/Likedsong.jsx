@@ -15,7 +15,6 @@ const Likedsong = () => {
 
   const { favourite } = useSelector((state) => state.favourite);
 
-  console.log("liked:", favourite);
 
   const songs = favourite.map((song) => ({
     image: <FaHeart size={40} className="w-40 h-40 text-white bg-gradient-to-t from-blue-700 to-blue-100" />,

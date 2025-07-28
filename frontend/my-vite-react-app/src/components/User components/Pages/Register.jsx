@@ -28,7 +28,6 @@ const Register = () => {
         alert('Registration successful!');
         resetForm()
         navigate("/otp")
-        console.log(response.data);
       } catch (error) {
         setApiError(error.response?.data?.message || 'Something went wrong');
       } finally {
